@@ -21,6 +21,7 @@ repositories {
 dependencies {
     implementation group: 'org.antlr', name: 'ST4', version: '4.3.3'
     implementation group: "de.hhu.stups", name: "antlr-parser", version: "0.1.0-SNAPSHOT"
+    implementation group: "de.hhu.stups", name: "bparser", version: "2.13.1"
 
     implementation group: 'org.clojure', name: 'clojure', version: '1.6.0'
 
