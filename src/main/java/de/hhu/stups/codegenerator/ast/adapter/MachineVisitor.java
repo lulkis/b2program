@@ -1,12 +1,10 @@
 package de.hhu.stups.codegenerator.ast.adapter;
 
 import de.be4.classicalb.core.parser.node.*;
+import de.be4.classicalb.core.parser.node.Node;
 import de.hhu.stups.codegenerator.ast.VisitorCoordinator;
 import de.prob.parser.ast.SourceCodePosition;
-import de.prob.parser.ast.nodes.DeclarationNode;
-import de.prob.parser.ast.nodes.EnumeratedSetDeclarationNode;
-import de.prob.parser.ast.nodes.MachineNode;
-import de.prob.parser.ast.nodes.OperationNode;
+import de.prob.parser.ast.nodes.*;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.substitution.SubstitutionNode;
 
@@ -24,6 +22,7 @@ public class MachineVisitor extends AbstractVisitor{
     private SubstitutionNode initialisation;
     private List<OperationNode> operations;
     private List<EnumeratedSetDeclarationNode> setEnumerations = new ArrayList<>();
+    private List<DefinitionNode> definitions = new ArrayList<>();
 
     public MachineNode getResult(){
         return resultMachineNode;
@@ -80,14 +79,21 @@ public class MachineVisitor extends AbstractVisitor{
     }
 
     @Override
+    public void caseADefinitionsMachineClause(ADefinitionsMachineClause node){
+        definitions = coordinator.convertDefinitionNode(node.getDefinitions(), resultMachineNode);
+    }
+
+    @Override
     public void caseEOF(EOF node){
         resultMachineNode.setName(name);
         resultMachineNode.setInitialisation(initialisation);
         resultMachineNode.setInvariant(invariant);
         resultMachineNode.setOperations(operations);
-
         for(EnumeratedSetDeclarationNode set : setEnumerations){
             resultMachineNode.addSetEnumeration(set);
+        }
+        for (DefinitionNode definition : definitions){
+            resultMachineNode.addDefinition(definition);
         }
     }
 
