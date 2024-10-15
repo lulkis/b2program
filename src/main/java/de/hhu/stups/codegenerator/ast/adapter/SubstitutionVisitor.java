@@ -5,6 +5,7 @@ import de.hhu.stups.codegenerator.ast.VisitorCoordinator;
 import de.prob.parser.antlr.Util;
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
+import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.substitution.*;
@@ -17,6 +18,11 @@ public class SubstitutionVisitor extends AbstractVisitor{
 
     private SubstitutionNode resultSubstitutionNode;
     private VisitorCoordinator coordinator = new VisitorCoordinator();
+    private MachineNode machineNode;
+
+    public SubstitutionVisitor(MachineNode machineNode){
+        this.machineNode = machineNode;
+    }
 
     public SubstitutionNode getResult(){
         return resultSubstitutionNode;
@@ -31,8 +37,8 @@ public class SubstitutionVisitor extends AbstractVisitor{
 
     @Override
     public void caseAPreconditionSubstitution(APreconditionSubstitution node){
-        SubstitutionNode substitution = coordinator.convertSubstitutionNode(node.getSubstitution());
-        PredicateNode condition = coordinator.convertPredicateNode(node.getPredicate());
+        SubstitutionNode substitution = coordinator.convertSubstitutionNode(node.getSubstitution(), machineNode);
+        PredicateNode condition = coordinator.convertPredicateNode(node.getPredicate(), machineNode);
         resultSubstitutionNode = new ConditionSubstitutionNode(getSourceCodePosition(node),
                 ConditionSubstitutionNode.Kind.PRECONDITION,
                 condition,
@@ -43,22 +49,22 @@ public class SubstitutionVisitor extends AbstractVisitor{
     public void caseASelectSubstitution(ASelectSubstitution node){
         resultSubstitutionNode = new IfOrSelectSubstitutionsNode(getSourceCodePosition(node),
                 IfOrSelectSubstitutionsNode.Operator.SELECT,
-                List.of(coordinator.convertPredicateNode(node.getCondition())),
-                List.of(coordinator.convertSubstitutionNode(node.getThen())),
-                coordinator.convertSubstitutionNode(node.getElse()));
+                List.of(coordinator.convertPredicateNode(node.getCondition(), machineNode)),
+                List.of(coordinator.convertSubstitutionNode(node.getThen(), machineNode)),
+                coordinator.convertSubstitutionNode(node.getElse(), machineNode));
     }
 
     @Override
     public void caseAParallelSubstitution(AParallelSubstitution node){
         resultSubstitutionNode = new ListSubstitutionNode(getSourceCodePosition(node),
                 ListSubstitutionNode.ListOperator.Parallel,
-                coordinator.convertSubstitutionNode(node.getSubstitutions()));
+                coordinator.convertSubstitutionNode(node.getSubstitutions(), machineNode));
     }
 
     @Override
     public void caseAChoiceOrSubstitution(AChoiceOrSubstitution node){
         List<SubstitutionNode> choiceList = new ArrayList<>();
-        choiceList.add(coordinator.convertSubstitutionNode(node.getSubstitution()));
+        choiceList.add(coordinator.convertSubstitutionNode(node.getSubstitution(), machineNode));
         resultSubstitutionNode = new ChoiceSubstitutionNode(getSourceCodePosition(node),
                 choiceList);
     }
@@ -70,8 +76,8 @@ public class SubstitutionVisitor extends AbstractVisitor{
 
     @Override
     public void caseAAnySubstitution(AAnySubstitution node){
-        PredicateNode predicate = coordinator.convertPredicateNode(node.getWhere());
-        SubstitutionNode substitution = coordinator.convertSubstitutionNode(node.getThen());
+        PredicateNode predicate = coordinator.convertPredicateNode(node.getWhere(), machineNode);
+        SubstitutionNode substitution = coordinator.convertSubstitutionNode(node.getThen(), machineNode);
         List<DeclarationNode> identifierList = new ArrayList<>();
 
         for (PExpression expression : node.getIdentifiers()) {

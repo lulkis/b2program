@@ -62,8 +62,8 @@ public class PredicateVisitor  extends AbstractVisitor{
     @Override
     public void caseAImplicationPredicate(AImplicationPredicate node){
         List<PredicateNode> implicationList = new ArrayList<PredicateNode>();
-        implicationList.add(coordinator.convertPredicateNode(node.getLeft()));
-        implicationList.add(coordinator.convertPredicateNode(node.getRight()));
+        implicationList.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
+        implicationList.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
         resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
                 PredicateOperatorNode.PredicateOperator.IMPLIES,
                 implicationList);
@@ -80,15 +80,15 @@ public class PredicateVisitor  extends AbstractVisitor{
         }
         resultPredicateNode = new QuantifiedPredicateNode(getSourceCodePosition(node),
                 list,
-                coordinator.convertPredicateNode(node.getImplication()),
+                coordinator.convertPredicateNode(node.getImplication(), machineNode),
                 QuantifiedPredicateNode.QuantifiedPredicateOperator.UNIVERSAL_QUANTIFICATION);
     }
 
     @Override
     public void caseAConjunctPredicate(AConjunctPredicate node){
         List<PredicateNode> list = new ArrayList<PredicateNode>();
-        list.add(coordinator.convertPredicateNode(node.getLeft()));
-        list.add(coordinator.convertPredicateNode(node.getRight()));
+        list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
+        list.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
         resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
                 PredicateOperatorNode.PredicateOperator.AND,
                 list);

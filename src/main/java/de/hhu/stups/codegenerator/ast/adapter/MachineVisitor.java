@@ -61,12 +61,12 @@ public class MachineVisitor extends AbstractVisitor{
 
     @Override
     public void caseAInitialisationMachineClause(AInitialisationMachineClause node){
-        initialisation = coordinator.convertSubstitutionNode(node.getSubstitutions());
+        initialisation = coordinator.convertSubstitutionNode(node.getSubstitutions(), resultMachineNode);
     }
 
     @Override
     public void caseAInvariantMachineClause(AInvariantMachineClause node){
-        invariant = coordinator.convertPredicateNode(node.getPredicates());
+        invariant = coordinator.convertPredicateNode(node.getPredicates(), resultMachineNode);
     }
 
     @Override

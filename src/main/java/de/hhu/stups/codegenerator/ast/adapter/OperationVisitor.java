@@ -38,7 +38,7 @@ public class OperationVisitor extends AbstractVisitor{
         resultOperationNode = new OperationNode(getSourceCodePosition(node),
                 node.getOpName().get(0).getText(),
                 new ArrayList<>(),
-                coordinator.convertSubstitutionNode(node.getOperationBody()),
+                coordinator.convertSubstitutionNode(node.getOperationBody(), machineNode),
                 paramNodes);
     }
 

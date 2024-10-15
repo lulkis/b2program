@@ -20,14 +20,14 @@ public class VisitorCoordinator {
         return visitor.getResult();
     }
 
-    public SubstitutionNode convertSubstitutionNode(PSubstitution node){
-        SubstitutionVisitor visitor = new SubstitutionVisitor();
+    public SubstitutionNode convertSubstitutionNode(PSubstitution node, MachineNode machineNode){
+        SubstitutionVisitor visitor = new SubstitutionVisitor(machineNode);
         node.apply(visitor);
         return visitor.getResult();
     }
 
-    public PredicateNode convertPredicateNode(PPredicate node){
-        PredicateVisitor visitor = new PredicateVisitor();
+    public PredicateNode convertPredicateNode(PPredicate node, MachineNode machineNode){
+        PredicateVisitor visitor = new PredicateVisitor(machineNode);
         node.apply(visitor);
         return visitor.getResult();
     }
@@ -60,10 +60,10 @@ public class VisitorCoordinator {
         return resultList;
     }
 
-    public List<SubstitutionNode> convertSubstitutionNode(List<PSubstitution> nodeList){
+    public List<SubstitutionNode> convertSubstitutionNode(List<PSubstitution> nodeList, MachineNode machineNode){
         List<SubstitutionNode> resultList = new ArrayList<>();
         for (PSubstitution node : nodeList){
-            resultList.add(convertSubstitutionNode(node));
+            resultList.add(convertSubstitutionNode(node, machineNode));
         }
         return resultList;
     }
