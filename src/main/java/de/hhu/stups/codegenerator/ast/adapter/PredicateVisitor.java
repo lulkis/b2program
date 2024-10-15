@@ -86,12 +86,37 @@ public class PredicateVisitor  extends AbstractVisitor{
 
     @Override
     public void caseAConjunctPredicate(AConjunctPredicate node){
+
         List<PredicateNode> list = new ArrayList<PredicateNode>();
         list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
         list.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
         resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
                 PredicateOperatorNode.PredicateOperator.AND,
                 list);
+        
+        /*
+        List<PredicateNode> list = new ArrayList<PredicateNode>();
+
+        //ystem.out.println(node.getLeft().getClass());
+        //System.out.println(node.getRight().getClass());
+        AConjunctPredicate test = node;
+        if(test.getLeft() instanceof AConjunctPredicate){
+            test = (AConjunctPredicate) test.getLeft();
+            list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
+            list.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
+        }
+        if(test.getRight() instanceof AConjunctPredicate){
+            test = (AConjunctPredicate) test.getRight();
+            list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
+            list.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
+        }
+
+        list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
+        list.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
+        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
+                PredicateOperatorNode.PredicateOperator.AND,
+                list);
+         */
     }
 
     @Override
