@@ -22,7 +22,9 @@ public class VisitorCoordinator {
 
     public SubstitutionNode convertSubstitutionNode(PSubstitution node, MachineNode machineNode){
         SubstitutionVisitor visitor = new SubstitutionVisitor(machineNode);
-        node.apply(visitor);
+        if(node != null){
+            node.apply(visitor);
+        }
         return visitor.getResult();
     }
 
