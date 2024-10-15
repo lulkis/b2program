@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 public class TestSableccAst {
 
     @Test
-    public void testCorrectMachineName() throws Exception{
+    public void testCorrectMachineNameLift() throws Exception{
         BParser parser = new BParser();
         Path mchPath = Paths.get(CodeGenerator.class.getClassLoader()
                 .getResource("de/hhu/stups/codegenerator/sablecc/Lift.mch").toURI());
@@ -24,13 +24,15 @@ public class TestSableccAst {
         VisitorCoordinator coordinator = new VisitorCoordinator();
         MachineNode machineNode;
 
+        BProject antlrMachineNode  = Antlr4BParser.createBProjectFromMainMachineFile(mchPath.toFile());
         machineNode = coordinator.convertMachineNode(start);
 
-        assertEquals("Lift", machineNode.getName());
+        assertEquals(antlrMachineNode.getMachineNode("Lift").getName(),
+                machineNode.getName());
     }
 
     @Test
-    public void testVariables() throws Exception {
+    public void testVariablesLift() throws Exception {
         BParser parser = new BParser();
         Path mchPath = Paths.get(CodeGenerator.class.getClassLoader()
                 .getResource("de/hhu/stups/codegenerator/sablecc/Lift.mch").toURI());
@@ -38,13 +40,15 @@ public class TestSableccAst {
         VisitorCoordinator coordinator = new VisitorCoordinator();
         MachineNode machineNode;
 
+        BProject antlrMachineNode  = Antlr4BParser.createBProjectFromMainMachineFile(mchPath.toFile());
         machineNode = coordinator.convertMachineNode(start);
 
-        assertEquals(1, machineNode.getVariables().size());
+        assertEquals(antlrMachineNode.getMachineNode("Lift").getVariables().size(),
+                machineNode.getVariables().size());
     }
 
     @Test
-    public void testInitialisation() throws Exception {
+    public void testInitialisationLift() throws Exception {
         BParser parser = new BParser();
         Path mchPath = Paths.get(CodeGenerator.class.getClassLoader()
                 .getResource("de/hhu/stups/codegenerator/sablecc/Lift.mch").toURI());
@@ -52,13 +56,15 @@ public class TestSableccAst {
         VisitorCoordinator coordinator = new VisitorCoordinator();
         MachineNode machineNode;
 
+        BProject antlrMachineNode  = Antlr4BParser.createBProjectFromMainMachineFile(mchPath.toFile());
         machineNode = coordinator.convertMachineNode(start);
 
-        assertEquals("counter:=0", machineNode.getInitialisation().toString());
+        assertEquals(antlrMachineNode.getMachineNode("Lift").getInitialisation().toString(),
+                machineNode.getInitialisation().toString());
     }
 
     @Test
-    public void testInvariant() throws Exception {
+    public void testInvariantLift() throws Exception {
         BParser parser = new BParser();
         Path mchPath = Paths.get(CodeGenerator.class.getClassLoader()
                 .getResource("de/hhu/stups/codegenerator/sablecc/Lift.mch").toURI());
@@ -66,13 +72,15 @@ public class TestSableccAst {
         VisitorCoordinator coordinator = new VisitorCoordinator();
         MachineNode machineNode;
 
+        BProject antlrMachineNode  = Antlr4BParser.createBProjectFromMainMachineFile(mchPath.toFile());
         machineNode = coordinator.convertMachineNode(start);
 
-        assertEquals("ELEMENT_OF(counter,INTERVAL(0,100))", machineNode.getInvariant().toString());
+        assertEquals(antlrMachineNode.getMachineNode("Lift").getInvariant().toString(),
+                machineNode.getInvariant().toString());
     }
 
     @Test
-    public void testOperations() throws Exception{
+    public void testOperationsLift() throws Exception{
         BParser parser = new BParser();
         Path mchPath = Paths.get(CodeGenerator.class.getClassLoader()
                 .getResource("de/hhu/stups/codegenerator/sablecc/Lift.mch").toURI());
