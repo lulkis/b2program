@@ -100,10 +100,8 @@ public class PredicateVisitor  extends AbstractVisitor{
                 list);
         List<PredicateNode> list = new ArrayList<PredicateNode>();
          */
-        List<PredicateNode> list = new ArrayList<PredicateNode>();
 
-        System.out.println("Right: " + node.getRight().getClass());
-        System.out.println("Left: " + node.getLeft().getClass());
+        List<PredicateNode> list = new ArrayList<PredicateNode>();
 
         //list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
         if(node.getLeft() instanceof AConjunctPredicate){
