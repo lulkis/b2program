@@ -100,7 +100,7 @@ public class ExpressionVisitor extends AbstractVisitor{
         domainList.add(coordinator.convertExpressionNode(node.getExpression()));
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
                 domainList,
-                ExpressionOperatorNode.ExpressionOperator.SET_ENUMERATION);
+                ExpressionOperatorNode.ExpressionOperator.DOMAIN);
     }
 
     @Override
@@ -159,6 +159,19 @@ public class ExpressionVisitor extends AbstractVisitor{
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
                 domainList,
                 ExpressionOperatorNode.ExpressionOperator.PARTIAL_FUNCTION);
+    }
+
+    @Override
+    public void caseACoupleExpression(ACoupleExpression node){
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                coordinator.convertExpressionNode(node.getList()),
+                ExpressionOperatorNode.ExpressionOperator.COUPLE);
+    }
+
+    @Override
+    public void caseABoolSetExpression(ABoolSetExpression node){
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                ExpressionOperatorNode.ExpressionOperator.BOOL);
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {
