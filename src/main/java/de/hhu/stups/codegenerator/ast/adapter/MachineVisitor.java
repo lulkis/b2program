@@ -1,6 +1,7 @@
 package de.hhu.stups.codegenerator.ast.adapter;
 
 import de.be4.classicalb.core.parser.node.*;
+import de.hhu.stups.codegenerator.ast.VisitorCoordinator;
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.EnumeratedSetDeclarationNode;
@@ -15,6 +16,7 @@ import java.util.List;
 public class MachineVisitor extends AbstractVisitor{
 
     private MachineNode resultMachineNode;
+    private VisitorCoordinator coordinator = new VisitorCoordinator();
 
     private String name;
     private List<DeclarationNode> variables = new ArrayList<>();
@@ -55,6 +57,11 @@ public class MachineVisitor extends AbstractVisitor{
                     resultMachineNode));
         }
         resultMachineNode.addVariables(constantList);
+    }
+
+    @Override
+    public void caseAInitialisationMachineClause(AInitialisationMachineClause node){
+        initialisation = coordinator.convertSubstitutionNode(node.getSubstitutions());
     }
 
     @Override
