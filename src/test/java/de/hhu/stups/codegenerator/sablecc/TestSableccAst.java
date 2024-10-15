@@ -4,6 +4,7 @@ import de.be4.classicalb.core.parser.BParser;
 import de.be4.classicalb.core.parser.node.Start;
 import de.hhu.stups.codegenerator.CodeGenerator;
 import de.hhu.stups.codegenerator.ast.VisitorCoordinator;
+import de.hhu.stups.codegenerator.ast.nodes.MachineNodeWithDefinitions;
 import de.prob.parser.antlr.Antlr4BParser;
 import de.prob.parser.antlr.BProject;
 import de.prob.parser.ast.nodes.MachineNode;
@@ -125,5 +126,22 @@ public class TestSableccAst {
 
         assertEquals(antlrMachineNode.getMachineNode("nota").getInvariant().toString(),
                 machineNode.getInvariant().toString());
+    }
+
+    @Test
+    public void testCorrectMachineNameDefTest() throws Exception{
+        BParser parser = new BParser();
+        Path mchPath = Paths.get(CodeGenerator.class.getClassLoader()
+                .getResource("de/hhu/stups/codegenerator/sablecc/DefTest.mch").toURI());
+        Start start = parser.parseFile(mchPath.toFile());
+        VisitorCoordinator coordinator = new VisitorCoordinator();
+
+        MachineNodeWithDefinitions machineNode;
+
+        //BProject antlrMachineNode  = Antlr4BParser.createBProjectFromMainMachineFile(mchPath.toFile());
+        machineNode = (MachineNodeWithDefinitions) coordinator.convertMachineNode(start, parser.getDefinitions());
+
+        assertEquals("DefTest",
+                machineNode.getName());
     }
 }
