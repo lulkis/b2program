@@ -67,6 +67,7 @@ public class MachineVisitor extends AbstractVisitor{
     @Override
     public void caseEOF(EOF node){
         resultMachineNode.setName(name);
+        resultMachineNode.setInitialisation(initialisation);
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {

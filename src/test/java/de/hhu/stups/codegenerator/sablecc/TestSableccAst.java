@@ -40,4 +40,18 @@ public class TestSableccAst {
 
         assertEquals(1, machineNode.getVariables().size());
     }
+
+    @Test
+    public void testInitialisation() throws Exception {
+        BParser parser = new BParser();
+        Path mchPath = Paths.get(CodeGenerator.class.getClassLoader()
+                .getResource("de/hhu/stups/codegenerator/sablecc/Lift.mch").toURI());
+        Start start = parser.parseFile(mchPath.toFile());
+        VisitorCoordinator coordinator = new VisitorCoordinator();
+        MachineNode machineNode;
+
+        machineNode = coordinator.convertMachineNode(start);
+
+        assertEquals("counter:=0", machineNode.getInitialisation().toString());
+    }
 }
