@@ -14,6 +14,20 @@ import java.nio.file.Paths;
 public class TestSableccAst {
 
     @Test
+    public void testCorrectMachineName() throws Exception{
+        BParser parser = new BParser();
+        Path mchPath = Paths.get(CodeGenerator.class.getClassLoader()
+                .getResource("de/hhu/stups/codegenerator/sablecc/Lift.mch").toURI());
+        Start start = parser.parseFile(mchPath.toFile());
+        VisitorCoordinator coordinator = new VisitorCoordinator();
+        MachineNode machineNode;
+
+        machineNode = coordinator.convertMachineNode(start);
+
+        assertEquals("Lift", machineNode.getName());
+    }
+
+    @Test
     public void testVariables() throws Exception {
         BParser parser = new BParser();
         Path mchPath = Paths.get(CodeGenerator.class.getClassLoader()
