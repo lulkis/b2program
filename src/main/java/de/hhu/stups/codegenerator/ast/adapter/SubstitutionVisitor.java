@@ -91,6 +91,12 @@ public class SubstitutionVisitor extends AbstractVisitor{
         resultSubstitutionNode = new AnySubstitutionNode(getSourceCodePosition(node), identifierList, predicate, substitution);
     }
 
+    @Override
+    public void caseAChoiceSubstitution(AChoiceSubstitution node){
+        resultSubstitutionNode = new ChoiceSubstitutionNode(getSourceCodePosition(node),
+                coordinator.convertSubstitutionNode(node.getSubstitutions(), machineNode));
+    }
+
     private SourceCodePosition getSourceCodePosition(Node node) {
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
         sourceCodePosition.setStartColumn(node.getStartPos().getPos());
