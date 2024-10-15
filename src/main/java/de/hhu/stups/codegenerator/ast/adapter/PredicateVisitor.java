@@ -2,6 +2,7 @@ package de.hhu.stups.codegenerator.ast.adapter;
 
 import de.be4.classicalb.core.parser.node.*;
 import de.hhu.stups.codegenerator.ast.VisitorCoordinator;
+import de.hhu.stups.codegenerator.ast.nodes.MachineNodeWithDefinitions;
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
@@ -114,11 +115,22 @@ public class PredicateVisitor  extends AbstractVisitor{
             list.add(coordinator.convertPredicateNode(test.getLeft(), machineNode));
         }
         else {
+            list.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
             list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
         }
         Collections.reverse(list);
         resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
                 PredicateOperatorNode.PredicateOperator.AND,
+                list);
+    }
+
+    @Override
+    public void caseADisjunctPredicate(ADisjunctPredicate node){
+        List<PredicateNode> list = new ArrayList<PredicateNode>();
+        list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
+        list.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
+        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
+                PredicateOperatorNode.PredicateOperator.OR,
                 list);
     }
 
@@ -159,6 +171,26 @@ public class PredicateVisitor  extends AbstractVisitor{
         resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
                 PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.NOT_BELONGING,
                 list);
+    }
+
+    //Tests for Predicate Definitions
+    @Override
+    public void caseADefinitionPredicate(ADefinitionPredicate node){
+        if(machineNode instanceof MachineNodeWithDefinitions){
+            PDefinition definition = ((MachineNodeWithDefinitions) machineNode).getIDefinition().getDefinition(node.getDefLiteral().toString().replaceAll(" ", ""));
+
+            List<PExpression> definitionParameterList = new ArrayList<>();
+            for(PExpression expression : ((APredicateDefinitionDefinition) definition).getParameters()){
+                definitionParameterList.add(expression.clone());
+            }
+
+            DefinitionParameterVisitor definitionParameterVisitor = new DefinitionParameterVisitor(definitionParameterList,
+                    node.getParameters());
+            definition.apply(definitionParameterVisitor);
+
+            ((APredicateDefinitionDefinition) definition).setParameters(node.getParameters());
+            resultPredicateNode = coordinator.convertPredicateNode(((APredicateDefinitionDefinition) definition).getRhs(), machineNode);
+        }
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {
