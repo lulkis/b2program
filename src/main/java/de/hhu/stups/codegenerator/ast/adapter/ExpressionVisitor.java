@@ -186,6 +186,12 @@ public class ExpressionVisitor extends AbstractVisitor{
                 ExpressionOperatorNode.ExpressionOperator.CARD);
     }
 
+    @Override
+    public void caseANatSetExpression(ANatSetExpression node){
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                ExpressionOperatorNode.ExpressionOperator.NAT);
+    }
+
     private SourceCodePosition getSourceCodePosition(Node node) {
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
         sourceCodePosition.setStartColumn(node.getStartPos().getPos());
