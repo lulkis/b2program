@@ -53,11 +53,11 @@ public class ExpressionVisitor extends AbstractVisitor{
 
     @Override
     public void caseAMinusOrSetSubtractExpression(AMinusOrSetSubtractExpression node){
-        List<ExprNode> addList = new ArrayList<>();
-        addList.add(coordinator.convertExpressionNode(node.getLeft()));
-        addList.add(coordinator.convertExpressionNode(node.getRight()));
+        List<ExprNode> subtractList = new ArrayList<>();
+        subtractList.add(coordinator.convertExpressionNode(node.getLeft()));
+        subtractList.add(coordinator.convertExpressionNode(node.getRight()));
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                addList,
+                subtractList,
                 ExpressionOperatorNode.ExpressionOperator.MINUS);
     }
 
