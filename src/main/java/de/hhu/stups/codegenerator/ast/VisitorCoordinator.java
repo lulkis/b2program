@@ -9,6 +9,9 @@ import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.substitution.SubstitutionNode;
 import jdk.dynalink.Operation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class VisitorCoordinator {
 
     public MachineNode convertMachineNode(Start start){
@@ -39,5 +42,13 @@ public class VisitorCoordinator {
         ExpressionVisitor visitor = new ExpressionVisitor();
         node.apply(visitor);
         return visitor.getResult();
+    }
+
+    public List<ExprNode> convertExpressionNode(List<PExpression> nodeList){
+        List<ExprNode> resultList = new ArrayList<>();
+        for (PExpression node: nodeList){
+            resultList.add(convertExpressionNode(node));
+        }
+        return resultList;
     }
 }
