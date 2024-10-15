@@ -1,6 +1,7 @@
 package de.hhu.stups.codegenerator.ast.adapter;
 
 import de.be4.classicalb.core.parser.node.AExpressionDefinitionDefinition;
+import de.be4.classicalb.core.parser.node.APredicateDefinitionDefinition;
 import de.be4.classicalb.core.parser.node.Node;
 import de.be4.classicalb.core.parser.node.PExpression;
 import de.hhu.stups.codegenerator.ast.VisitorCoordinator;
@@ -34,9 +35,26 @@ public class DefinitionVisitor extends AbstractVisitor{
         }
 
         resultDefinitionNode = new DefinitionNode(getSourceCodePos(node),
-                node.getName().toString(),
+                node.getName().toString().replace(" ", ""),
                 declarationList,
                 coordinator.convertExpressionNode(node.getRhs()));
+    }
+
+    @Override
+    public void caseAPredicateDefinitionDefinition(APredicateDefinitionDefinition node){
+        List<DeclarationNode> declarationList = new ArrayList<>();
+        for (PExpression terminalNode : node.getParameters()) {
+            DeclarationNode declNode = new DeclarationNode(getSourceCodePos(terminalNode),
+                    terminalNode.toString().replace(" ", ""),
+                    DeclarationNode.Kind.OP_INPUT_PARAMETER,
+                    machineNode);
+            declarationList.add(declNode);
+        }
+
+        resultDefinitionNode = new DefinitionNode(getSourceCodePos(node),
+                node.getName().toString().replace(" ", ""),
+                declarationList,
+                coordinator.convertPredicateNode(node.getRhs(), machineNode));
     }
 
     private SourceCodePosition getSourceCodePos(Node node){
