@@ -75,11 +75,20 @@ public class MachineVisitor extends AbstractVisitor{
     }
 
     @Override
+    public void caseASetsMachineClause(ASetsMachineClause node){
+        setEnumerations = coordinator.convertEnumSetNode(node.getSetDefinitions(), resultMachineNode);
+    }
+
+    @Override
     public void caseEOF(EOF node){
         resultMachineNode.setName(name);
         resultMachineNode.setInitialisation(initialisation);
         resultMachineNode.setInvariant(invariant);
         resultMachineNode.setOperations(operations);
+
+        for(EnumeratedSetDeclarationNode set : setEnumerations){
+            resultMachineNode.addSetEnumeration(set);
+        }
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {

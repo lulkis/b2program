@@ -2,6 +2,7 @@ package de.hhu.stups.codegenerator.ast;
 
 import de.be4.classicalb.core.parser.node.*;
 import de.hhu.stups.codegenerator.ast.adapter.*;
+import de.prob.parser.ast.nodes.EnumeratedSetDeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.OperationNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
@@ -46,6 +47,12 @@ public class VisitorCoordinator {
         return visitor.getResult();
     }
 
+    public EnumeratedSetDeclarationNode convertEnumSetNode(PSet node, MachineNode machineNode){
+        EnumeratedSetVisitor visitor = new EnumeratedSetVisitor(machineNode);
+        node.apply(visitor);
+        return visitor.getResult();
+    }
+
     public List<ExprNode> convertExpressionNode(List<PExpression> nodeList){
         List<ExprNode> resultList = new ArrayList<>();
         for (PExpression node: nodeList){
@@ -66,6 +73,14 @@ public class VisitorCoordinator {
         List<SubstitutionNode> resultList = new ArrayList<>();
         for (PSubstitution node : nodeList){
             resultList.add(convertSubstitutionNode(node, machineNode));
+        }
+        return resultList;
+    }
+
+    public List<EnumeratedSetDeclarationNode> convertEnumSetNode(List<PSet> nodeList, MachineNode machineNode){
+        List<EnumeratedSetDeclarationNode> resultList = new ArrayList<>();
+        for(PSet node : nodeList){
+            resultList.add(convertEnumSetNode(node, machineNode));
         }
         return resultList;
     }
