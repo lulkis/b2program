@@ -104,6 +104,35 @@ public class PredicateVisitor  extends AbstractVisitor{
                 list);
     }
 
+    @Override
+    public void caseAEqualPredicate(AEqualPredicate node){
+        List<ExprNode> list = new ArrayList<>();
+        list.add(coordinator.convertExpressionNode(node.getLeft()));
+        list.add(coordinator.convertExpressionNode(node.getRight()));
+        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
+                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.EQUAL,
+                list);
+    }
+
+    @Override
+    public void caseANegationPredicate(ANegationPredicate node){
+        List<PredicateNode> list = new ArrayList<PredicateNode>();
+        list.add(coordinator.convertPredicateNode(node.getPredicate(), machineNode));
+        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
+                PredicateOperatorNode.PredicateOperator.NOT,
+                list);
+    }
+
+    @Override
+    public void caseANotMemberPredicate(ANotMemberPredicate node){
+        List<ExprNode> list = new ArrayList<>();
+        list.add(coordinator.convertExpressionNode(node.getLeft()));
+        list.add(coordinator.convertExpressionNode(node.getRight()));
+        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
+                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.NOT_BELONGING,
+                list);
+    }
+
     private SourceCodePosition getSourceCodePosition(Node node) {
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
         sourceCodePosition.setStartColumn(node.getStartPos().getPos());
