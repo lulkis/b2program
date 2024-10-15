@@ -57,6 +57,11 @@ public class MachineVisitor extends AbstractVisitor{
         resultMachineNode.addVariables(constantList);
     }
 
+    @Override
+    public void caseEOF(EOF node){
+        resultMachineNode.setName(name);
+    }
+
     private SourceCodePosition getSourceCodePosition(Node node) {
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
         sourceCodePosition.setStartColumn(node.getStartPos().getPos());
