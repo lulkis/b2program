@@ -8,6 +8,7 @@ import de.hhu.stups.codegenerator.ast.nodes.MachineNodeWithDefinitions;
 import de.prob.parser.antlr.Antlr4BParser;
 import de.prob.parser.antlr.BProject;
 import de.prob.parser.ast.nodes.MachineNode;
+import de.prob.parser.ast.nodes.OperationNode;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
@@ -162,5 +163,39 @@ public class TestSableccAst {
 
         assertEquals(antlrMachineNode.getMachineNode("DefTestComp").getOperations().get(1).toString(),
                 machineNode.getOperations().get(1).toString());
+    }
+
+    @Test
+    public void testTrafficLight() throws Exception{
+        BParser parser = new BParser();
+        Path mchPath = Paths.get(CodeGenerator.class.getClassLoader()
+                .getResource("de/hhu/stups/codegenerator/sablecc/TrafficLight.mch").toURI());
+        Start start = parser.parseFile(mchPath.toFile());
+        VisitorCoordinator coordinator = new VisitorCoordinator();
+
+        MachineNodeWithDefinitions machineNode;
+
+        BProject antlrMachineNode  = Antlr4BParser.createBProjectFromMainMachineFile(mchPath.toFile());
+        machineNode = (MachineNodeWithDefinitions) coordinator.convertMachineNode(start, parser.getDefinitions());
+
+        assertEquals(antlrMachineNode.getMachineNode("TrafficLight").getInvariant().toString(),
+                machineNode.getInvariant().toString());
+    }
+
+    @Test
+    public void testTrafficLightOperations() throws Exception{
+        BParser parser = new BParser();
+        Path mchPath = Paths.get(CodeGenerator.class.getClassLoader()
+                .getResource("de/hhu/stups/codegenerator/sablecc/TrafficLight.mch").toURI());
+        Start start = parser.parseFile(mchPath.toFile());
+        VisitorCoordinator coordinator = new VisitorCoordinator();
+
+        MachineNodeWithDefinitions machineNode;
+
+        BProject antlrMachineNode  = Antlr4BParser.createBProjectFromMainMachineFile(mchPath.toFile());
+        machineNode = (MachineNodeWithDefinitions) coordinator.convertMachineNode(start, parser.getDefinitions());
+
+        assertEquals(antlrMachineNode.getMachineNode("TrafficLight").getOperations().size(),
+                machineNode.getOperations().size());
     }
 }
