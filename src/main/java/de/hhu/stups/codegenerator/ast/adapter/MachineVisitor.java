@@ -65,9 +65,15 @@ public class MachineVisitor extends AbstractVisitor{
     }
 
     @Override
+    public void caseAInvariantMachineClause(AInvariantMachineClause node){
+        invariant = coordinator.convertPredicateNode(node.getPredicates());
+    }
+
+    @Override
     public void caseEOF(EOF node){
         resultMachineNode.setName(name);
         resultMachineNode.setInitialisation(initialisation);
+        resultMachineNode.setInvariant(invariant);
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {

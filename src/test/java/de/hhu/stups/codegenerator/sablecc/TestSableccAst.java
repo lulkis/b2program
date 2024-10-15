@@ -54,4 +54,18 @@ public class TestSableccAst {
 
         assertEquals("counter:=0", machineNode.getInitialisation().toString());
     }
+
+    @Test
+    public void testInvariant() throws Exception {
+        BParser parser = new BParser();
+        Path mchPath = Paths.get(CodeGenerator.class.getClassLoader()
+                .getResource("de/hhu/stups/codegenerator/sablecc/Lift.mch").toURI());
+        Start start = parser.parseFile(mchPath.toFile());
+        VisitorCoordinator coordinator = new VisitorCoordinator();
+        MachineNode machineNode;
+
+        machineNode = coordinator.convertMachineNode(start);
+
+        assertEquals("ELEMENT_OF(counter,INTERVAL(0,100))", machineNode.getInvariant().toString());
+    }
 }
