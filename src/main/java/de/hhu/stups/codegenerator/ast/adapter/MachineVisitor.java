@@ -54,10 +54,8 @@ public class MachineVisitor extends AbstractVisitor{
                     DeclarationNode.Kind.VARIABLE,
                     resultMachineNode));
         }
-        resultMachineNode.addConstants(constantList);
+        resultMachineNode.addVariables(constantList);
     }
-
-
 
     private SourceCodePosition getSourceCodePosition(Node node) {
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
