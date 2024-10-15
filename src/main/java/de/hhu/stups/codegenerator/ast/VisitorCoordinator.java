@@ -59,4 +59,12 @@ public class VisitorCoordinator {
         }
         return resultList;
     }
+
+    public List<SubstitutionNode> convertSubstitutionNode(List<PSubstitution> nodeList){
+        List<SubstitutionNode> resultList = new ArrayList<>();
+        for (PSubstitution node : nodeList){
+            resultList.add(convertSubstitutionNode(node));
+        }
+        return resultList;
+    }
 }
