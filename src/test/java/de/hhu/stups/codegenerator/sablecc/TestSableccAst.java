@@ -144,4 +144,23 @@ public class TestSableccAst {
         assertEquals("DefTest",
                 machineNode.getName());
     }
+
+    @Test
+    public void testCorrectMachineNameDefTestExchange() throws Exception{
+        BParser parser = new BParser();
+        Path mchPath = Paths.get(CodeGenerator.class.getClassLoader()
+                .getResource("de/hhu/stups/codegenerator/sablecc/DefTest.mch").toURI());
+        Path mchPathCompare = Paths.get(CodeGenerator.class.getClassLoader()
+                .getResource("de/hhu/stups/codegenerator/sablecc/DefTestComp.mch").toURI());
+        Start start = parser.parseFile(mchPath.toFile());
+        VisitorCoordinator coordinator = new VisitorCoordinator();
+
+        MachineNodeWithDefinitions machineNode;
+
+        BProject antlrMachineNode  = Antlr4BParser.createBProjectFromMainMachineFile(mchPathCompare.toFile());
+        machineNode = (MachineNodeWithDefinitions) coordinator.convertMachineNode(start, parser.getDefinitions());
+
+        assertEquals(antlrMachineNode.getMachineNode("DefTestComp").getOperations().get(1).toString(),
+                machineNode.getOperations().get(1).toString());
+    }
 }
