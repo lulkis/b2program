@@ -1,5 +1,7 @@
 package de.hhu.stups.codegenerator.ast.adapter;
 
+import de.be4.classicalb.core.parser.node.AGreaterPredicate;
+import de.be4.classicalb.core.parser.node.ALessPredicate;
 import de.be4.classicalb.core.parser.node.AMemberPredicate;
 import de.be4.classicalb.core.parser.node.Node;
 import de.hhu.stups.codegenerator.ast.VisitorCoordinator;
@@ -29,6 +31,26 @@ public class PredicateVisitor  extends AbstractVisitor{
                 getSourceCodePosition(node),
                 PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.ELEMENT_OF,
                 list);
+    }
+
+    @Override
+    public void caseALessPredicate(ALessPredicate node) {
+        List<ExprNode> lessList = new ArrayList<>();
+        lessList.add(coordinator.convertExpressionNode(node.getLeft()));
+        lessList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
+                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.LESS,
+                lessList);
+    }
+
+    @Override
+    public void caseAGreaterPredicate(AGreaterPredicate node) {
+        List<ExprNode> greaterList = new ArrayList<>();
+        greaterList.add(coordinator.convertExpressionNode(node.getLeft()));
+        greaterList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
+                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.GREATER,
+                greaterList);
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {
