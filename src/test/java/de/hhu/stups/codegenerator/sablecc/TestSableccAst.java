@@ -110,4 +110,20 @@ public class TestSableccAst {
         assertEquals("nota",
                 machineNode.getName());
     }
+
+    @Test
+    public void testInvariantNota() throws Exception{
+        BParser parser = new BParser();
+        Path mchPath = Paths.get(CodeGenerator.class.getClassLoader()
+                .getResource("de/hhu/stups/codegenerator/sablecc/nota.mch").toURI());
+        Start start = parser.parseFile(mchPath.toFile());
+        VisitorCoordinator coordinator = new VisitorCoordinator();
+        MachineNode machineNode;
+
+        BProject antlrMachineNode  = Antlr4BParser.createBProjectFromMainMachineFile(mchPath.toFile());
+        machineNode = coordinator.convertMachineNode(start);
+
+        assertEquals(antlrMachineNode.getMachineNode("nota").getInvariant().toString(),
+                machineNode.getInvariant().toString());
+    }
 }
