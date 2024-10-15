@@ -82,8 +82,11 @@ public class ExpressionVisitor extends AbstractVisitor{
 
     @Override
     public void caseAFunctionExpression(AFunctionExpression node){
+        List<ExprNode> exprNodeList = new ArrayList<>();
+        exprNodeList.add(coordinator.convertExpressionNode(node.getIdentifier()));
+        exprNodeList.addAll(coordinator.convertExpressionNode(node.getParameters()));
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                coordinator.convertExpressionNode(node.getParameters()),
+                exprNodeList,
                 ExpressionOperatorNode.ExpressionOperator.FUNCTION_CALL);
     }
 
@@ -172,6 +175,15 @@ public class ExpressionVisitor extends AbstractVisitor{
     public void caseABoolSetExpression(ABoolSetExpression node){
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
                 ExpressionOperatorNode.ExpressionOperator.BOOL);
+    }
+
+    @Override
+    public void caseACardExpression(ACardExpression node){
+        List<ExprNode> exprNodeList = new ArrayList<>();
+        exprNodeList.add(coordinator.convertExpressionNode(node.getExpression()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                exprNodeList,
+                ExpressionOperatorNode.ExpressionOperator.CARD);
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {
