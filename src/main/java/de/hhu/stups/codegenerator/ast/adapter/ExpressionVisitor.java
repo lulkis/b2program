@@ -1,9 +1,6 @@
 package de.hhu.stups.codegenerator.ast.adapter;
 
-import de.be4.classicalb.core.parser.node.AIntervalExpression;
-import de.be4.classicalb.core.parser.node.Node;
-import de.be4.classicalb.core.parser.node.TIdentifierLiteral;
-import de.be4.classicalb.core.parser.node.TIntegerLiteral;
+import de.be4.classicalb.core.parser.node.*;
 import de.hhu.stups.codegenerator.ast.VisitorCoordinator;
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.expression.ExprNode;
@@ -42,6 +39,26 @@ public class ExpressionVisitor extends AbstractVisitor{
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
                 intervalList,
                 ExpressionOperatorNode.ExpressionOperator.INTERVAL);
+    }
+
+    @Override
+    public void caseAAddExpression(AAddExpression node){
+        List<ExprNode> addList = new ArrayList<>();
+        addList.add(coordinator.convertExpressionNode(node.getLeft()));
+        addList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                addList,
+                ExpressionOperatorNode.ExpressionOperator.PLUS);
+    }
+
+    @Override
+    public void caseAMinusOrSetSubtractExpression(AMinusOrSetSubtractExpression node){
+        List<ExprNode> addList = new ArrayList<>();
+        addList.add(coordinator.convertExpressionNode(node.getLeft()));
+        addList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                addList,
+                ExpressionOperatorNode.ExpressionOperator.MINUS);
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {
