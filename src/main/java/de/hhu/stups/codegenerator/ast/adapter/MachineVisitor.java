@@ -1,8 +1,10 @@
 package de.hhu.stups.codegenerator.ast.adapter;
 
+import de.be4.classicalb.core.parser.IDefinitions;
 import de.be4.classicalb.core.parser.node.*;
 import de.be4.classicalb.core.parser.node.Node;
 import de.hhu.stups.codegenerator.ast.VisitorCoordinator;
+import de.hhu.stups.codegenerator.ast.nodes.MachineNodeWithDefinitions;
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.*;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
@@ -13,7 +15,7 @@ import java.util.List;
 
 public class MachineVisitor extends AbstractVisitor{
 
-    private MachineNode resultMachineNode;
+    private MachineNodeWithDefinitions resultMachineNode;
     private VisitorCoordinator coordinator = new VisitorCoordinator();
 
     private String name;
@@ -24,13 +26,20 @@ public class MachineVisitor extends AbstractVisitor{
     private List<EnumeratedSetDeclarationNode> setEnumerations = new ArrayList<>();
     private List<DefinitionNode> definitions = new ArrayList<>();
 
+    private IDefinitions iDefinitions;
+
     public MachineNode getResult(){
         return resultMachineNode;
     }
 
+    public MachineVisitor(IDefinitions iDefinitions){
+        this.iDefinitions = iDefinitions;
+    }
+
     @Override
     public void caseAMachineHeader(AMachineHeader node){
-        this.resultMachineNode = new MachineNode(getSourceCodePosition(node));
+        this.resultMachineNode = new MachineNodeWithDefinitions(getSourceCodePosition(node));
+        resultMachineNode.setIDefinitions(iDefinitions);
         name = node.getName().get(0).toString().replace(" ", "");
     }
 

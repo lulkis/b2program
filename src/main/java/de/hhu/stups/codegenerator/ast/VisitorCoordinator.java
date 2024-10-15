@@ -1,5 +1,6 @@
 package de.hhu.stups.codegenerator.ast;
 
+import de.be4.classicalb.core.parser.IDefinitions;
 import de.be4.classicalb.core.parser.node.*;
 import de.hhu.stups.codegenerator.ast.adapter.*;
 import de.prob.parser.ast.nodes.DefinitionNode;
@@ -16,8 +17,14 @@ import java.util.List;
 
 public class VisitorCoordinator {
 
+    public MachineNode convertMachineNode(Start start, IDefinitions definitions){
+        MachineVisitor visitor = new MachineVisitor(definitions);
+        start.apply(visitor);
+        return visitor.getResult();
+    }
+
     public MachineNode convertMachineNode(Start start){
-        MachineVisitor visitor = new MachineVisitor();
+        MachineVisitor visitor = new MachineVisitor(null);
         start.apply(visitor);
         return visitor.getResult();
     }
