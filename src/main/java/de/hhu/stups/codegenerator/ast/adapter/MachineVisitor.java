@@ -70,10 +70,16 @@ public class MachineVisitor extends AbstractVisitor{
     }
 
     @Override
+    public void caseAOperationsMachineClause(AOperationsMachineClause node){
+        operations = coordinator.convertOperationNode(node.getOperations(), resultMachineNode);
+    }
+
+    @Override
     public void caseEOF(EOF node){
         resultMachineNode.setName(name);
         resultMachineNode.setInitialisation(initialisation);
         resultMachineNode.setInvariant(invariant);
+        resultMachineNode.setOperations(operations);
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {

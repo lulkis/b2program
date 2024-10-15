@@ -32,8 +32,8 @@ public class VisitorCoordinator {
         return visitor.getResult();
     }
 
-    public OperationNode convertOperationNode(POperation node){
-        OperationVisitor visitor = new OperationVisitor();
+    public OperationNode convertOperationNode(POperation node, MachineNode machineNode){
+        OperationVisitor visitor = new OperationVisitor(machineNode);
         node.apply(visitor);
         return visitor.getResult();
     }
@@ -48,6 +48,14 @@ public class VisitorCoordinator {
         List<ExprNode> resultList = new ArrayList<>();
         for (PExpression node: nodeList){
             resultList.add(convertExpressionNode(node));
+        }
+        return resultList;
+    }
+
+    public List<OperationNode> convertOperationNode(List<POperation> nodeList, MachineNode machineNode){
+        List<OperationNode> resultList = new ArrayList<>();
+        for (POperation node: nodeList){
+            resultList.add(convertOperationNode(node, machineNode));
         }
         return resultList;
     }
