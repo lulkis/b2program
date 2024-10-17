@@ -19,6 +19,10 @@ public class DefinitionVisitor extends AbstractVisitor{
     private VisitorCoordinator coordinator = new VisitorCoordinator();
     private MachineNode machineNode;
 
+    public DefinitionVisitor(MachineNode machineNode) {
+        this.machineNode = machineNode;
+    }
+
     public DefinitionNode getResult() {
         return resultDefinitionNode;
     }

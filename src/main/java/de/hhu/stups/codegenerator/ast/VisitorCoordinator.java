@@ -62,7 +62,7 @@ public class VisitorCoordinator {
     }
 
     public DefinitionNode convertDefinitionNode(PDefinition node, MachineNode machineNode){
-        DefinitionVisitor visitor = new DefinitionVisitor();
+        DefinitionVisitor visitor = new DefinitionVisitor(machineNode);
         node.apply(visitor);
         return visitor.getResult();
     }
