@@ -192,6 +192,15 @@ public class ExpressionVisitor extends AbstractVisitor{
                 ExpressionOperatorNode.ExpressionOperator.NAT);
     }
 
+    @Override
+    public void caseAUnaryMinusExpression(AUnaryMinusExpression node){
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getExpression()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                exprList,
+                ExpressionOperatorNode.ExpressionOperator.UNARY_MINUS);
+    }
+
     private SourceCodePosition getSourceCodePosition(Node node) {
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
         sourceCodePosition.setStartColumn(node.getStartPos().getPos());
