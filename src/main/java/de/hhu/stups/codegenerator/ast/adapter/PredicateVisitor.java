@@ -235,6 +235,36 @@ public class PredicateVisitor  extends AbstractVisitor{
                 lessList);
     }
 
+    @Override
+    public void caseANotSubsetPredicate(ANotSubsetPredicate node){
+        List<ExprNode> list = new ArrayList<>();
+        list.add(coordinator.convertExpressionNode(node.getLeft()));
+        list.add(coordinator.convertExpressionNode(node.getRight()));
+        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
+                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.NON_INCLUSION,
+                list);
+    }
+
+    @Override
+    public void caseASubsetStrictPredicate(ASubsetStrictPredicate node){
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getLeft()));
+        exprList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
+                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.STRICT_INCLUSION,
+                exprList);
+    }
+
+    @Override
+    public void caseANotSubsetStrictPredicate(ANotSubsetStrictPredicate node){
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getLeft()));
+        exprList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
+                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.STRICT_NON_INCLUSION,
+                exprList);
+    }
+
     //Tests for Predicate Definitions
     @Override
     public void caseADefinitionPredicate(ADefinitionPredicate node){
