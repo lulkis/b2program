@@ -3,6 +3,7 @@ package de.hhu.stups.codegenerator.ast.adapter;
 import de.be4.classicalb.core.parser.node.*;
 import de.hhu.stups.codegenerator.ast.VisitorCoordinator;
 import de.prob.parser.ast.SourceCodePosition;
+import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
@@ -17,6 +18,11 @@ public class ExpressionVisitor extends AbstractVisitor{
 
     private ExprNode resultExpressionNode;
     private VisitorCoordinator coordinator = new VisitorCoordinator();
+    private MachineNode machineNode;
+
+    public ExpressionVisitor(MachineNode machineNode){
+        this.machineNode = machineNode;
+    }
 
     public ExprNode getResult() {
         return resultExpressionNode;

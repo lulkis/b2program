@@ -49,8 +49,14 @@ public class VisitorCoordinator {
         return visitor.getResult();
     }
 
+    public ExprNode convertExpressionNode(PExpression node, MachineNode machineNode){
+        ExpressionVisitor visitor = new ExpressionVisitor(machineNode);
+        node.apply(visitor);
+        return visitor.getResult();
+    }
+
     public ExprNode convertExpressionNode(PExpression node){
-        ExpressionVisitor visitor = new ExpressionVisitor();
+        ExpressionVisitor visitor = new ExpressionVisitor(null);
         node.apply(visitor);
         return visitor.getResult();
     }
