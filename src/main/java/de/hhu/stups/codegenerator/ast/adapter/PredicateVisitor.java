@@ -173,6 +173,26 @@ public class PredicateVisitor  extends AbstractVisitor{
                 list);
     }
 
+    @Override
+    public void caseASubsetPredicate(ASubsetPredicate node){
+        List<ExprNode> list = new ArrayList<>();
+        list.add(coordinator.convertExpressionNode(node.getLeft()));
+        list.add(coordinator.convertExpressionNode(node.getRight()));
+        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
+                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.INCLUSION,
+                list);
+    }
+
+    @Override
+    public void caseALessEqualPredicate(ALessEqualPredicate node) {
+        List<ExprNode> lessList = new ArrayList<>();
+        lessList.add(coordinator.convertExpressionNode(node.getLeft()));
+        lessList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
+                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.LESS_EQUAL,
+                lessList);
+    }
+
     //Tests for Predicate Definitions
     @Override
     public void caseADefinitionPredicate(ADefinitionPredicate node){
