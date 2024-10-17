@@ -3,11 +3,9 @@ package de.hhu.stups.codegenerator.ast.adapter;
 import de.be4.classicalb.core.parser.node.*;
 import de.hhu.stups.codegenerator.ast.VisitorCoordinator;
 import de.prob.parser.ast.SourceCodePosition;
+import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
-import de.prob.parser.ast.nodes.expression.ExprNode;
-import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
-import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
-import de.prob.parser.ast.nodes.expression.NumberNode;
+import de.prob.parser.ast.nodes.expression.*;
 import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
 
 import java.math.BigInteger;
@@ -247,6 +245,50 @@ public class ExpressionVisitor extends AbstractVisitor{
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
                 exprList,
                 ExpressionOperatorNode.ExpressionOperator.FIN1);
+    }
+
+    @Override
+    public void caseAComprehensionSetExpression(AComprehensionSetExpression node){
+        List<DeclarationNode> declarationList = new ArrayList<>();
+        for (PExpression terminalNode : node.getIdentifiers()) {
+            DeclarationNode declNode = new DeclarationNode(getSourceCodePosition(terminalNode),
+                    terminalNode.toString().replace(" ", ""),
+                    DeclarationNode.Kind.VARIABLE,
+                    machineNode);
+            declarationList.add(declNode);
+        }
+
+        resultExpressionNode = new SetComprehensionNode(getSourceCodePosition(node),
+                declarationList,
+                coordinator.convertPredicateNode(node.getPredicates(), machineNode));
+    }
+
+    @Override
+    public void caseAMultOrCartExpression(AMultOrCartExpression node){
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getLeft()));
+        exprList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                exprList,
+                ExpressionOperatorNode.ExpressionOperator.CARTESIAN_PRODUCT);
+    }
+
+    @Override
+    public void caseAGeneralIntersectionExpression(AGeneralIntersectionExpression node){
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getExpression()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                exprList,
+                ExpressionOperatorNode.ExpressionOperator.GENERALIZED_INTER);
+    }
+
+    @Override
+    public void caseAGeneralUnionExpression(AGeneralUnionExpression node){
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getExpression()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                exprList,
+                ExpressionOperatorNode.ExpressionOperator.GENERALIZED_UNION);
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {
