@@ -84,10 +84,10 @@ public class ExpressionVisitor extends AbstractVisitor{
 
     @Override
     public void caseAPowSubsetExpression(APowSubsetExpression node){
-        List<ExprNode> powList = new ArrayList<>();
-        powList.add(coordinator.convertExpressionNode(node.getExpression()));
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getExpression()));
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                powList,
+                exprList,
                 ExpressionOperatorNode.ExpressionOperator.POW);
     }
 
@@ -120,10 +120,10 @@ public class ExpressionVisitor extends AbstractVisitor{
 
     @Override
     public void caseACardExpression(ACardExpression node){
-        List<ExprNode> exprNodeList = new ArrayList<>();
-        exprNodeList.add(coordinator.convertExpressionNode(node.getExpression()));
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getExpression()));
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                exprNodeList,
+                exprList,
                 ExpressionOperatorNode.ExpressionOperator.CARD);
     }
 
@@ -139,31 +139,31 @@ public class ExpressionVisitor extends AbstractVisitor{
 
     @Override
     public void caseAUnionExpression(AUnionExpression node){
-        List<ExprNode> unionList = new ArrayList<>();
-        unionList.add(coordinator.convertExpressionNode(node.getLeft()));
-        unionList.add(coordinator.convertExpressionNode(node.getRight()));
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getLeft()));
+        exprList.add(coordinator.convertExpressionNode(node.getRight()));
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                unionList,
+                exprList,
                 ExpressionOperatorNode.ExpressionOperator.UNION);
     }
 
     @Override
     public void caseAIntersectionExpression(AIntersectionExpression node){
-        List<ExprNode> domainList = new ArrayList<>();
-        domainList.add(coordinator.convertExpressionNode(node.getLeft()));
-        domainList.add(coordinator.convertExpressionNode(node.getRight()));
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getLeft()));
+        exprList.add(coordinator.convertExpressionNode(node.getRight()));
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                domainList,
+                exprList,
                 ExpressionOperatorNode.ExpressionOperator.INTERSECTION);
     }
 
     @Override
     public void caseAMinusOrSetSubtractExpression(AMinusOrSetSubtractExpression node){
-        List<ExprNode> subtractList = new ArrayList<>();
-        subtractList.add(coordinator.convertExpressionNode(node.getLeft()));
-        subtractList.add(coordinator.convertExpressionNode(node.getRight()));
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getLeft()));
+        exprList.add(coordinator.convertExpressionNode(node.getRight()));
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                subtractList,
+                exprList,
                 ExpressionOperatorNode.ExpressionOperator.MINUS);
     }
 
