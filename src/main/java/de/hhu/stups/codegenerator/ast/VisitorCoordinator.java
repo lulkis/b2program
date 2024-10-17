@@ -10,7 +10,6 @@ import de.prob.parser.ast.nodes.OperationNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.substitution.SubstitutionNode;
-import jdk.dynalink.Operation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +54,8 @@ public class VisitorCoordinator {
         return visitor.getResult();
     }
 
-    public EnumeratedSetDeclarationNode convertEnumSetNode(PSet node, MachineNode machineNode){
-        EnumeratedSetVisitor visitor = new EnumeratedSetVisitor(machineNode);
+    public EnumeratedSetDeclarationNode convertSetNode(PSet node, MachineNode machineNode){
+        SetVisitor visitor = new SetVisitor(machineNode);
         node.apply(visitor);
         return visitor.getResult();
     }
@@ -91,10 +90,10 @@ public class VisitorCoordinator {
         return resultList;
     }
 
-    public List<EnumeratedSetDeclarationNode> convertEnumSetNode(List<PSet> nodeList, MachineNode machineNode){
+    public List<EnumeratedSetDeclarationNode> convertSetNode(List<PSet> nodeList, MachineNode machineNode){
         List<EnumeratedSetDeclarationNode> resultList = new ArrayList<>();
         for(PSet node : nodeList){
-            resultList.add(convertEnumSetNode(node, machineNode));
+            resultList.add(convertSetNode(node, machineNode));
         }
         return resultList;
     }

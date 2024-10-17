@@ -84,7 +84,7 @@ public class MachineVisitor extends AbstractVisitor{
 
     @Override
     public void caseASetsMachineClause(ASetsMachineClause node){
-        setEnumerations = coordinator.convertEnumSetNode(node.getSetDefinitions(), resultMachineNode);
+        setEnumerations = coordinator.convertSetNode(node.getSetDefinitions(), resultMachineNode);
     }
 
     @Override

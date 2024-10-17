@@ -11,12 +11,12 @@ import de.prob.parser.ast.nodes.MachineNode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnumeratedSetVisitor extends AbstractVisitor{
+public class SetVisitor extends AbstractVisitor{
 
     private EnumeratedSetDeclarationNode resultSetDeclarationNode;
     private MachineNode machineNode;
 
-    public EnumeratedSetVisitor(MachineNode machineNode) {
+    public SetVisitor(MachineNode machineNode) {
         this.machineNode = machineNode;
     }
 
