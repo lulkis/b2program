@@ -97,6 +97,19 @@ public class SubstitutionVisitor extends AbstractVisitor{
                 coordinator.convertSubstitutionNode(node.getSubstitutions(), machineNode));
     }
 
+    @Override
+    public void caseAIfSubstitution(AIfSubstitution node){
+        List<PredicateNode> conditions = new ArrayList<>();
+        conditions.add(coordinator.convertPredicateNode(node.getCondition(), machineNode));
+        List<SubstitutionNode> thenSub = new ArrayList<>();
+        thenSub.add(coordinator.convertSubstitutionNode(node.getThen(), machineNode));
+        resultSubstitutionNode = new IfOrSelectSubstitutionsNode(getSourceCodePosition(node),
+                IfOrSelectSubstitutionsNode.Operator.IF,
+                conditions,
+                thenSub,
+                coordinator.convertSubstitutionNode(node.getElse(), machineNode));
+    }
+
     private SourceCodePosition getSourceCodePosition(Node node) {
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
         sourceCodePosition.setStartColumn(node.getStartPos().getPos());
