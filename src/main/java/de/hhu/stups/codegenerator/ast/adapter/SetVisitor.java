@@ -1,5 +1,6 @@
 package de.hhu.stups.codegenerator.ast.adapter;
 
+import de.be4.classicalb.core.parser.node.ADeferredSetSet;
 import de.be4.classicalb.core.parser.node.AEnumeratedSetSet;
 import de.be4.classicalb.core.parser.node.Node;
 import de.be4.classicalb.core.parser.node.PExpression;
@@ -13,14 +14,14 @@ import java.util.List;
 
 public class SetVisitor extends AbstractVisitor{
 
-    private EnumeratedSetDeclarationNode resultSetDeclarationNode;
+    private de.prob.parser.ast.nodes.Node resultSetDeclarationNode;
     private MachineNode machineNode;
 
     public SetVisitor(MachineNode machineNode) {
         this.machineNode = machineNode;
     }
 
-    public EnumeratedSetDeclarationNode getResult(){
+    public de.prob.parser.ast.nodes.Node getResult(){
         return resultSetDeclarationNode;
     }
 
@@ -33,6 +34,14 @@ public class SetVisitor extends AbstractVisitor{
         resultSetDeclarationNode = new EnumeratedSetDeclarationNode(position,
                 declarationNode,
                 createDeclarationList(node.getElements(), DeclarationNode.Kind.ENUMERATED_SET_ELEMENT));
+    }
+
+    @Override
+    public void caseADeferredSetSet(ADeferredSetSet node){
+        resultSetDeclarationNode = new DeclarationNode(getSourceCodePosition(node),
+                node.toString().replace(" ", ""),
+                DeclarationNode.Kind.DEFERRED_SET,
+                machineNode);
     }
 
     private List<DeclarationNode> createDeclarationList(List<PExpression> list, DeclarationNode.Kind kind) {

@@ -23,7 +23,7 @@ public class MachineVisitor extends AbstractVisitor{
     private PredicateNode invariant;
     private SubstitutionNode initialisation;
     private List<OperationNode> operations;
-    private List<EnumeratedSetDeclarationNode> setEnumerations = new ArrayList<>();
+    private List<de.prob.parser.ast.nodes.Node> setEnumerations = new ArrayList<>();
     private List<DefinitionNode> definitions = new ArrayList<>();
 
     private IDefinitions iDefinitions;
@@ -98,8 +98,12 @@ public class MachineVisitor extends AbstractVisitor{
         resultMachineNode.setInitialisation(initialisation);
         resultMachineNode.setInvariant(invariant);
         resultMachineNode.setOperations(operations);
-        for(EnumeratedSetDeclarationNode set : setEnumerations){
-            resultMachineNode.addSetEnumeration(set);
+        for(de.prob.parser.ast.nodes.Node set : setEnumerations){
+            if(set instanceof EnumeratedSetDeclarationNode){
+                resultMachineNode.addSetEnumeration((EnumeratedSetDeclarationNode) set);
+            } else {
+                resultMachineNode.addDeferredSet((DeclarationNode) set);
+            }
         }
         for (DefinitionNode definition : definitions){
             resultMachineNode.addDefinition(definition);

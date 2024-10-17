@@ -6,6 +6,7 @@ import de.hhu.stups.codegenerator.ast.adapter.*;
 import de.prob.parser.ast.nodes.DefinitionNode;
 import de.prob.parser.ast.nodes.EnumeratedSetDeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
+import de.prob.parser.ast.nodes.Node;
 import de.prob.parser.ast.nodes.OperationNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
@@ -54,7 +55,7 @@ public class VisitorCoordinator {
         return visitor.getResult();
     }
 
-    public EnumeratedSetDeclarationNode convertSetNode(PSet node, MachineNode machineNode){
+    public Node convertSetNode(PSet node, MachineNode machineNode){
         SetVisitor visitor = new SetVisitor(machineNode);
         node.apply(visitor);
         return visitor.getResult();
@@ -90,8 +91,8 @@ public class VisitorCoordinator {
         return resultList;
     }
 
-    public List<EnumeratedSetDeclarationNode> convertSetNode(List<PSet> nodeList, MachineNode machineNode){
-        List<EnumeratedSetDeclarationNode> resultList = new ArrayList<>();
+    public List<Node> convertSetNode(List<PSet> nodeList, MachineNode machineNode){
+        List<Node> resultList = new ArrayList<>();
         for(PSet node : nodeList){
             resultList.add(convertSetNode(node, machineNode));
         }
