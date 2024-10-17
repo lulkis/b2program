@@ -155,65 +155,65 @@ public class PredicateVisitor  extends AbstractVisitor{
     //START: Equality
     @Override
     public void caseAEqualPredicate(AEqualPredicate node){
-        List<ExprNode> expressionList = new ArrayList<>();
-        expressionList.add(coordinator.convertExpressionNode(node.getLeft()));
-        expressionList.add(coordinator.convertExpressionNode(node.getRight()));
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getLeft()));
+        exprList.add(coordinator.convertExpressionNode(node.getRight()));
         resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
                 PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.EQUAL,
-                expressionList);
+                exprList);
     }
 
     @Override
     public void caseANotEqualPredicate(ANotEqualPredicate node){
-        List<ExprNode> expressionList = new ArrayList<>();
-        expressionList.add(coordinator.convertExpressionNode(node.getLeft()));
-        expressionList.add(coordinator.convertExpressionNode(node.getRight()));
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getLeft()));
+        exprList.add(coordinator.convertExpressionNode(node.getRight()));
         resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
                 PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.NOT_EQUAL,
-                expressionList);
+                exprList);
     }
     //END: Equality
 
     //START: Sets
     @Override
     public void caseAMemberPredicate(AMemberPredicate node) {
-        List<ExprNode> list = new ArrayList<>();
-        list.add(coordinator.convertExpressionNode(node.getLeft()));
-        list.add(coordinator.convertExpressionNode(node.getRight()));
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getLeft()));
+        exprList.add(coordinator.convertExpressionNode(node.getRight()));
         resultPredicateNode = new PredicateOperatorWithExprArgsNode(
                 getSourceCodePosition(node),
                 PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.ELEMENT_OF,
-                list);
+                exprList);
     }
 
     @Override
     public void caseANotMemberPredicate(ANotMemberPredicate node){
-        List<ExprNode> list = new ArrayList<>();
-        list.add(coordinator.convertExpressionNode(node.getLeft()));
-        list.add(coordinator.convertExpressionNode(node.getRight()));
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getLeft()));
+        exprList.add(coordinator.convertExpressionNode(node.getRight()));
         resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
                 PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.NOT_BELONGING,
-                list);
+                exprList);
     }
 
     @Override
     public void caseASubsetPredicate(ASubsetPredicate node){
-        List<ExprNode> list = new ArrayList<>();
-        list.add(coordinator.convertExpressionNode(node.getLeft()));
-        list.add(coordinator.convertExpressionNode(node.getRight()));
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getLeft()));
+        exprList.add(coordinator.convertExpressionNode(node.getRight()));
         resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
                 PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.INCLUSION,
-                list);
+                exprList);
     }
 
     @Override
     public void caseANotSubsetPredicate(ANotSubsetPredicate node){
-        List<ExprNode> list = new ArrayList<>();
-        list.add(coordinator.convertExpressionNode(node.getLeft()));
-        list.add(coordinator.convertExpressionNode(node.getRight()));
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getLeft()));
+        exprList.add(coordinator.convertExpressionNode(node.getRight()));
         resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
                 PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.NON_INCLUSION,
-                list);
+                exprList);
     }
 
     @Override
@@ -237,7 +237,7 @@ public class PredicateVisitor  extends AbstractVisitor{
     }
     //END: Sets
 
-    
+
     @Override
     public void caseALessPredicate(ALessPredicate node) {
         List<ExprNode> lessList = new ArrayList<>();
