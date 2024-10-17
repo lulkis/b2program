@@ -201,6 +201,12 @@ public class ExpressionVisitor extends AbstractVisitor{
                 ExpressionOperatorNode.ExpressionOperator.UNARY_MINUS);
     }
 
+    @Override
+    public void caseAIntSetExpression(AIntSetExpression node){
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                ExpressionOperatorNode.ExpressionOperator.INT);
+    }
+
     private SourceCodePosition getSourceCodePosition(Node node) {
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
         sourceCodePosition.setStartColumn(node.getStartPos().getPos());
