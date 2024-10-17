@@ -152,6 +152,28 @@ public class PredicateVisitor  extends AbstractVisitor{
     }
     //END: Logical Predicates
 
+    //START: Equality
+    @Override
+    public void caseAEqualPredicate(AEqualPredicate node){
+        List<ExprNode> expressionList = new ArrayList<>();
+        expressionList.add(coordinator.convertExpressionNode(node.getLeft()));
+        expressionList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
+                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.EQUAL,
+                expressionList);
+    }
+
+    @Override
+    public void caseANotEqualPredicate(ANotEqualPredicate node){
+        List<ExprNode> expressionList = new ArrayList<>();
+        expressionList.add(coordinator.convertExpressionNode(node.getLeft()));
+        expressionList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
+                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.NOT_EQUAL,
+                expressionList);
+    }
+    //END: Equality
+
     @Override
     public void caseAMemberPredicate(AMemberPredicate node) {
         List<ExprNode> list = new ArrayList<>();
@@ -181,26 +203,6 @@ public class PredicateVisitor  extends AbstractVisitor{
         resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
                 PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.GREATER,
                 greaterList);
-    }
-
-    @Override
-    public void caseANotEqualPredicate(ANotEqualPredicate node){
-        List<ExprNode> list = new ArrayList<>();
-        list.add(coordinator.convertExpressionNode(node.getLeft()));
-        list.add(coordinator.convertExpressionNode(node.getRight()));
-        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
-                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.NOT_EQUAL,
-                list);
-    }
-
-    @Override
-    public void caseAEqualPredicate(AEqualPredicate node){
-        List<ExprNode> list = new ArrayList<>();
-        list.add(coordinator.convertExpressionNode(node.getLeft()));
-        list.add(coordinator.convertExpressionNode(node.getRight()));
-        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
-                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.EQUAL,
-                list);
     }
 
     @Override
