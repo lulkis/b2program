@@ -30,6 +30,128 @@ public class PredicateVisitor  extends AbstractVisitor{
         return resultPredicateNode;
     }
 
+    //START: Logical Predicates
+    @Override
+    public void caseAConjunctPredicate(AConjunctPredicate node){
+        /*
+        List<PredicateNode> list = new ArrayList<PredicateNode>();
+
+        System.out.println("Right: " + node.getRight().getClass());
+        System.out.println("Left: " + node.getLeft().getClass());
+
+        list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
+        list.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
+        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
+                PredicateOperatorNode.PredicateOperator.AND,
+                list);
+        List<PredicateNode> list = new ArrayList<PredicateNode>();
+         */
+
+        List<PredicateNode> predicateList = new ArrayList<>();
+        //list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
+        if(node.getLeft() instanceof AConjunctPredicate){
+            AConjunctPredicate test = node;
+            while(test.getLeft() instanceof AConjunctPredicate){
+                predicateList.add(coordinator.convertPredicateNode(test.getRight(), machineNode));
+                test = (AConjunctPredicate) test.getLeft();
+            }
+            predicateList.add(coordinator.convertPredicateNode(test.getRight(), machineNode));
+            predicateList.add(coordinator.convertPredicateNode(test.getLeft(), machineNode));
+        }
+        else {
+            predicateList.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
+            predicateList.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
+        }
+        Collections.reverse(predicateList);
+        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
+                PredicateOperatorNode.PredicateOperator.AND,
+                predicateList);
+    }
+
+    @Override
+    public void caseADisjunctPredicate(ADisjunctPredicate node){
+        List<PredicateNode> predicateList = new ArrayList<>();
+        predicateList.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
+        predicateList.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
+        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
+                PredicateOperatorNode.PredicateOperator.OR,
+                predicateList);
+    }
+
+    @Override
+    public void caseAImplicationPredicate(AImplicationPredicate node){
+        List<PredicateNode> predicateList = new ArrayList<>();
+        predicateList.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
+        predicateList.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
+        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
+                PredicateOperatorNode.PredicateOperator.IMPLIES,
+                predicateList);
+    }
+
+    @Override
+    public void caseAEquivalencePredicate(AEquivalencePredicate node) {
+        List<PredicateNode> predicateList = new ArrayList<>();
+        predicateList.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
+        predicateList.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
+        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
+                PredicateOperatorNode.PredicateOperator.EQUIVALENCE,
+                predicateList);
+    }
+
+    @Override
+    public void caseANegationPredicate(ANegationPredicate node){
+        List<PredicateNode> predicateList = new ArrayList<>();
+        predicateList.add(coordinator.convertPredicateNode(node.getPredicate(), machineNode));
+        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
+                PredicateOperatorNode.PredicateOperator.NOT,
+                predicateList);
+    }
+
+    @Override
+    public void caseAForallPredicate(AForallPredicate node){
+        List<DeclarationNode> declarationList = new ArrayList<>();
+        for(PExpression expression : node.getIdentifiers()){
+            declarationList.add(new DeclarationNode(getSourceCodePosition(node),
+                    expression.toString().replace(" ", ""),
+                    DeclarationNode.Kind.OP_INPUT_PARAMETER,
+                    machineNode));
+        }
+        resultPredicateNode = new QuantifiedPredicateNode(getSourceCodePosition(node),
+                declarationList,
+                coordinator.convertPredicateNode(node.getImplication(), machineNode),
+                QuantifiedPredicateNode.QuantifiedPredicateOperator.UNIVERSAL_QUANTIFICATION);
+    }
+
+    @Override
+    public void caseAExistsPredicate (AExistsPredicate node){
+        List<DeclarationNode> declarationList = new ArrayList<>();
+        for(PExpression expression : node.getIdentifiers()){
+            declarationList.add(new DeclarationNode(getSourceCodePosition(node),
+                    expression.toString().replace(" ", ""),
+                    DeclarationNode.Kind.OP_INPUT_PARAMETER,
+                    machineNode));
+        }
+        resultPredicateNode = new QuantifiedPredicateNode(getSourceCodePosition(node),
+                declarationList,
+                coordinator.convertPredicateNode(node.getPredicate(), machineNode),
+                QuantifiedPredicateNode.QuantifiedPredicateOperator.EXISTENTIAL_QUANTIFICATION);
+    }
+
+    @Override
+    public void caseATruthPredicate(ATruthPredicate node){
+        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
+                PredicateOperatorNode.PredicateOperator.TRUE,
+                null);
+    }
+
+    @Override
+    public void caseAFalsityPredicate(AFalsityPredicate node){
+        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
+                PredicateOperatorNode.PredicateOperator.FALSE,
+                null);
+    }
+    //END: Logical Predicates
+
     @Override
     public void caseAMemberPredicate(AMemberPredicate node) {
         List<ExprNode> list = new ArrayList<>();
@@ -62,108 +184,6 @@ public class PredicateVisitor  extends AbstractVisitor{
     }
 
     @Override
-    public void caseAImplicationPredicate(AImplicationPredicate node){
-        List<PredicateNode> implicationList = new ArrayList<PredicateNode>();
-        implicationList.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
-        implicationList.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
-        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
-                PredicateOperatorNode.PredicateOperator.IMPLIES,
-                implicationList);
-    }
-
-    @Override
-    public void caseAForallPredicate(AForallPredicate node){
-        List<DeclarationNode> list = new ArrayList<>();
-        for(PExpression expression : node.getIdentifiers()){
-            list.add(new DeclarationNode(getSourceCodePosition(node),
-                    expression.toString().replace(" ", ""),
-                    DeclarationNode.Kind.OP_INPUT_PARAMETER,
-                    machineNode));
-        }
-        resultPredicateNode = new QuantifiedPredicateNode(getSourceCodePosition(node),
-                list,
-                coordinator.convertPredicateNode(node.getImplication(), machineNode),
-                QuantifiedPredicateNode.QuantifiedPredicateOperator.UNIVERSAL_QUANTIFICATION);
-    }
-
-    @Override
-    public void caseAExistsPredicate (AExistsPredicate node){
-        List<DeclarationNode> list = new ArrayList<>();
-        for(PExpression expression : node.getIdentifiers()){
-            list.add(new DeclarationNode(getSourceCodePosition(node),
-                    expression.toString().replace(" ", ""),
-                    DeclarationNode.Kind.OP_INPUT_PARAMETER,
-                    machineNode));
-        }
-        resultPredicateNode = new QuantifiedPredicateNode(getSourceCodePosition(node),
-                list,
-                coordinator.convertPredicateNode(node.getPredicate(), machineNode),
-                QuantifiedPredicateNode.QuantifiedPredicateOperator.EXISTENTIAL_QUANTIFICATION);
-    }
-
-    @Override
-    public void caseATruthPredicate(ATruthPredicate node){
-        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
-                PredicateOperatorNode.PredicateOperator.TRUE,
-                null);
-    }
-
-    @Override
-    public void caseAFalsityPredicate(AFalsityPredicate node){
-        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
-                PredicateOperatorNode.PredicateOperator.FALSE,
-                null);
-    }
-
-    @Override
-    public void caseAConjunctPredicate(AConjunctPredicate node){
-        /*
-        List<PredicateNode> list = new ArrayList<PredicateNode>();
-
-        System.out.println("Right: " + node.getRight().getClass());
-        System.out.println("Left: " + node.getLeft().getClass());
-
-        list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
-        list.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
-        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
-                PredicateOperatorNode.PredicateOperator.AND,
-                list);
-        List<PredicateNode> list = new ArrayList<PredicateNode>();
-         */
-
-        List<PredicateNode> list = new ArrayList<PredicateNode>();
-
-        //list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
-        if(node.getLeft() instanceof AConjunctPredicate){
-            AConjunctPredicate test = node;
-            while(test.getLeft() instanceof AConjunctPredicate){
-                list.add(coordinator.convertPredicateNode(test.getRight(), machineNode));
-                test = (AConjunctPredicate) test.getLeft();
-            }
-            list.add(coordinator.convertPredicateNode(test.getRight(), machineNode));
-            list.add(coordinator.convertPredicateNode(test.getLeft(), machineNode));
-        }
-        else {
-            list.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
-            list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
-        }
-        Collections.reverse(list);
-        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
-                PredicateOperatorNode.PredicateOperator.AND,
-                list);
-    }
-
-    @Override
-    public void caseADisjunctPredicate(ADisjunctPredicate node){
-        List<PredicateNode> list = new ArrayList<PredicateNode>();
-        list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
-        list.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
-        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
-                PredicateOperatorNode.PredicateOperator.OR,
-                list);
-    }
-
-    @Override
     public void caseANotEqualPredicate(ANotEqualPredicate node){
         List<ExprNode> list = new ArrayList<>();
         list.add(coordinator.convertExpressionNode(node.getLeft()));
@@ -180,15 +200,6 @@ public class PredicateVisitor  extends AbstractVisitor{
         list.add(coordinator.convertExpressionNode(node.getRight()));
         resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
                 PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.EQUAL,
-                list);
-    }
-
-    @Override
-    public void caseANegationPredicate(ANegationPredicate node){
-        List<PredicateNode> list = new ArrayList<PredicateNode>();
-        list.add(coordinator.convertPredicateNode(node.getPredicate(), machineNode));
-        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
-                PredicateOperatorNode.PredicateOperator.NOT,
                 list);
     }
 
@@ -220,16 +231,6 @@ public class PredicateVisitor  extends AbstractVisitor{
         resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
                 PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.LESS_EQUAL,
                 lessList);
-    }
-
-    @Override
-    public void caseAEquivalencePredicate(AEquivalencePredicate node) {
-        List<PredicateNode> equivalenceList = new ArrayList<PredicateNode>();
-        equivalenceList.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
-        equivalenceList.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
-        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
-                PredicateOperatorNode.PredicateOperator.EQUIVALENCE,
-                equivalenceList);
     }
 
     //Tests for Predicate Definitions
