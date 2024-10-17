@@ -95,8 +95,12 @@ public class MachineVisitor extends AbstractVisitor{
     @Override
     public void caseEOF(EOF node){
         resultMachineNode.setName(name);
-        resultMachineNode.setInitialisation(initialisation);
-        resultMachineNode.setInvariant(invariant);
+        if(initialisation!=null){
+            resultMachineNode.setInitialisation(initialisation);
+        }
+        if(invariant != null){
+            resultMachineNode.setInvariant(invariant);
+        }
         resultMachineNode.setOperations(operations);
         for(de.prob.parser.ast.nodes.Node set : setEnumerations){
             if(set instanceof EnumeratedSetDeclarationNode){
