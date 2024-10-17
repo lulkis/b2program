@@ -7,6 +7,7 @@ import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
 import de.prob.parser.ast.nodes.expression.NumberNode;
+import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -20,6 +21,32 @@ public class ExpressionVisitor extends AbstractVisitor{
     public ExprNode getResult() {
         return resultExpressionNode;
     }
+
+    //START: Booleans
+    @Override
+    public void caseABooleanTrueExpression(ABooleanTrueExpression node){
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                ExpressionOperatorNode.ExpressionOperator.TRUE);
+    }
+
+    @Override
+    public void caseABooleanFalseExpression(ABooleanFalseExpression node){
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                ExpressionOperatorNode.ExpressionOperator.FALSE);
+    }
+
+    @Override
+    public void caseABoolSetExpression(ABoolSetExpression node){
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                ExpressionOperatorNode.ExpressionOperator.BOOL);
+    }
+
+    @Override
+    public void caseAConvertBoolExpression(AConvertBoolExpression node){
+        resultExpressionNode = new CastPredicateExpressionNode(getSourceCodePosition(node),
+                coordinator.convertPredicateNode(node.getPredicate(), null));
+    }
+    //END: Booleans
 
     @Override
     public void caseTIdentifierLiteral(TIdentifierLiteral node){
@@ -133,18 +160,6 @@ public class ExpressionVisitor extends AbstractVisitor{
     }
 
     @Override
-    public void caseABooleanTrueExpression(ABooleanTrueExpression node){
-        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                ExpressionOperatorNode.ExpressionOperator.TRUE);
-    }
-
-    @Override
-    public void caseABooleanFalseExpression(ABooleanFalseExpression node){
-        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                ExpressionOperatorNode.ExpressionOperator.FALSE);
-    }
-
-    @Override
     public void caseAPartialInjectionExpression(APartialInjectionExpression node){
         List<ExprNode> domainList = new ArrayList<>();
         domainList.add(coordinator.convertExpressionNode(node.getLeft()));
@@ -169,12 +184,6 @@ public class ExpressionVisitor extends AbstractVisitor{
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
                 coordinator.convertExpressionNode(node.getList()),
                 ExpressionOperatorNode.ExpressionOperator.COUPLE);
-    }
-
-    @Override
-    public void caseABoolSetExpression(ABoolSetExpression node){
-        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                ExpressionOperatorNode.ExpressionOperator.BOOL);
     }
 
     @Override
