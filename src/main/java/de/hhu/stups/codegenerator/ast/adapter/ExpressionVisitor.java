@@ -222,6 +222,33 @@ public class ExpressionVisitor extends AbstractVisitor{
                 ExpressionOperatorNode.ExpressionOperator.INT);
     }
 
+    @Override
+    public void caseAPow1SubsetExpression(APow1SubsetExpression node){
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getExpression()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                exprList,
+                ExpressionOperatorNode.ExpressionOperator.POW1);
+    }
+
+    @Override
+    public void caseAFinSubsetExpression(AFinSubsetExpression node){
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getExpression()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                exprList,
+                ExpressionOperatorNode.ExpressionOperator.FIN);
+    }
+
+    @Override
+    public void caseAFin1SubsetExpression(AFin1SubsetExpression node){
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getExpression()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                exprList,
+                ExpressionOperatorNode.ExpressionOperator.FIN1);
+    }
+
     private SourceCodePosition getSourceCodePosition(Node node) {
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
         sourceCodePosition.setStartColumn(node.getStartPos().getPos());
