@@ -198,4 +198,20 @@ public class TestSableccAst {
         assertEquals(antlrMachineNode.getMachineNode("TrafficLight").getOperations().size(),
                 machineNode.getOperations().size());
     }
+
+    @Test
+    public void testBMachineNames() throws Exception{
+        BParser parser = new BParser();
+        Path mchPath = Paths.get(CodeGenerator.class.getClassLoader()
+                .getResource("de/hhu/stups/codegenerator/sablecc/BMachine.mch").toURI());
+        Start start = parser.parseFile(mchPath.toFile());
+        VisitorCoordinator coordinator = new VisitorCoordinator();
+
+        MachineNodeWithDefinitions machineNode;
+
+        machineNode = (MachineNodeWithDefinitions) coordinator.convertMachineNode(start, parser.getDefinitions());
+
+        assertEquals("BMachine",
+                machineNode.getName());
+    }
 }
