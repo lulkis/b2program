@@ -35,9 +35,18 @@ public class OperationVisitor extends AbstractVisitor{
                     DeclarationNode.Kind.OP_INPUT_PARAMETER,
                     machineNode));
         }
+
+        List<DeclarationNode> outputParams = new ArrayList<>();
+        for(PExpression expression : node.getReturnValues()){
+            paramNodes.add(new DeclarationNode(getSourceCodePosition(expression),
+                    expression.toString().replace(" ", ""),
+                    DeclarationNode.Kind.OP_OUTPUT_PARAMETER,
+                    machineNode));
+        }
+
         resultOperationNode = new OperationNode(getSourceCodePosition(node),
                 node.getOpName().get(0).getText(),
-                new ArrayList<>(),
+                outputParams,
                 coordinator.convertSubstitutionNode(node.getOperationBody(), machineNode),
                 paramNodes);
     }
