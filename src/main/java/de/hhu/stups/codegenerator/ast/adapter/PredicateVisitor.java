@@ -174,6 +174,7 @@ public class PredicateVisitor  extends AbstractVisitor{
     }
     //END: Equality
 
+    //START: Sets
     @Override
     public void caseAMemberPredicate(AMemberPredicate node) {
         List<ExprNode> list = new ArrayList<>();
@@ -183,26 +184,6 @@ public class PredicateVisitor  extends AbstractVisitor{
                 getSourceCodePosition(node),
                 PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.ELEMENT_OF,
                 list);
-    }
-
-    @Override
-    public void caseALessPredicate(ALessPredicate node) {
-        List<ExprNode> lessList = new ArrayList<>();
-        lessList.add(coordinator.convertExpressionNode(node.getLeft()));
-        lessList.add(coordinator.convertExpressionNode(node.getRight()));
-        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
-                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.LESS,
-                lessList);
-    }
-
-    @Override
-    public void caseAGreaterPredicate(AGreaterPredicate node) {
-        List<ExprNode> greaterList = new ArrayList<>();
-        greaterList.add(coordinator.convertExpressionNode(node.getLeft()));
-        greaterList.add(coordinator.convertExpressionNode(node.getRight()));
-        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
-                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.GREATER,
-                greaterList);
     }
 
     @Override
@@ -223,16 +204,6 @@ public class PredicateVisitor  extends AbstractVisitor{
         resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
                 PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.INCLUSION,
                 list);
-    }
-
-    @Override
-    public void caseALessEqualPredicate(ALessEqualPredicate node) {
-        List<ExprNode> lessList = new ArrayList<>();
-        lessList.add(coordinator.convertExpressionNode(node.getLeft()));
-        lessList.add(coordinator.convertExpressionNode(node.getRight()));
-        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
-                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.LESS_EQUAL,
-                lessList);
     }
 
     @Override
@@ -263,6 +234,38 @@ public class PredicateVisitor  extends AbstractVisitor{
         resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
                 PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.STRICT_NON_INCLUSION,
                 exprList);
+    }
+    //END: Sets
+
+    
+    @Override
+    public void caseALessPredicate(ALessPredicate node) {
+        List<ExprNode> lessList = new ArrayList<>();
+        lessList.add(coordinator.convertExpressionNode(node.getLeft()));
+        lessList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
+                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.LESS,
+                lessList);
+    }
+
+    @Override
+    public void caseAGreaterPredicate(AGreaterPredicate node) {
+        List<ExprNode> greaterList = new ArrayList<>();
+        greaterList.add(coordinator.convertExpressionNode(node.getLeft()));
+        greaterList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
+                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.GREATER,
+                greaterList);
+    }
+
+    @Override
+    public void caseALessEqualPredicate(ALessEqualPredicate node) {
+        List<ExprNode> lessList = new ArrayList<>();
+        lessList.add(coordinator.convertExpressionNode(node.getLeft()));
+        lessList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
+                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.LESS_EQUAL,
+                lessList);
     }
 
     //Tests for Predicate Definitions
