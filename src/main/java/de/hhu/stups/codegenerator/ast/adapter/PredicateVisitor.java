@@ -259,6 +259,16 @@ public class PredicateVisitor  extends AbstractVisitor{
     }
 
     @Override
+    public void caseAGreaterEqualPredicate(AGreaterEqualPredicate node) {
+        List<ExprNode> lessList = new ArrayList<>();
+        lessList.add(coordinator.convertExpressionNode(node.getLeft()));
+        lessList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
+                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.GREATER_EQUAL,
+                lessList);
+    }
+
+    @Override
     public void caseALessEqualPredicate(ALessEqualPredicate node) {
         List<ExprNode> lessList = new ArrayList<>();
         lessList.add(coordinator.convertExpressionNode(node.getLeft()));
