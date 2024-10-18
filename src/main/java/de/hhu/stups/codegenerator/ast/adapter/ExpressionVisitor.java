@@ -187,6 +187,73 @@ public class ExpressionVisitor extends AbstractVisitor{
     //END: Sets
 
 
+    //START: Integer
+    @Override
+    public void caseAIntegerSetExpression(AIntegerSetExpression node){
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                ExpressionOperatorNode.ExpressionOperator.INTEGER);
+    }
+
+    @Override
+    public void caseANaturalSetExpression(ANaturalSetExpression node){
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                ExpressionOperatorNode.ExpressionOperator.NATURAL);
+    }
+
+    @Override
+    public void caseANatural1SetExpression(ANatural1SetExpression node){
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                ExpressionOperatorNode.ExpressionOperator.NATURAL1);
+    }
+
+    @Override
+    public void caseAIntSetExpression(AIntSetExpression node){
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                ExpressionOperatorNode.ExpressionOperator.INT);
+    }
+
+    @Override
+    public void caseANatSetExpression(ANatSetExpression node){
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                ExpressionOperatorNode.ExpressionOperator.NAT);
+    }
+
+    @Override
+    public void caseANat1SetExpression(ANat1SetExpression node){
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                ExpressionOperatorNode.ExpressionOperator.NAT1);
+    }
+
+    @Override
+    public void caseAMaxExpression(AMaxExpression node){
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                exprList,
+                ExpressionOperatorNode.ExpressionOperator.MAX);
+    }
+
+    @Override
+    public void caseAMinExpression(AMinExpression node){
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                exprList,
+                ExpressionOperatorNode.ExpressionOperator.MIN);
+    }
+
+    @Override
+    public void caseAAddExpression(AAddExpression node){
+        List<ExprNode> addList = new ArrayList<>();
+        addList.add(coordinator.convertExpressionNode(node.getLeft()));
+        addList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                addList,
+                ExpressionOperatorNode.ExpressionOperator.PLUS);
+    }
+    //END: Integer
+
+
     @Override
     public void caseTIdentifierLiteral(TIdentifierLiteral node){
         resultExpressionNode = new IdentifierExprNode(getSourceCodePosition(node), node.getText(), false);
@@ -205,16 +272,6 @@ public class ExpressionVisitor extends AbstractVisitor{
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
                 intervalList,
                 ExpressionOperatorNode.ExpressionOperator.INTERVAL);
-    }
-
-    @Override
-    public void caseAAddExpression(AAddExpression node){
-        List<ExprNode> addList = new ArrayList<>();
-        addList.add(coordinator.convertExpressionNode(node.getLeft()));
-        addList.add(coordinator.convertExpressionNode(node.getRight()));
-        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                addList,
-                ExpressionOperatorNode.ExpressionOperator.PLUS);
     }
 
     @Override
@@ -274,66 +331,12 @@ public class ExpressionVisitor extends AbstractVisitor{
     }
 
     @Override
-    public void caseANatSetExpression(ANatSetExpression node){
-        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                ExpressionOperatorNode.ExpressionOperator.NAT);
-    }
-
-    @Override
     public void caseAUnaryMinusExpression(AUnaryMinusExpression node){
         List<ExprNode> exprList = new ArrayList<>();
         exprList.add(coordinator.convertExpressionNode(node.getExpression()));
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
                 exprList,
                 ExpressionOperatorNode.ExpressionOperator.UNARY_MINUS);
-    }
-
-    @Override
-    public void caseAIntSetExpression(AIntSetExpression node){
-        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                ExpressionOperatorNode.ExpressionOperator.INT);
-    }
-
-    @Override
-    public void caseAIntegerSetExpression(AIntegerSetExpression node){
-        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                ExpressionOperatorNode.ExpressionOperator.INTEGER);
-    }
-
-    @Override
-    public void caseANaturalSetExpression(ANaturalSetExpression node){
-        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                ExpressionOperatorNode.ExpressionOperator.NATURAL);
-    }
-
-    @Override
-    public void caseANatural1SetExpression(ANatural1SetExpression node){
-        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                ExpressionOperatorNode.ExpressionOperator.NATURAL1);
-    }
-
-    @Override
-    public void caseANat1SetExpression(ANat1SetExpression node){
-        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                ExpressionOperatorNode.ExpressionOperator.NAT1);
-    }
-
-    @Override
-    public void caseAMaxExpression(AMaxExpression node){
-        List<ExprNode> exprList = new ArrayList<>();
-        exprList.add(coordinator.convertExpressionNode(node));
-        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                exprList,
-                ExpressionOperatorNode.ExpressionOperator.MAX);
-    }
-    
-    @Override
-    public void caseAMinExpression(AMinExpression node){
-        List<ExprNode> exprList = new ArrayList<>();
-        exprList.add(coordinator.convertExpressionNode(node));
-        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                exprList,
-                ExpressionOperatorNode.ExpressionOperator.MIN);
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {
