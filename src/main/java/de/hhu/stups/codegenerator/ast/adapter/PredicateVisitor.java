@@ -237,6 +237,16 @@ public class PredicateVisitor  extends AbstractVisitor{
     }
     //END: Sets
 
+    //START Integers
+    @Override
+    public void caseAGreaterPredicate(AGreaterPredicate node) {
+        List<ExprNode> greaterList = new ArrayList<>();
+        greaterList.add(coordinator.convertExpressionNode(node.getLeft()));
+        greaterList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
+                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.GREATER,
+                greaterList);
+    }
 
     @Override
     public void caseALessPredicate(ALessPredicate node) {
@@ -249,16 +259,6 @@ public class PredicateVisitor  extends AbstractVisitor{
     }
 
     @Override
-    public void caseAGreaterPredicate(AGreaterPredicate node) {
-        List<ExprNode> greaterList = new ArrayList<>();
-        greaterList.add(coordinator.convertExpressionNode(node.getLeft()));
-        greaterList.add(coordinator.convertExpressionNode(node.getRight()));
-        resultPredicateNode = new PredicateOperatorWithExprArgsNode(getSourceCodePosition(node),
-                PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.GREATER,
-                greaterList);
-    }
-
-    @Override
     public void caseALessEqualPredicate(ALessEqualPredicate node) {
         List<ExprNode> lessList = new ArrayList<>();
         lessList.add(coordinator.convertExpressionNode(node.getLeft()));
@@ -267,6 +267,7 @@ public class PredicateVisitor  extends AbstractVisitor{
                 PredicateOperatorWithExprArgsNode.PredOperatorExprArgs.LESS_EQUAL,
                 lessList);
     }
+    //END: Integers
 
     //Tests for Predicate Definitions
     @Override
