@@ -134,7 +134,7 @@ public class ExpressionVisitor extends AbstractVisitor{
         exprList.add(coordinator.convertExpressionNode(node.getRight()));
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
                 exprList,
-                ExpressionOperatorNode.ExpressionOperator.CARTESIAN_PRODUCT);
+                ExpressionOperatorNode.ExpressionOperator.MULT);
     }
 
     @Override
@@ -225,6 +225,18 @@ public class ExpressionVisitor extends AbstractVisitor{
     }
 
     @Override
+    public void caseAMaxIntExpression(AMaxIntExpression node){
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                ExpressionOperatorNode.ExpressionOperator.MAXINT);
+    }
+
+    @Override
+    public void caseAMinIntExpression(AMinIntExpression node){
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                ExpressionOperatorNode.ExpressionOperator.MININT);
+    }
+
+    @Override
     public void caseAMaxExpression(AMaxExpression node){
         List<ExprNode> exprList = new ArrayList<>();
         exprList.add(coordinator.convertExpressionNode(node));
@@ -250,6 +262,36 @@ public class ExpressionVisitor extends AbstractVisitor{
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
                 addList,
                 ExpressionOperatorNode.ExpressionOperator.PLUS);
+    }
+
+    @Override
+    public void caseADivExpression(ADivExpression node){
+        List<ExprNode> addList = new ArrayList<>();
+        addList.add(coordinator.convertExpressionNode(node.getLeft()));
+        addList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                addList,
+                ExpressionOperatorNode.ExpressionOperator.DIVIDE);
+    }
+
+    @Override
+    public void caseAPowerOfExpression(APowerOfExpression node){
+        List<ExprNode> addList = new ArrayList<>();
+        addList.add(coordinator.convertExpressionNode(node.getLeft()));
+        addList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                addList,
+                ExpressionOperatorNode.ExpressionOperator.POWER_OF);
+    }
+
+    @Override
+    public void caseAModuloExpression(AModuloExpression node){
+        List<ExprNode> addList = new ArrayList<>();
+        addList.add(coordinator.convertExpressionNode(node.getLeft()));
+        addList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                addList,
+                ExpressionOperatorNode.ExpressionOperator.MOD);
     }
     //END: Integer
 
