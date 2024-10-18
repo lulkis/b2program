@@ -319,11 +319,23 @@ public class ExpressionVisitor extends AbstractVisitor{
     @Override
     public void caseAFunctionExpression(AFunctionExpression node){
         List<ExprNode> exprNodeList = new ArrayList<>();
+        ExpressionOperatorNode.ExpressionOperator operator;
         exprNodeList.add(coordinator.convertExpressionNode(node.getIdentifier()));
         exprNodeList.addAll(coordinator.convertExpressionNode(node.getParameters()));
+
+        if(node.getIdentifier() instanceof ASuccessorExpression){
+            operator = ExpressionOperatorNode.ExpressionOperator.SUCC;
+        }
+        else if (node.getIdentifier() instanceof APredecessorExpression) {
+            operator = ExpressionOperatorNode.ExpressionOperator.PRED;
+        }
+        else {
+            operator = ExpressionOperatorNode.ExpressionOperator.FUNCTION_CALL;
+        }
+
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
                 exprNodeList,
-                ExpressionOperatorNode.ExpressionOperator.FUNCTION_CALL);
+                operator);
     }
 
     @Override
