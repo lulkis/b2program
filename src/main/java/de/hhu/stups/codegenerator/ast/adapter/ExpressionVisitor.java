@@ -316,6 +316,46 @@ public class ExpressionVisitor extends AbstractVisitor{
                 domainList,
                 ExpressionOperatorNode.ExpressionOperator.TOTAL_FUNCTION);
     }
+
+    @Override
+    public void caseAPartialSurjectionExpression(APartialSurjectionExpression node){
+        List<ExprNode> domainList = new ArrayList<>();
+        domainList.add(coordinator.convertExpressionNode(node.getLeft()));
+        domainList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                domainList,
+                ExpressionOperatorNode.ExpressionOperator.PARTIAL_SURJECTION);
+    }
+
+    @Override
+    public void caseATotalSurjectionExpression(ATotalSurjectionExpression node){
+        List<ExprNode> domainList = new ArrayList<>();
+        domainList.add(coordinator.convertExpressionNode(node.getLeft()));
+        domainList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                domainList,
+                ExpressionOperatorNode.ExpressionOperator.TOTAL_SURJECTION);
+    }
+
+    @Override
+    public void caseAPartialInjectionExpression(APartialInjectionExpression node){
+        List<ExprNode> domainList = new ArrayList<>();
+        domainList.add(coordinator.convertExpressionNode(node.getLeft()));
+        domainList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                domainList,
+                ExpressionOperatorNode.ExpressionOperator.PARTIAL_INJECTION);
+    }
+
+    @Override
+    public void caseATotalInjectionExpression(ATotalInjectionExpression node){
+        List<ExprNode> domainList = new ArrayList<>();
+        domainList.add(coordinator.convertExpressionNode(node.getLeft()));
+        domainList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                domainList,
+                ExpressionOperatorNode.ExpressionOperator.TOTAL_INJECTION);
+    }
     //END: Functions
 
     @Override
@@ -367,16 +407,6 @@ public class ExpressionVisitor extends AbstractVisitor{
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
                 domainList,
                 ExpressionOperatorNode.ExpressionOperator.DOMAIN);
-    }
-
-    @Override
-    public void caseAPartialInjectionExpression(APartialInjectionExpression node){
-        List<ExprNode> domainList = new ArrayList<>();
-        domainList.add(coordinator.convertExpressionNode(node.getLeft()));
-        domainList.add(coordinator.convertExpressionNode(node.getRight()));
-        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                domainList,
-                ExpressionOperatorNode.ExpressionOperator.PARTIAL_INJECTION);
     }
 
     @Override
