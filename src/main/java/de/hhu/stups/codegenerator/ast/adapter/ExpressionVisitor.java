@@ -464,6 +464,54 @@ public class ExpressionVisitor extends AbstractVisitor{
                 ExpressionOperatorNode.ExpressionOperator.UNARY_MINUS);
     }
 
+    @Override
+    public void caseAStructExpression(AStructExpression node){
+        List<DeclarationNode> declarationList = new ArrayList<>();
+        List<ExprNode> structList = new ArrayList<>();
+
+        for(PRecEntry expr : node.getEntries()){
+            if(expr instanceof ARecEntry){
+                declarationList.add(new DeclarationNode(getSourceCodePosition(expr),
+                        ((ARecEntry) expr).getIdentifier().toString().replace(" ", ""),
+                        DeclarationNode.Kind.VARIABLE,
+                        machineNode));
+                structList.add(coordinator.convertExpressionNode(((ARecEntry) expr).getValue()));
+            }
+        }
+        resultExpressionNode = new StructNode(getSourceCodePosition(node),
+                declarationList,
+                structList);
+    }
+
+    @Override
+    public void caseARecExpression(ARecExpression node){
+        List<DeclarationNode> declarationList = new ArrayList<>();
+        List<ExprNode> structList = new ArrayList<>();
+
+        for(PRecEntry expr : node.getEntries()){
+            if(expr instanceof ARecEntry){
+                declarationList.add(new DeclarationNode(getSourceCodePosition(expr),
+                        ((ARecEntry) expr).getIdentifier().toString().replace(" ", ""),
+                        DeclarationNode.Kind.VARIABLE,
+                        machineNode));
+                structList.add(coordinator.convertExpressionNode(((ARecEntry) expr).getValue()));
+            }
+        }
+        resultExpressionNode = new StructNode(getSourceCodePosition(node),
+                declarationList,
+                structList);
+    }
+
+    @Override
+    public void caseARecordFieldExpression(ARecordFieldExpression node){
+        resultExpressionNode = new RecordFieldAccessNode(getSourceCodePosition(node),
+                coordinator.convertExpressionNode(node.getRecord()),
+                new DeclarationNode(getSourceCodePosition(node.getIdentifier()),
+                        node.getIdentifier().toString().replace(" ", ""),
+                        DeclarationNode.Kind.VARIABLE,
+                        machineNode));
+    }
+
     private SourceCodePosition getSourceCodePosition(Node node) {
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
         sourceCodePosition.setStartColumn(node.getStartPos().getPos());
