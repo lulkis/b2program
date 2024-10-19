@@ -7,6 +7,7 @@ import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.expression.*;
 import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
+import de.prob.parser.ast.nodes.predicate.PredicateOperatorWithExprArgsNode;
 import de.prob.parser.ast.nodes.substitution.AnySubstitutionNode;
 
 import java.math.BigInteger;
@@ -510,6 +511,46 @@ public class ExpressionVisitor extends AbstractVisitor{
                         node.getIdentifier().toString().replace(" ", ""),
                         DeclarationNode.Kind.VARIABLE,
                         machineNode));
+    }
+
+    @Override
+    public void caseARelationsExpression(ARelationsExpression node){
+        List<ExprNode> relationList = new ArrayList<>();
+        relationList.add(coordinator.convertExpressionNode(node.getLeft()));
+        relationList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                relationList,
+                ExpressionOperatorNode.ExpressionOperator.SET_RELATION);
+    }
+
+    @Override
+    public void caseATotalRelationExpression(ATotalRelationExpression node){
+        List<ExprNode> relationList = new ArrayList<>();
+        relationList.add(coordinator.convertExpressionNode(node.getLeft()));
+        relationList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                relationList,
+                ExpressionOperatorNode.ExpressionOperator.TOTAL_RELATION);
+    }
+
+    @Override
+    public void caseASurjectionRelationExpression(ASurjectionRelationExpression node){
+        List<ExprNode> relationList = new ArrayList<>();
+        relationList.add(coordinator.convertExpressionNode(node.getLeft()));
+        relationList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                relationList,
+                ExpressionOperatorNode.ExpressionOperator.SURJECTION_RELATION);
+    }
+
+    @Override
+    public void caseATotalSurjectionRelationExpression(ATotalSurjectionRelationExpression node){
+        List<ExprNode> relationList = new ArrayList<>();
+        relationList.add(coordinator.convertExpressionNode(node.getLeft()));
+        relationList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                relationList,
+                ExpressionOperatorNode.ExpressionOperator.TOTAL_SURJECTION_RELATION);
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {
