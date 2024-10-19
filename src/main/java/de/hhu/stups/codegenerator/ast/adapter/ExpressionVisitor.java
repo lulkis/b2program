@@ -296,6 +296,28 @@ public class ExpressionVisitor extends AbstractVisitor{
     //END: Integer
 
 
+    //START: Functions
+    @Override
+    public void caseAPartialFunctionExpression(APartialFunctionExpression node){
+        List<ExprNode> domainList = new ArrayList<>();
+        domainList.add(coordinator.convertExpressionNode(node.getLeft()));
+        domainList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                domainList,
+                ExpressionOperatorNode.ExpressionOperator.PARTIAL_FUNCTION);
+    }
+
+    @Override
+    public void caseATotalFunctionExpression(ATotalFunctionExpression node){
+        List<ExprNode> domainList = new ArrayList<>();
+        domainList.add(coordinator.convertExpressionNode(node.getLeft()));
+        domainList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                domainList,
+                ExpressionOperatorNode.ExpressionOperator.TOTAL_FUNCTION);
+    }
+    //END: Functions
+
     @Override
     public void caseTIdentifierLiteral(TIdentifierLiteral node){
         resultExpressionNode = new IdentifierExprNode(getSourceCodePosition(node), node.getText(), false);
@@ -348,16 +370,6 @@ public class ExpressionVisitor extends AbstractVisitor{
     }
 
     @Override
-    public void caseATotalFunctionExpression(ATotalFunctionExpression node){
-        List<ExprNode> domainList = new ArrayList<>();
-        domainList.add(coordinator.convertExpressionNode(node.getLeft()));
-        domainList.add(coordinator.convertExpressionNode(node.getRight()));
-        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                domainList,
-                ExpressionOperatorNode.ExpressionOperator.TOTAL_FUNCTION);
-    }
-
-    @Override
     public void caseAPartialInjectionExpression(APartialInjectionExpression node){
         List<ExprNode> domainList = new ArrayList<>();
         domainList.add(coordinator.convertExpressionNode(node.getLeft()));
@@ -365,16 +377,6 @@ public class ExpressionVisitor extends AbstractVisitor{
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
                 domainList,
                 ExpressionOperatorNode.ExpressionOperator.PARTIAL_INJECTION);
-    }
-
-    @Override
-    public void caseAPartialFunctionExpression(APartialFunctionExpression node){
-        List<ExprNode> domainList = new ArrayList<>();
-        domainList.add(coordinator.convertExpressionNode(node.getLeft()));
-        domainList.add(coordinator.convertExpressionNode(node.getRight()));
-        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
-                domainList,
-                ExpressionOperatorNode.ExpressionOperator.PARTIAL_FUNCTION);
     }
 
     @Override
