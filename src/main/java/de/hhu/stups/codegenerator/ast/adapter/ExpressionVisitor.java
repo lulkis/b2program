@@ -7,6 +7,7 @@ import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.expression.*;
 import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
+import de.prob.parser.ast.nodes.substitution.AnySubstitutionNode;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -375,6 +376,24 @@ public class ExpressionVisitor extends AbstractVisitor{
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
                 domainList,
                 ExpressionOperatorNode.ExpressionOperator.TOTAL_BIJECTION);
+    }
+
+    @Override
+    public void caseALambdaExpression(ALambdaExpression node){
+        List<DeclarationNode> identifierList = new ArrayList<>();
+        for (PExpression expression : node.getIdentifiers()) {
+            String name = expression.toString().replace(" ", "");
+            DeclarationNode decl = new DeclarationNode(getSourceCodePosition(expression),
+                    name,
+                    DeclarationNode.Kind.SUBSTITUION_IDENTIFIER,
+                    null);
+            identifierList.add(decl);
+        }
+
+        resultExpressionNode = new LambdaNode(getSourceCodePosition(node),
+                identifierList,
+                coordinator.convertPredicateNode(node.getPredicate(), machineNode),
+                coordinator.convertExpressionNode(node.getExpression()));
     }
     //END: Functions
 
