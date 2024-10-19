@@ -103,11 +103,37 @@ public class SubstitutionVisitor extends AbstractVisitor{
         conditions.add(coordinator.convertPredicateNode(node.getCondition(), machineNode));
         List<SubstitutionNode> thenSub = new ArrayList<>();
         thenSub.add(coordinator.convertSubstitutionNode(node.getThen(), machineNode));
+
+        for(PSubstitution elsif : node.getElsifSubstitutions()){
+            if(elsif instanceof AIfElsifSubstitution){
+                conditions.add(coordinator.convertPredicateNode(((AIfElsifSubstitution) elsif).getCondition(), machineNode));
+                thenSub.add(coordinator.convertSubstitutionNode(((AIfElsifSubstitution) elsif).getThenSubstitution(), machineNode));
+            }
+        }
+
         resultSubstitutionNode = new IfOrSelectSubstitutionsNode(getSourceCodePosition(node),
                 IfOrSelectSubstitutionsNode.Operator.IF,
                 conditions,
                 thenSub,
                 coordinator.convertSubstitutionNode(node.getElse(), machineNode));
+    }
+
+    @Override
+    public void caseALetSubstitution(ALetSubstitution node){
+        List<DeclarationNode> identifierList = new ArrayList<>();
+        for (PExpression expression : node.getIdentifiers()) {
+            String name = expression.toString().replace(" ", "");
+            DeclarationNode decl = new DeclarationNode(getSourceCodePosition(expression),
+                    name,
+                    DeclarationNode.Kind.SUBSTITUION_IDENTIFIER,
+                    null);
+            identifierList.add(decl);
+        }
+
+        resultSubstitutionNode = new LetSubstitutionNode(getSourceCodePosition(node),
+                identifierList,
+                coordinator.convertPredicateNode(node.getPredicate(), machineNode),
+                coordinator.convertSubstitutionNode(node.getSubstitution(), machineNode));
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {
