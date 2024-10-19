@@ -356,6 +356,26 @@ public class ExpressionVisitor extends AbstractVisitor{
                 domainList,
                 ExpressionOperatorNode.ExpressionOperator.TOTAL_INJECTION);
     }
+
+    @Override
+    public void caseAPartialBijectionExpression(APartialBijectionExpression node){
+        List<ExprNode> domainList = new ArrayList<>();
+        domainList.add(coordinator.convertExpressionNode(node.getLeft()));
+        domainList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                domainList,
+                ExpressionOperatorNode.ExpressionOperator.PARTIAL_BIJECTION);
+    }
+
+    @Override
+    public void caseATotalBijectionExpression(ATotalBijectionExpression node){
+        List<ExprNode> domainList = new ArrayList<>();
+        domainList.add(coordinator.convertExpressionNode(node.getLeft()));
+        domainList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                domainList,
+                ExpressionOperatorNode.ExpressionOperator.TOTAL_BIJECTION);
+    }
     //END: Functions
 
     @Override
