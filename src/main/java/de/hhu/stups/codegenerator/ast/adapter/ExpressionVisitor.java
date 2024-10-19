@@ -385,7 +385,7 @@ public class ExpressionVisitor extends AbstractVisitor{
             String name = expression.toString().replace(" ", "");
             DeclarationNode decl = new DeclarationNode(getSourceCodePosition(expression),
                     name,
-                    DeclarationNode.Kind.SUBSTITUION_IDENTIFIER,
+                    DeclarationNode.Kind.VARIABLE,
                     null);
             identifierList.add(decl);
         }
