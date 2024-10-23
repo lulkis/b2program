@@ -229,12 +229,18 @@ record(struct, parameters) ::= <<
 new <struct>(<parameters; separator=", ">)
 >>
 
-initialization(machine, properties, values, copy, body, forVisualization, forModelChecking) ::= <<
+initialization(machine, properties, values, copy, body, iterationConstruct, propertiesCheck, forVisualization, forModelChecking) ::= <<
 <if(properties)>
 <if(values)>
 static {
     <properties; separator="\n">
     <values>
+    <iterationConstruct; separator="\n">
+    <if(propertiesCheck)>
+    if(!(<propertiesCheck>).booleanValue()) {
+        throw new Error("Contradiction in PROPERTIES detected!");
+    }
+    <endif>
 }
 <endif>
 <endif>
@@ -871,8 +877,8 @@ number(number, useBigInteger) ::= <<
 <if(useBigInteger)>new BInteger(<number>n)<else>new BInteger(<number>)<endif>
 >>
 
-infinite_predicate(arg, operator) ::= <<
-<arg>.<operator>()
+infinite_predicate(arg, operator, rhsArguments) ::= <<
+<arg>.<operator>(<rhsArguments; separator=", ">)
 >>
 
 relation_predicate(predicates, checkElementOf) ::= <<

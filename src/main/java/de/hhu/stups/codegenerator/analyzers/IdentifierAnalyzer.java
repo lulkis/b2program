@@ -1,5 +1,6 @@
 package de.hhu.stups.codegenerator.analyzers;
 
+import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
 import de.prob.parser.ast.nodes.expression.IfExpressionNode;
@@ -39,9 +40,7 @@ import de.prob.parser.ast.nodes.substitution.VarSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.WhileSubstitutionNode;
 import de.prob.parser.ast.visitors.AbstractVisitor;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,16 +50,19 @@ import java.util.stream.Collectors;
 public class IdentifierAnalyzer implements AbstractVisitor<Void, Void> {
 
     public enum Kind {
-        WRITE, READ
+        WRITE, READ, READ_OUTER_SCOPE
     }
 
     private Kind kind;
 
     private Set<String> identifiers;
 
+    private Set<String> innerIdentifiers;
+
     public IdentifierAnalyzer(Kind kind) {
         this.kind = kind;
         this.identifiers = new HashSet<>();
+        this.innerIdentifiers = new HashSet<>();
     }
 
     @Override
@@ -74,6 +76,12 @@ public class IdentifierAnalyzer implements AbstractVisitor<Void, Void> {
     */
     @Override
     public Void visitIdentifierExprNode(IdentifierExprNode node, Void expected) {
+        if(kind == Kind.READ_OUTER_SCOPE) {
+            if(!innerIdentifiers.contains(node.getName())) {
+                identifiers.add(node.getName());
+            }
+            return null;
+        }
         identifiers.add(node.getName());
         return null;
     }
@@ -96,28 +104,48 @@ public class IdentifierAnalyzer implements AbstractVisitor<Void, Void> {
 
     @Override
     public Void visitQuantifiedExpressionNode(QuantifiedExpressionNode node, Void expected) {
+        Set<String> previousInnerIdentifiers = new HashSet<>(innerIdentifiers);
+        previousInnerIdentifiers.addAll(node.getDeclarationList().stream()
+                .map(DeclarationNode::getName)
+                .collect(Collectors.toSet()));
         visitExprNode(node.getExpressionNode(), expected);
         visitPredicateNode(node.getPredicateNode(), expected);
+        this.innerIdentifiers = previousInnerIdentifiers;
         return null;
     }
 
     @Override
     public Void visitSetComprehensionNode(SetComprehensionNode node, Void expected) {
+        Set<String> previousInnerIdentifiers = new HashSet<>(innerIdentifiers);
+        previousInnerIdentifiers.addAll(node.getDeclarationList().stream()
+                .map(DeclarationNode::getName)
+                .collect(Collectors.toSet()));
         visitPredicateNode(node.getPredicateNode(), expected);
+        this.innerIdentifiers = previousInnerIdentifiers;
         return null;
     }
 
     @Override
     public Void visitLambdaNode(LambdaNode node, Void expected) {
+        Set<String> previousInnerIdentifiers = new HashSet<>(innerIdentifiers);
+        previousInnerIdentifiers.addAll(node.getDeclarations().stream()
+                .map(DeclarationNode::getName)
+                .collect(Collectors.toSet()));
         visitPredicateNode(node.getPredicate(), expected);
         visitExprNode(node.getExpression(), expected);
+        this.innerIdentifiers = previousInnerIdentifiers;
         return null;
     }
 
     @Override
     public Void visitLetExpressionNode(LetExpressionNode node, Void expected) {
+        Set<String> previousInnerIdentifiers = new HashSet<>(innerIdentifiers);
+        previousInnerIdentifiers.addAll(node.getLocalIdentifiers().stream()
+                .map(DeclarationNode::getName)
+                .collect(Collectors.toSet()));
         visitPredicateNode(node.getPredicate(), expected);
         visitExprNode(node.getExpression(), expected);
+        this.innerIdentifiers = previousInnerIdentifiers;
         return null;
     }
 
@@ -173,7 +201,12 @@ public class IdentifierAnalyzer implements AbstractVisitor<Void, Void> {
 
     @Override
     public Void visitQuantifiedPredicateNode(QuantifiedPredicateNode node, Void expected) {
+        Set<String> previousInnerIdentifiers = new HashSet<>(innerIdentifiers);
+        previousInnerIdentifiers.addAll(node.getDeclarationList().stream()
+                .map(DeclarationNode::getName)
+                .collect(Collectors.toSet()));
         visitPredicateNode(node.getPredicateNode(), expected);
+        this.innerIdentifiers = previousInnerIdentifiers;
         return null;
     }
 
@@ -200,7 +233,7 @@ public class IdentifierAnalyzer implements AbstractVisitor<Void, Void> {
 
     @Override
     public Void visitWhileSubstitutionNode(WhileSubstitutionNode node, Void expected) {
-        if(kind == Kind.READ) {
+        if(kind == Kind.READ || kind == Kind.READ_OUTER_SCOPE) {
             visitPredicateNode(node.getCondition(), expected);
         }
         visitSubstitutionNode(node.getBody(), expected);
@@ -215,7 +248,7 @@ public class IdentifierAnalyzer implements AbstractVisitor<Void, Void> {
 
     @Override
     public Void visitIfOrSelectSubstitutionsNode(IfOrSelectSubstitutionsNode node, Void expected) {
-        if(kind == Kind.READ) {
+        if(kind == Kind.READ || kind == Kind.READ_OUTER_SCOPE) {
             node.getConditions().forEach(cond -> visitPredicateNode(cond, expected));
         }
         node.getSubstitutions().forEach(subs -> visitSubstitutionNode(subs, expected));
@@ -250,7 +283,7 @@ public class IdentifierAnalyzer implements AbstractVisitor<Void, Void> {
 
     @Override
     public Void visitConditionSubstitutionNode(ConditionSubstitutionNode node, Void expected) {
-        if(kind == Kind.READ) {
+        if(kind == Kind.READ || kind == Kind.READ_OUTER_SCOPE) {
             visitPredicateNode(node.getCondition(), expected);
         }
         visitSubstitutionNode(node.getSubstitution(), expected);
@@ -259,7 +292,7 @@ public class IdentifierAnalyzer implements AbstractVisitor<Void, Void> {
 
     @Override
     public Void visitAnySubstitution(AnySubstitutionNode node, Void expected) {
-        if(kind == Kind.READ) {
+        if(kind == Kind.READ || kind == Kind.READ_OUTER_SCOPE) {
             visitPredicateNode(node.getWherePredicate(), expected);
         }
         visitSubstitutionNode(node.getThenSubstitution(), expected);
@@ -268,7 +301,7 @@ public class IdentifierAnalyzer implements AbstractVisitor<Void, Void> {
 
     @Override
     public Void visitLetSubstitution(LetSubstitutionNode node, Void expected) {
-        if(kind == Kind.READ) {
+        if(kind == Kind.READ || kind == Kind.READ_OUTER_SCOPE) {
             visitPredicateNode(node.getPredicate(), expected);
         }
         visitSubstitutionNode(node.getBody(), expected);
@@ -301,7 +334,7 @@ public class IdentifierAnalyzer implements AbstractVisitor<Void, Void> {
 
     @Override
     public Void visitSubstitutionIdentifierCallNode(OperationCallSubstitutionNode node, Void expected) {
-        if(kind == Kind.READ) {
+        if(kind == Kind.READ || kind == Kind.READ_OUTER_SCOPE) {
             node.getArguments().forEach(arg -> visitExprNode(arg, expected));
         }
         return null;
@@ -330,5 +363,13 @@ public class IdentifierAnalyzer implements AbstractVisitor<Void, Void> {
 
     public Set<String> getIdentifiers() {
         return identifiers;
+    }
+
+    public boolean containsIdentifier(String name) {
+        return identifiers.contains(name);
+    }
+
+    public void setInnerIdentifiers(Set<String> innerIdentifiers) {
+        this.innerIdentifiers = innerIdentifiers;
     }
 }

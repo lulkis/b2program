@@ -272,8 +272,18 @@ public class TestMachines extends TestJava {
     }
 
     @Test
+    public void Train1BeebookDeterministic_MC_POR_v3() throws Exception {
+        testJavaMC("Train_1_beebook_deterministic_MC_POR_v3", "Train_1_beebook_deterministic_MC_POR_v3", true, 8, true);
+    }
+
+    @Test(expected =  CodeGenerationException.class)
     public void Train1() throws Exception {
         testJava("train_1");
+    }
+
+    @Test
+    public void Train2() throws Exception {
+        testJava("train_2");
     }
 
     @Test
@@ -306,30 +316,6 @@ public class TestMachines extends TestJava {
         testJavaMC("ThreeCounter2", "ThreeCounter2", true, 1, false);
     }
 
-    @Ignore
-    @Test
-    public void testEarley2() throws Exception {
-        testJava("earley_2");
-    }
-
-    @Ignore
-    @Test
-    public void testOBSW_M001() throws Exception {
-        testJava("obsw_M001");
-    }
-
-    @Ignore
-    @Test
-    public void testRef5Switch() throws Exception {
-        testJava("Ref5_Switch");
-    }
-
-    @Ignore
-    @Test
-    public void testrether_mch1() throws Exception {
-        testJava("rether_mch1");
-    }
-
     @Test
     public void testsort_m2_data1000() throws Exception {
         testJava("sort_m2_data1000");
@@ -337,7 +323,7 @@ public class TestMachines extends TestJava {
 
     @Test
     public void testsort_m2_data1000_MC() throws Exception {
-        testJavaMC("sort_m2_data1000_MC");
+        testJavaMC("sort_m2_data1000_MC", "sort_m2_data1000_MC", true, 1, true);
     }
 
     @Test
@@ -412,7 +398,7 @@ public class TestMachines extends TestJava {
 
     @Test
     public void testArithmeticExpLaws_With_Execute() throws Exception {
-        testJavaMC("ArithmeticExpLaws", "ArithmeticExpLaws", true, 1, false);
+        testJavaMC("ArithmeticExpLaws", "ArithmeticExpLaws", false, 1, false);
     }
 
     @Test
@@ -447,7 +433,17 @@ public class TestMachines extends TestJava {
 
     @Test
     public void testExplicitComputations() throws Exception {
-        testJavaMC("ExplicitComputations", "ExplicitComputations", true, 1, false);
+        testJavaMC("ExplicitComputations", "ExplicitComputations", false, 1, false);
+    }
+
+    @Test
+    public void testExplicitComputations_Small() throws Exception {
+        testJavaMC("ExplicitComputations_Small", "ExplicitComputations_Small", true, 1, false);
+    }
+
+    @Test
+    public void testExplicitComputations_Small2() throws Exception {
+        testJavaMC("ExplicitComputations_Small2", "ExplicitComputations_Small2", true, 1, false);
     }
 
     @Test
@@ -561,6 +557,11 @@ public class TestMachines extends TestJava {
     }
 
     @Test
+    public void testRelLaws_Small2() throws Exception {
+        testJavaMC("RelLaws_Small2", "RelLaws_Small2", true, 1, false);
+    }
+
+    @Test
     public void testCompositionEmpty() throws Exception {
         testJavaMC("CompositionEmpty", "CompositionEmpty", true, 1, false);
     }
@@ -572,7 +573,27 @@ public class TestMachines extends TestJava {
 
     @Test
     public void testRelLaws_BOOL1() throws Exception {
-        testJavaMC("RelLaws_BOOL1", "RelLaws_BOOL1", true, 1, false);
+        testJavaMC("RelLaws_BOOL1", "RelLaws_BOOL1", false, 1, false);
+    }
+
+    @Test
+    public void testRether() throws Exception {
+        testJavaMC("rether", "rether", true, 1, false);
+    }
+
+    @Test
+    public void testOBSW1() throws Exception {
+        testJavaMC("obsw_M001_1", "obsw_M001_1", true, 1, false);
+    }
+
+    @Test
+    public void testOBSW2() throws Exception {
+        testJavaMC("obsw_M001_2", "obsw_M001_2", true, 1, true);
+    }
+
+    @Test
+    public void testPruningTest() throws Exception {
+        testJavaMC("PruningTest", "PruningTest", true, 1, false);
     }
 
     @Test
@@ -607,8 +628,28 @@ public class TestMachines extends TestJava {
     }
 
     @Test
+    public void testIntervalInterval() throws Exception {
+        testJavaMC("IntervalInterval", "IntervalInterval", true, 1, false);
+    }
+
+    @Test
+    public void testNotInDomainOptimization() throws Exception {
+        testJavaMC("NotInDomainOptimization", "NotInDomainOptimization", true, 1, false);
+    }
+
+    @Test
+    public void testInDomainOptimization() throws Exception {
+        testJavaMC("InDomainOptimization", "InDomainOptimization", true, 1, false);
+    }
+
+    @Test
     public void testRange() throws Exception {
         testJavaMC("Range");
+    }
+
+    @Test
+    public void testFunctionAssigningConstant() throws Exception {
+        testJavaMC("FunctionAssigningConstant", "FunctionAssigningConstant", true, 1, false);
     }
 
     @Test(expected = CodeGenerationException.class)
@@ -688,7 +729,8 @@ public class TestMachines extends TestJava {
     }
 
 
-    @Test
+    // Constants not assigned specifically
+    @Test(expected = CodeGenerationException.class)
     public void testGenerated100MC() throws Exception {
         testJavaMC("Generated100");
     }
@@ -703,5 +745,9 @@ public class TestMachines extends TestJava {
         testJavaMC("While2");
     }
 
+    @Test
+    public void testProb_oneway8seq() throws Exception {
+        testJavaMC("prob_oneway8seq", "prob_oneway8seq", true, 1, false);
+    }
 
 }

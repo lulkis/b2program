@@ -2,6 +2,7 @@ package de.hhu.stups.codegenerator.generators;
 
 import de.hhu.stups.codegenerator.CodeGeneratorUtils;
 import de.hhu.stups.codegenerator.GeneratorMode;
+import de.hhu.stups.codegenerator.MachineConstantsOptimizer;
 import de.hhu.stups.codegenerator.analyzers.CheckReachabilityAnalyzer;
 import de.hhu.stups.codegenerator.analyzers.DeferredSetAnalyzer;
 import de.hhu.stups.codegenerator.analyzers.RecordStructAnalyzer;
@@ -167,7 +168,7 @@ public class MachineGenerator implements AbstractVisitor<String, Void> {
 				e.printStackTrace();
 			}
 		}
-		this.machinePreprocessor = new MachinePreprocessor();
+		this.machinePreprocessor = new MachinePreprocessor(forModelChecking, forVisualisation);
 		this.nameHandler = new NameHandler(this, currentGroup);
 		this.parallelConstructHandler = new ParallelConstructHandler();
 		this.typeGenerator = new TypeGenerator(currentGroup, nameHandler, this);
@@ -187,7 +188,7 @@ public class MachineGenerator implements AbstractVisitor<String, Void> {
 		this.substitutionGenerator = new SubstitutionGenerator(currentGroup, this, nameHandler, typeGenerator,
 																expressionGenerator, predicateGenerator, identifierGenerator, iterationConstructHandler,
 																parallelConstructHandler, recordStructGenerator, declarationGenerator, lambdaFunctionGenerator,
-																infiniteSetGenerator, backtrackingGenerator, forVisualisation);
+																infiniteSetGenerator, backtrackingGenerator, deferredSetAnalyzer, forVisualisation);
 		this.operatorGenerator = new OperatorGenerator(mode, predicateGenerator, expressionGenerator);
 		this.operationGenerator = new OperationGenerator(currentGroup, this, substitutionGenerator, declarationGenerator, identifierGenerator, nameHandler,
 															typeGenerator, recordStructGenerator);
@@ -252,6 +253,11 @@ public class MachineGenerator implements AbstractVisitor<String, Void> {
 	*/
 	public String generateMachine(MachineNode node, GeneratorMode mode) {
 		machinePreprocessor.visitMachineNode(node);
+		MachineConstantsOptimizer machineConstantsOptimizer = new MachineConstantsOptimizer(node, forModelChecking, forVisualisation);
+		machineConstantsOptimizer.visitMachineNode();
+		if(node.getValues() != null && !node.getValues().isEmpty()) {
+			throw new CodeGenerationException("VALUES clause is not supported.");
+		}
 		initialize(node);
 		recordStructAnalyzer.visitMachineNode(node);
 		deferredSetAnalyzer.analyze(node.getDeferredSets(), node.getProperties());
@@ -407,7 +413,7 @@ public class MachineGenerator implements AbstractVisitor<String, Void> {
 		TemplateHandler.add(getter, "isConstant", DeclarationNode.Kind.CONSTANT.equals(variable.getKind()) || DeclarationNode.Kind.ENUMERATED_SET.equals(variable.getKind()));
 		TemplateHandler.add(getter, "machine", nameHandler.handle(variable.getSurroundingMachineNode().getName()));
 		TemplateHandler.add(getter, "returnType", typeGenerator.generate(variable.getType()));
-		TemplateHandler.add(getter, "machineName", machineNode.getName());
+		TemplateHandler.add(getter, "machineName", nameHandler.handle(machineNode.getName()));
 		return getter.render();
 	}
 
@@ -417,7 +423,7 @@ public class MachineGenerator implements AbstractVisitor<String, Void> {
 		TemplateHandler.add(getter, "isConstant", false);
 		TemplateHandler.add(getter, "machine", nameHandler.handle(includedMachine.getName()));
 		TemplateHandler.add(getter, "returnType", nameHandler.handle(includedMachine.getName()));
-		TemplateHandler.add(getter, "machineName", machineNode.getName());
+		TemplateHandler.add(getter, "machineName", nameHandler.handle(machineNode.getName()));
 		return getter.render();
 	}
 

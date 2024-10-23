@@ -273,7 +273,6 @@ public class ExpressionGenerator {
         if(checkTupleProjections(node)) {
             return generateTupleProjection(node);
         }
-
         return generateExpression(node);
     }
 
@@ -296,7 +295,7 @@ public class ExpressionGenerator {
     */
     public String visitIdentifierExprNode(IdentifierExprNode node) {
         if(machineGenerator.getInfiniteSets().contains(node.getName())) {
-            throw new CodeGenerationException("Infinite Set Declarations are not supported");
+            throw new CodeGenerationException("Infinite Set Declarations are not supported: " + node.getName() + " at line " + node.getSourceCodePosition().getStartLine() + " column " + node.getSourceCodePosition().getStartColumn());
         }
         if(node.isPrimed()) {
             String prefix = machineGenerator.getMode().equals(GeneratorMode.PL) ? "PL" : "";

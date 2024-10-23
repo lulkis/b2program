@@ -188,8 +188,13 @@ public class TestMachines extends TestCpp {
     }
 
     @Test
+    public void Train1BeebookDeterministic_MC_POR_v3() throws Exception {
+        testCppMC("Train_1_beebook_deterministic_MC_POR_v3");
+    }
+
+    @Test
     public void testLandingGear_MC() throws Exception {
-        testCppMC("landing_gear/LandingGear_R6");
+        testCppMC("landing_gear/LandingGear_R6", "LandingGear_R6", true, 1, false);
     }
 
     @Test
@@ -197,9 +202,14 @@ public class TestMachines extends TestCpp {
         testCpp("Train_1_beebook_deterministic_exec");
     }
 
-    @Test
+    @Test(expected = CodeGenerationException.class)
     public void Train1() throws Exception {
         testCpp("train_1");
+    }
+
+    @Test
+    public void Train2() throws Exception {
+        testCpp("train_2");
     }
 
     @Ignore
@@ -208,10 +218,14 @@ public class TestMachines extends TestCpp {
         testCpp("earley_2");
     }
 
-    @Ignore
     @Test
-    public void testOBSW_M001() throws Exception {
-        testCpp("obsw_M001");
+    public void testOBSW_M001_1() throws Exception {
+        testCppMC("obsw_M001_1");
+    }
+
+    @Test
+    public void testOBSW_M001_2() throws Exception {
+        testCppMC("obsw_M001_2");
     }
 
     @Ignore
@@ -220,10 +234,9 @@ public class TestMachines extends TestCpp {
         testCpp("Ref5_Switch");
     }
 
-    @Ignore
     @Test
-    public void testrether_mch1() throws Exception {
-        testCpp("rether_mch1");
+    public void testRether() throws Exception {
+        testCppMC("rether");
     }
 
     @Test
@@ -249,6 +262,11 @@ public class TestMachines extends TestCpp {
     @Test
     public void testLift_MC_Large() throws Exception {
         testCppMC("Lift_MC_Large");
+    }
+
+    @Test
+    public void testLift_MC() throws Exception {
+        testCppMC("Lift_MC", "Lift_MC", true, 1, false);
     }
 
     @Test

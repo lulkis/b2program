@@ -2,6 +2,8 @@ package de.hhu.stups.codegenerator.generators;
 
 
 import de.hhu.stups.codegenerator.GeneratorMode;
+import de.hhu.stups.codegenerator.analyzers.DeferredSetAnalyzer;
+import de.hhu.stups.codegenerator.analyzers.IdentifierAnalyzer;
 import de.hhu.stups.codegenerator.analyzers.ParallelConstructAnalyzer;
 import de.hhu.stups.codegenerator.handlers.IterationConstructHandler;
 import de.hhu.stups.codegenerator.handlers.NameHandler;
@@ -10,6 +12,7 @@ import de.hhu.stups.codegenerator.handlers.TemplateHandler;
 import de.prob.parser.ast.nodes.*;
 import de.prob.parser.ast.nodes.expression.*;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
+import de.prob.parser.ast.nodes.predicate.PredicateOperatorNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorWithExprArgsNode;
 import de.prob.parser.ast.nodes.substitution.AnySubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.AssignSubstitutionNode;
@@ -24,7 +27,11 @@ import de.prob.parser.ast.nodes.substitution.SubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.VarSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.WhileSubstitutionNode;
 import de.prob.parser.ast.types.BType;
+import de.prob.parser.ast.types.BoolType;
 import de.prob.parser.ast.types.CoupleType;
+import de.prob.parser.ast.types.DeferredSetElementType;
+import de.prob.parser.ast.types.EnumeratedSetElementType;
+import de.prob.parser.ast.types.SetElementType;
 import de.prob.parser.ast.types.SetType;
 import org.antlr.v4.runtime.misc.OrderedHashSet;
 import org.stringtemplate.v4.ST;
@@ -32,6 +39,8 @@ import org.stringtemplate.v4.STGroup;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,6 +88,8 @@ public class SubstitutionGenerator {
 
     private int variantCounter;
 
+    private final DeferredSetAnalyzer deferredSetAnalyzer;
+
     private final boolean forVisualisation;
 
     public SubstitutionGenerator(final STGroup currentGroup, final MachineGenerator machineGenerator, final NameHandler nameHandler,
@@ -86,7 +97,8 @@ public class SubstitutionGenerator {
                                  final IdentifierGenerator identifierGenerator,
                                  final IterationConstructHandler iterationConstructHandler, final ParallelConstructHandler parallelConstructHandler,
                                  final RecordStructGenerator recordStructGenerator, final DeclarationGenerator declarationGenerator, final LambdaFunctionGenerator lambdaFunctionGenerator,
-                                 final SetWithPredicateGenerator setWithPredicateGenerator, final BacktrackingGenerator backtrackingGenerator, final boolean forVisualisation) {
+                                 final SetWithPredicateGenerator setWithPredicateGenerator, final BacktrackingGenerator backtrackingGenerator,
+                                 final DeferredSetAnalyzer deferredSetAnalyzer, final boolean forVisualisation) {
         this.currentGroup = currentGroup;
         this.machineGenerator = machineGenerator;
         this.nameHandler = nameHandler;
@@ -102,6 +114,7 @@ public class SubstitutionGenerator {
         this.lambdaFunctionGenerator = lambdaFunctionGenerator;
         this.backtrackingGenerator = backtrackingGenerator;
         this.infiniteSetGenerator = setWithPredicateGenerator;
+        this.deferredSetAnalyzer = deferredSetAnalyzer;
         this.currentLocalScope = 0;
         this.localScopes = 0;
         this.parallelNestingLevel = 0;
@@ -125,6 +138,12 @@ public class SubstitutionGenerator {
         TemplateHandler.add(initialization, "properties", generateConstantsInitializations(node));
         TemplateHandler.add(initialization, "values", generateValues(node));
 
+        PredicateNode otherProperties = extractPropertiesNotRelevantForAssigning();
+        if(otherProperties != null) {
+            TemplateHandler.add(initialization, "iterationConstruct", iterationConstructHandler.inspectPredicate(otherProperties).getIterationsMapCode().values());
+            TemplateHandler.add(initialization, "propertiesCheck", machineGenerator.visitPredicateNode(otherProperties, null));
+        }
+
         String body = "";
         if (node.getInitialisation() != null) body = machineGenerator.visitSubstitutionNode(node.getInitialisation(), null);
         //TODO: add empty templates in other languages instead of checking for existence
@@ -147,6 +166,42 @@ public class SubstitutionGenerator {
         return initialization.render();
     }
 
+    private PredicateNode extractPropertiesNotRelevantForAssigning() {
+        MachineNode machineNode = machineGenerator.getMachineNode();
+        PredicateNode properties = machineNode.getProperties();
+        if(properties == null) {
+            return null;
+        }
+        List<PredicateNode> assigningPredicates = machineNode.getConstants()
+                .stream()
+                .filter(constant -> !machineGenerator.getLambdaFunctions().contains(constant.getName()))
+                .filter(constant -> !machineGenerator.getInfiniteSets().contains(constant.getName()))
+                .flatMap(cons -> predicateGenerator.extractEqualProperties(machineNode, cons).stream())
+                .collect(Collectors.toList());
+
+        List<PredicateNode> propertiesConjuncts = new ArrayList<>();
+        if(properties instanceof PredicateOperatorNode && ((PredicateOperatorNode) properties).getOperator() == PredicateOperatorNode.PredicateOperator.AND) {
+            propertiesConjuncts.addAll(((PredicateOperatorNode) properties).getPredicateArguments());
+        } else {
+            propertiesConjuncts.add(properties);
+        }
+        propertiesConjuncts = propertiesConjuncts
+                .stream()
+                .filter(conjunct -> machineNode.getDeferredSets().stream().noneMatch(dset -> deferredSetAnalyzer.isRelevantSizeConjunct(dset, conjunct)))
+                .collect(Collectors.toList());
+        propertiesConjuncts.removeAll(assigningPredicates);
+
+        if(propertiesConjuncts.size() == 0) {
+            return null;
+        } else if(propertiesConjuncts.size() == 1) {
+            return propertiesConjuncts.get(0);
+        }
+
+        PredicateNode result = new PredicateOperatorNode(properties.getSourceCodePosition(), PredicateOperatorNode.PredicateOperator.AND, propertiesConjuncts);
+        result.setType(BoolType.getInstance());
+        return result;
+    }
+
     /*
     * This function generates code for the VALUES clause from the given AST node of a machine
     */
@@ -162,36 +217,69 @@ public class SubstitutionGenerator {
         return values.render();
     }
 
+    private List<DeclarationNode> sortConstantsDeclarations(MachineNode machineNode) {
+        List<DeclarationNode> constants = machineNode.getConstants();
+        List<DeclarationNode> assignedConstants = constants.stream()
+                .filter(constant -> !(constant.getType() instanceof DeferredSetElementType))
+                .filter(constant -> !machineGenerator.getLambdaFunctions().contains(constant.getName()))
+                .filter(constant -> !machineGenerator.getInfiniteSets().contains(constant.getName()))
+                .collect(Collectors.toList());
+        Map<DeclarationNode, ExprNode> constantsToExprNode = new HashMap<>();
+        List<ExprNode> assignedExprNodes = assignedConstants
+                .stream()
+                .flatMap(cons -> predicateGenerator.extractEqualProperties(machineNode, cons).stream())
+                .map(cons -> ((PredicateOperatorWithExprArgsNode) cons).getExpressionNodes().get(1))
+                .collect(Collectors.toList());
+        if(assignedConstants.size() > assignedExprNodes.size()) {
+            throw new CodeGenerationException("There are too few predicates in the PROPERTIES for assigning constants.");
+        }
+        for(int i = 0; i < assignedConstants.size(); i++) {
+            constantsToExprNode.put(assignedConstants.get(i), assignedExprNodes.get(i));
+        }
+        return sortDeclarations(0, assignedConstants, constantsToExprNode, new HashSet<>(), new ArrayList<>());
+    }
+
+    private List<DeclarationNode> sortDeclarations(int n, List<DeclarationNode> assignedConstants, Map<DeclarationNode, ExprNode> constantsToExprNode, Set<String> declarationProcessed, List<DeclarationNode> reorderedConstants) {
+        if(n > constantsToExprNode.size()) {
+            throw new CodeGenerationException("There are cyclic dependencies in declaration of constants. They cannot be handled for assigning values to constants");
+        }
+
+        if(reorderedConstants.size() == constantsToExprNode.size()) {
+            return reorderedConstants;
+        }
+
+        DeclarationNode firstDeclaration = assignedConstants.get(0);
+        ExprNode firstExpr = constantsToExprNode.get(firstDeclaration);
+        IdentifierAnalyzer identifierAnalyzer = new IdentifierAnalyzer(IdentifierAnalyzer.Kind.READ_OUTER_SCOPE);
+        identifierAnalyzer.visitExprNode(firstExpr, null);
+        if(identifierAnalyzer.getIdentifiers().stream().noneMatch(id -> !declarationProcessed.contains(id) && assignedConstants
+                .stream()
+                .map(DeclarationNode::getName)
+                .collect(Collectors.toSet()).contains(id))) {
+            reorderedConstants.add(firstDeclaration);
+            declarationProcessed.add(firstDeclaration.getName());
+            List<DeclarationNode> newAssignedConstants = assignedConstants.subList(1, assignedConstants.size());
+            return sortDeclarations(0, newAssignedConstants, constantsToExprNode, declarationProcessed, reorderedConstants);
+        }
+        List<DeclarationNode> newAssignedConstants = assignedConstants.subList(1, assignedConstants.size());
+        newAssignedConstants.add(firstDeclaration);
+        return sortDeclarations(n+1, newAssignedConstants, constantsToExprNode, declarationProcessed, reorderedConstants);
+    }
+
     /*
     * This function generates code for initializing all constants from the given AST node of a machine
     */
     public List<String> generateConstantsInitializations(MachineNode node) {
-        // TODO: Check that used constants in other constants has to be declared before.
         Set<String> lambdaFunctions = machineGenerator.getLambdaFunctions();
-        OrderedHashSet<String> propertiesIdentifiersSet = new OrderedHashSet<>();
-        predicateGenerator.extractProperties(node).forEach(prop -> {
-            if (!(prop instanceof PredicateOperatorWithExprArgsNode)) return;
-            ((PredicateOperatorWithExprArgsNode)prop).getExpressionNodes().forEach(exprNode -> {
-                if (exprNode instanceof IdentifierExprNode) propertiesIdentifiersSet.add(((IdentifierExprNode) exprNode).getName());
-            });
-        });
-        ArrayList<String> propertiesIdentifiers = new ArrayList<>(propertiesIdentifiersSet);
-
-        List<DeclarationNode> constants = node.getConstants().stream().sorted((nodeA, nodeB) -> {
-            int indexA = propertiesIdentifiers.indexOf(nodeA.getName());
-            int indexB = propertiesIdentifiers.indexOf(nodeB.getName());
-            if (indexA >= 0 && indexB >= 0) return Integer.compare(indexA, indexB);
-            if (indexA >= 0) return -1;
-            if (indexB >= 0) return +1;
-            return nodeA.getName().compareTo(nodeB.getName());
-        }).collect(Collectors.toList());
 
         List<String> constantsInitializations = new ArrayList<>();
-        constantsInitializations.addAll(constants.stream()
+        constantsInitializations.addAll(node.getConstants().stream()
+                .filter(constant -> constant.getType() instanceof DeferredSetElementType)
                 .filter(constant -> declarationGenerator.getEnumToMachine().containsKey(constant.getType().toString()))
                 .map(constant -> this.generateConstantFromDeferredSet(constant,node.getName()))
                 .collect(Collectors.toList()));
-        constantsInitializations.addAll(constants.stream()
+        List<DeclarationNode> otherConstants = sortConstantsDeclarations(machineGenerator.getMachineNode());
+        constantsInitializations.addAll(otherConstants.stream()
                 .filter(constant -> !lambdaFunctions.contains(constant.getName()))
                 .map(constant -> generateConstantInitialization(node, constant))
                 .collect(Collectors.toList()));
@@ -207,7 +295,13 @@ public class SubstitutionGenerator {
         TemplateHandler.add(initialization, "type", typeGenerator.generate(constant.getType()));
         List<PredicateNode> equalProperties = predicateGenerator.extractEqualProperties(node, constant);
         if(equalProperties.isEmpty()) {
-            return "";
+            if(constant.getType() instanceof DeferredSetElementType) {
+                return "";
+            }
+            if(assignedByValues(constant)) {
+                return "";
+            }
+            throw new CodeGenerationException("There is no equal predicate to assign: " + constant.getName());
         }
 
         ExprNode expression = ((PredicateOperatorWithExprArgsNode) equalProperties.get(0)).getExpressionNodes().get(1);
@@ -231,8 +325,26 @@ public class SubstitutionGenerator {
         } else {
             TemplateHandler.add(initialization, "val", machineGenerator.visitExprNode(expression, null));
         }
-        TemplateHandler.add(initialization, "machineName", node.getName());
+        TemplateHandler.add(initialization, "machineName", nameHandler.handle(node.getName()));
         return initialization.render();
+    }
+
+    private boolean assignedByValues(DeclarationNode constant) {
+        List<SubstitutionNode> values = machineGenerator.getMachineNode().getValues();
+        if(values == null || values.isEmpty()) {
+            return false;
+        }
+        for(SubstitutionNode substitution : values) {
+            if(substitution instanceof AssignSubstitutionNode) {
+                ExprNode lhs = ((AssignSubstitutionNode) substitution).getLeftSide().get(0);
+                if(lhs instanceof IdentifierExprNode) {
+                    if(((IdentifierExprNode) lhs).getName().equals(constant.getName())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private String generateConstantFromDeferredSet(DeclarationNode constant, String machineName) {

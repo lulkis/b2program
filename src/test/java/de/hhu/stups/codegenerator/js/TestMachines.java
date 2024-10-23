@@ -53,7 +53,7 @@ public class TestMachines extends TestJs {
 
     @Test
     public void testLiftMC() throws Exception {
-        testJSMC("Lift_MC");
+        testJSMC("Lift_MC", "Lift_MC", true, false);
     }
 
 
@@ -175,7 +175,7 @@ public class TestMachines extends TestJs {
 
     @Test
     public void testLandingGear() throws Exception {
-        testJSMC("landing_gear/LandingGear_R6");
+        testJSMC("landing_gear/LandingGear_R6", "LandingGear_R6", true, false);
     }
 
     @Ignore
@@ -215,9 +215,14 @@ public class TestMachines extends TestJs {
         testJs("Train_1_beebook_deterministic_exec");
     }
 
-    @Test
+    @Test(expected = CodeGenerationException.class)
     public void Train1() throws Exception {
         testJs("train_1");
+    }
+
+    @Test
+    public void Train2() throws Exception {
+        testJs("train_2");
     }
 
     @Test
@@ -230,16 +235,25 @@ public class TestMachines extends TestJs {
         testJSMC("Train_1_beebook_deterministic_MC_POR_v2");
     }
 
+    @Test
+    public void Train1BeebookDeterministic_MC_POR_v3() throws Exception {
+        testJSMC("Train_1_beebook_deterministic_MC_POR_v3");
+    }
+
     @Ignore
     @Test
     public void testEarley2() throws Exception {
         testJs("earley_2");
     }
 
-    @Ignore
+    @Test
+    public void testOBSW_M001_1() throws Exception {
+        testJSMC("obsw_M001_1");
+    }
+
     @Test
     public void testOBSW_M001() throws Exception {
-        testJs("obsw_M001");
+        testJSMC("obsw_M001_2");
     }
 
     @Ignore
@@ -248,10 +262,9 @@ public class TestMachines extends TestJs {
         testJs("Ref5_Switch");
     }
 
-    @Ignore
     @Test
     public void testrether_mch1() throws Exception {
-        testJs("rether_mch1");
+        testJSMC("rether");
     }
 
     @Test
@@ -277,6 +290,11 @@ public class TestMachines extends TestJs {
     @Test
     public void testQueensWithEvents_4() throws Exception {
         testJSMC("QueensWithEvents_4");
+    }
+
+    @Test
+    public void testProBOneWay8Seq() throws Exception {
+        testJSMC("prob_oneway8seq");
     }
 
     @Test
