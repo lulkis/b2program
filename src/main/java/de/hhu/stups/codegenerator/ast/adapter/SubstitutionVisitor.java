@@ -136,6 +136,107 @@ public class SubstitutionVisitor extends AbstractVisitor{
                 coordinator.convertSubstitutionNode(node.getSubstitution(), machineNode));
     }
 
+    @Override
+    public void caseAAssertionSubstitution(AAssertionSubstitution node){
+        //TODO: Translation Assertion Substitution
+    }
+
+    @Override
+    public void caseABecomesElementOfSubstitution(ABecomesElementOfSubstitution node){
+        //TODO: Translation Becomes Element Of Substitution
+    }
+
+    @Override
+    public void caseABecomesSuchSubstitution(ABecomesSuchSubstitution node){
+        //TODO: Translation Becomes Such Substitution
+    }
+
+    @Override
+    public void caseABlockSubstitution(ABlockSubstitution node){
+        //TODO: Translation Block Substitution
+    }
+
+    @Override
+    public void caseACaseOrSubstitution(ACaseOrSubstitution node){
+        //TODO: Translation Case Or Substitution
+    }
+
+    @Override
+    public void caseACaseSubstitution(ACaseSubstitution node){
+        //TODO: Translation Case Substitution
+    }
+
+    @Override
+    public void caseADefineSubstitution(ADefineSubstitution node){
+        //TODO: Translation Define Substitution
+    }
+
+    @Override
+    public void caseADefinitionSubstitution(ADefinitionSubstitution node){
+        //TODO: Translation Definition Substitution
+    }
+
+    @Override
+    public void caseAForallSubMessageSubstitution(AForallSubMessageSubstitution node){
+        //TODO: Translation Forall Sub Message Substitution
+    }
+
+    @Override
+    public void caseAForLoopSubstitution(AForLoopSubstitution node){
+        //TODO: Translation For Loop Substitution
+    }
+
+    @Override
+    public void caseAFuncOpSubstitution(AFuncOpSubstitution node){
+        //TODO: Translation Func Op Substitution
+    }
+
+    @Override
+    public void caseAInvalidSubstitution(AInvalidSubstitution node){
+        //TODO: Translation Invalid Substitution
+    }
+
+    @Override
+    public void caseAOperationCallSubstitution(AOperationCallSubstitution node){
+        //TODO: Translation Operation Call Substitution
+    }
+
+    @Override
+    public void caseAOperatorSubstitution(AOperatorSubstitution node){
+        //TODO: Translation Operator Substitution
+    }
+
+    @Override
+    public void caseAOpSubstitution(AOpSubstitution node){
+        //TODO: Translation Op Substitution
+    }
+
+    @Override
+    public void caseARuleFailSubSubstitution(ARuleFailSubSubstitution node){
+        //TODO: Translation Rule Fail Substitution
+    }
+
+    @Override
+    public void caseASelectWhenSubstitution(ASelectWhenSubstitution node) {
+        //TODO: Translation Select When Substitution
+    }
+
+    @Override
+    public void caseASequenceSubstitution(ASequenceSubstitution node) {
+        //TODO: Translation Sequence Substitution
+    }
+
+    @Override
+    public void caseAVarSubstitution(AVarSubstitution node) {
+        //TODO: Translation Var Substitution
+    }
+
+    @Override
+    public void caseAWhileSubstitution(AWhileSubstitution node) {
+        //TODO: Translation While Substitution
+    }
+
+
     private SourceCodePosition getSourceCodePosition(Node node) {
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
         sourceCodePosition.setStartColumn(node.getStartPos().getPos());
