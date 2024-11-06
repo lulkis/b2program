@@ -553,6 +553,35 @@ public class ExpressionVisitor extends AbstractVisitor{
                 ExpressionOperatorNode.ExpressionOperator.TOTAL_SURJECTION_RELATION);
     }
 
+    @Override
+    public void caseARangeExpression(ARangeExpression node){
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getExpression()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                exprList,
+                ExpressionOperatorNode.ExpressionOperator.RANGE);
+    }
+
+    @Override
+    public void caseAOverwriteExpression(AOverwriteExpression node){
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getLeft()));
+        exprList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                exprList,
+                ExpressionOperatorNode.ExpressionOperator.OVERWRITE_RELATION);
+    }
+
+    @Override
+    public void caseAImageExpression(AImageExpression node){
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getLeft()));
+        exprList.add(coordinator.convertExpressionNode(node.getRight()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                exprList,
+                ExpressionOperatorNode.ExpressionOperator.RELATIONAL_IMAGE);
+    }
+
     private SourceCodePosition getSourceCodePosition(Node node) {
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
         sourceCodePosition.setStartColumn(node.getStartPos().getPos());
