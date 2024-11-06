@@ -299,6 +299,56 @@ public class PredicateVisitor  extends AbstractVisitor{
     }
     //END: Integers
 
+    @Override
+    public void caseADescriptionPredicate(ADescriptionPredicate node){
+        //TODO: Translation Description Predicate
+    }
+
+    @Override
+    public void caseAExtendedPredPredicate(AExtendedPredPredicate node){
+        //TODO: Translation Extended Pred Predicate
+    }
+
+    @Override
+    public void caseAFinitePredicate(AFinitePredicate node){
+        //TODO: Translation Finite Predicate
+    }
+
+    @Override
+    public void caseAIfElsifPredicatePredicate(AIfElsifPredicatePredicate node){
+        //TODO: Translation If Elsif Predicate Predicate
+    }
+
+    @Override
+    public void caseAIfPredicatePredicate(AIfPredicatePredicate node){
+        //TODO: Translation If Predicate Predicate
+    }
+
+    @Override
+    public void caseALabelPredicate(ALabelPredicate node){
+        //TODO: Translation Label Predicate
+    }
+
+    @Override
+    public void caseALetPredicatePredicate(ALetPredicatePredicate node){
+        //TODO: Translation Let Predicate Predicate
+    }
+
+    @Override
+    public void caseAOperatorPredicate(AOperatorPredicate node){
+        //TODO: Translation Operator Predicate
+    }
+
+    @Override
+    public void caseAPartitionPredicate(APartitionPredicate node){
+        //TODO: Translation Partition Predicate
+    }
+
+    @Override
+    public void caseASubstitutionPredicate(ASubstitutionPredicate node){
+        //TODO: Translation Substitution Predicate
+    }
+
     //Tests for Predicate Definitions
     @Override
     public void caseADefinitionPredicate(ADefinitionPredicate node){
