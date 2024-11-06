@@ -1,9 +1,6 @@
 package de.hhu.stups.codegenerator.ast.adapter;
 
-import de.be4.classicalb.core.parser.node.AExpressionDefinitionDefinition;
-import de.be4.classicalb.core.parser.node.APredicateDefinitionDefinition;
-import de.be4.classicalb.core.parser.node.Node;
-import de.be4.classicalb.core.parser.node.PExpression;
+import de.be4.classicalb.core.parser.node.*;
 import de.hhu.stups.codegenerator.ast.VisitorCoordinator;
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
@@ -59,6 +56,11 @@ public class DefinitionVisitor extends AbstractVisitor{
                 node.getName().toString().replace(" ", ""),
                 declarationList,
                 coordinator.convertPredicateNode(node.getRhs(), machineNode));
+    }
+
+    @Override
+    public void caseASubstitutionDefinitionDefinition(ASubstitutionDefinitionDefinition node) {
+        //TODO: Translation Substitution Definition Definition
     }
 
     private SourceCodePosition getSourceCodePos(Node node){
