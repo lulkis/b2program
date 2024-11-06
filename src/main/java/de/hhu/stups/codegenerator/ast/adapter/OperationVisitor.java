@@ -1,8 +1,6 @@
 package de.hhu.stups.codegenerator.ast.adapter;
 
-import de.be4.classicalb.core.parser.node.AOperation;
-import de.be4.classicalb.core.parser.node.Node;
-import de.be4.classicalb.core.parser.node.PExpression;
+import de.be4.classicalb.core.parser.node.*;
 import de.hhu.stups.codegenerator.ast.VisitorCoordinator;
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
@@ -49,6 +47,36 @@ public class OperationVisitor extends AbstractVisitor{
                 outputParams,
                 coordinator.convertSubstitutionNode(node.getOperationBody(), machineNode),
                 paramNodes);
+    }
+
+    @Override
+    public void caseAComputationOperation(AComputationOperation node){
+        //TODO: Translation Computation Operation
+    }
+
+    @Override
+    public void caseADescriptionOperation(ADescriptionOperation node){
+        //TODO: Translation Description Operation
+    }
+
+    @Override
+    public void caseAFunctionOperation(AFunctionOperation node){
+        //TODO: Translation Function Operation
+    }
+
+    @Override
+    public void caseAMissingSemicolonOperation(AMissingSemicolonOperation node){
+        //TODO: Translation Missing Semicolon Operation
+    }
+
+    @Override
+    public void caseARefinedOperation(ARefinedOperation node){
+        //TODO: Translation Refined Operation
+    }
+
+    @Override
+    public void caseARuleOperation(ARuleOperation node){
+        //TODO: Translation Rule Operation
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {
