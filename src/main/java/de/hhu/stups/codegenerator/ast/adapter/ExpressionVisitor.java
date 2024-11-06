@@ -582,6 +582,126 @@ public class ExpressionVisitor extends AbstractVisitor{
                 ExpressionOperatorNode.ExpressionOperator.RELATIONAL_IMAGE);
     }
 
+    @Override
+    public void caseAArityExpression(AArityExpression node){
+        //TODO: Translation Arity Expression
+    }
+
+    @Override
+    public void caseABinExpression(ABinExpression node){
+        //TODO: Translation Bin Expression
+    }
+
+    @Override
+    public void caseABtreeExpression(ABtreeExpression node){
+        //TODO: Translation BTree Expression
+    }
+
+    @Override
+    public void caseACartesianProductExpression(ACartesianProductExpression node){
+        //TODO: Translation Cartesian Product Expression
+    }
+
+    @Override
+    public void caseAClosureExpression(AClosureExpression node){
+        //TODO: Translation Closure Expression
+    }
+
+    @Override
+    public void caseACompositionExpression(ACompositionExpression node){
+        //TODO: Translation Composition Expression
+    }
+
+    @Override
+    public void caseAConcatExpression(AConcatExpression node){
+        //TODO: Translation Concat Expression
+    }
+
+    @Override
+    public void caseAConstExpression(AConstExpression node){
+        //TODO: Translation Const Expression
+    }
+
+    @Override
+    public void caseAConvertIntCeilingExpression(AConvertIntCeilingExpression node){
+        //TODO: Translation Convert Int Ceiling Expression
+    }
+
+    @Override
+    public void caseAConvertIntFloorExpression(AConvertIntFloorExpression node){
+        //TODO: Translation Convert Int Floor Expression
+    }
+
+    @Override
+    public void caseAConvertRealExpression(AConvertRealExpression node){
+        //TODO: Translation Convert Real Expression
+    }
+
+    @Override
+    public void caseADefinitionExpression(ADefinitionExpression node){
+        //TODO: Translation Definition Expression Expression
+    }
+
+    @Override
+    public void caseADescriptionExpression(ADescriptionExpression node){
+        //TODO: Translation Description Expression
+    }
+
+    @Override
+    public void caseADirectProductExpression(ADirectProductExpression node){
+        //TODO: Translation Direct Product Expression
+    }
+
+    @Override
+    public void caseADomainRestrictionExpression(ADomainRestrictionExpression node){
+        //TODO: Translation Domain Restriction Expression
+    }
+
+    @Override
+    public void caseADomainSubtractionExpression(ADomainSubtractionExpression node){
+        //TODO: Translation Domain Subtraction Expression
+    }
+
+    @Override
+    public void caseAEmptySequenceExpression(AEmptySequenceExpression node){
+        //TODO: Translation Empty Sequence Expression
+    }
+
+    @Override
+    public void caseAEventBComprehensionSetExpression(AEventBComprehensionSetExpression node){
+        //TODO: Translation EventB Set Comprehension Expression
+    }
+
+    @Override
+    public void caseAEventBFirstProjectionExpression(AEventBFirstProjectionExpression node){
+        //TODO: Translation EventBProjection Expression
+    }
+
+    @Override
+    public void caseAEventBFirstProjectionV2Expression(AEventBFirstProjectionV2Expression node){
+        //TODO: Translation EventB First ProjectionV2 Expression
+    }
+
+    @Override
+    public void caseAEventBIdentityExpression(AEventBIdentityExpression node){
+        //TODO: Translation EventBIdentity Expression
+    }
+
+    @Override
+    public void caseAEventBSecondProjectionExpression(AEventBSecondProjectionExpression node){
+        //TODO: Translation EventB Second Projection Expression
+    }
+
+    @Override
+    public void caseAEventBSecondProjectionV2Expression(AEventBSecondProjectionV2Expression node) {
+        //TODO: Translation EventB Second ProjectionV2 Expression
+    }
+
+    @Override
+    public void caseAExtendedExprExpression(AExtendedExprExpression node) {
+        //TODO: Translation Extended Expr Expression
+    }
+
     private SourceCodePosition getSourceCodePosition(Node node) {
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
         sourceCodePosition.setStartColumn(node.getStartPos().getPos());
