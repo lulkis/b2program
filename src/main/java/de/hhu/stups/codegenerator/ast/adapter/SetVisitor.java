@@ -1,9 +1,6 @@
 package de.hhu.stups.codegenerator.ast.adapter;
 
-import de.be4.classicalb.core.parser.node.ADeferredSetSet;
-import de.be4.classicalb.core.parser.node.AEnumeratedSetSet;
-import de.be4.classicalb.core.parser.node.Node;
-import de.be4.classicalb.core.parser.node.PExpression;
+import de.be4.classicalb.core.parser.node.*;
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.EnumeratedSetDeclarationNode;
@@ -42,6 +39,16 @@ public class SetVisitor extends AbstractVisitor{
                 node.toString().replace(" ", ""),
                 DeclarationNode.Kind.DEFERRED_SET,
                 machineNode);
+    }
+
+    @Override
+    public void caseADescriptionSet(ADescriptionSet node){
+        //TODO: Translation Description Set
+    }
+
+    @Override
+    public void caseAEnumeratedSetViaDefSet(AEnumeratedSetViaDefSet node){
+        //TODO: Translation Enumerated Set Via Def Set
     }
 
     private List<DeclarationNode> createDeclarationList(List<PExpression> list, DeclarationNode.Kind kind) {
