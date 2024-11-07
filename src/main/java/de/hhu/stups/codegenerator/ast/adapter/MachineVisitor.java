@@ -21,6 +21,7 @@ public class MachineVisitor extends AbstractVisitor{
     private String name;
     private List<DeclarationNode> variables = new ArrayList<>();
     private PredicateNode invariant;
+    private PredicateNode properties;
     private SubstitutionNode initialisation;
     private List<OperationNode> operations;
     private List<de.prob.parser.ast.nodes.Node> setEnumerations = new ArrayList<>();
@@ -68,6 +69,11 @@ public class MachineVisitor extends AbstractVisitor{
     }
 
     @Override
+    public void caseAPropertiesMachineClause(APropertiesMachineClause node){
+        properties = coordinator.convertPredicateNode(node.getPredicates(), resultMachineNode);
+    }
+
+    @Override
     public void caseAInitialisationMachineClause(AInitialisationMachineClause node){
         initialisation = coordinator.convertSubstitutionNode(node.getSubstitutions(), resultMachineNode);
     }
@@ -100,6 +106,9 @@ public class MachineVisitor extends AbstractVisitor{
         }
         if(invariant != null){
             resultMachineNode.setInvariant(invariant);
+        }
+        if(properties != null){
+            resultMachineNode.setProperties(properties);
         }
         resultMachineNode.setOperations(operations);
         for(de.prob.parser.ast.nodes.Node set : setEnumerations){
