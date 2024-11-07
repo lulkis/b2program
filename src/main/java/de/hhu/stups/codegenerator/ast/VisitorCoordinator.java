@@ -55,12 +55,6 @@ public class VisitorCoordinator {
         return visitor.getResult();
     }
 
-    public ExprNode convertExpressionNode(PExpression node){
-        ExpressionVisitor visitor = new ExpressionVisitor(null);
-        node.apply(visitor);
-        return visitor.getResult();
-    }
-
     public Node convertSetNode(PSet node, MachineNode machineNode){
         SetVisitor visitor = new SetVisitor(machineNode);
         node.apply(visitor);
@@ -73,10 +67,10 @@ public class VisitorCoordinator {
         return visitor.getResult();
     }
 
-    public List<ExprNode> convertExpressionNode(List<PExpression> nodeList){
+    public List<ExprNode> convertExpressionNode(List<PExpression> nodeList, MachineNode machineNode){
         List<ExprNode> resultList = new ArrayList<>();
         for (PExpression node: nodeList){
-            resultList.add(convertExpressionNode(node));
+            resultList.add(convertExpressionNode(node, machineNode));
         }
         return resultList;
     }

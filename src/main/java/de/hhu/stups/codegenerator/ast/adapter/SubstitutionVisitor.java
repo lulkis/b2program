@@ -31,8 +31,8 @@ public class SubstitutionVisitor extends AbstractVisitor{
 
     @Override
     public void caseAAssignSubstitution(AAssignSubstitution node){
-        List<ExprNode> left = coordinator.convertExpressionNode(node.getLhsExpression());
-        List<ExprNode> right = coordinator.convertExpressionNode(node.getRhsExpressions());
+        List<ExprNode> left = coordinator.convertExpressionNode(node.getLhsExpression(), machineNode);
+        List<ExprNode> right = coordinator.convertExpressionNode(node.getRhsExpressions(), machineNode);
         resultSubstitutionNode = new AssignSubstitutionNode(getSourceCodePosition(node), left, right);
     }
 
@@ -157,7 +157,7 @@ public class SubstitutionVisitor extends AbstractVisitor{
         }
         resultSubstitutionNode = new BecomesElementOfSubstitutionNode(getSourceCodePosition(node),
                 exprList,
-                coordinator.convertExpressionNode(node.getSet()));
+                coordinator.convertExpressionNode(node.getSet(), machineNode));
     }
 
     @Override
@@ -275,7 +275,7 @@ public class SubstitutionVisitor extends AbstractVisitor{
                 coordinator.convertPredicateNode(node.getCondition(), machineNode),
                 coordinator.convertSubstitutionNode(node.getDoSubst(), machineNode),
                 coordinator.convertPredicateNode(node.getInvariant(), machineNode),
-                coordinator.convertExpressionNode(node.getVariant()));
+                coordinator.convertExpressionNode(node.getVariant(), machineNode));
     }
 
 

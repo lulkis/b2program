@@ -38,7 +38,7 @@ public class DefinitionVisitor extends AbstractVisitor{
         resultDefinitionNode = new DefinitionNode(getSourceCodePos(node),
                 node.getName().toString().replace(" ", ""),
                 declarationList,
-                coordinator.convertExpressionNode(node.getRhs()));
+                coordinator.convertExpressionNode(node.getRhs(), machineNode));
     }
 
     @Override
