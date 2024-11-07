@@ -2,6 +2,7 @@ package de.hhu.stups.codegenerator.ast.adapter;
 
 import de.be4.classicalb.core.parser.node.*;
 import de.hhu.stups.codegenerator.ast.VisitorCoordinator;
+import de.hhu.stups.codegenerator.ast.nodes.MachineNodeWithDefinitions;
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
@@ -804,8 +805,29 @@ public class ExpressionVisitor extends AbstractVisitor{
     }
 
     @Override
+    public void caseATransRelationExpression(ATransRelationExpression node) {
+        List<ExprNode> addList = new ArrayList<>();
+        addList.add(coordinator.convertExpressionNode(node.getExpression()));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                addList,
+                ExpressionOperatorNode.ExpressionOperator.REL);
+    }
+
+    @Override
     public void caseALetExpressionExpression(ALetExpressionExpression node) {
-        //TODO: Translation Let Expression Expression
+        List<DeclarationNode> identifierList = new ArrayList<>();
+        for (PExpression expression : node.getIdentifiers()) {
+            String name = expression.toString().replace(" ", "");
+            DeclarationNode decl = new DeclarationNode(getSourceCodePosition(expression),
+                    name,
+                    DeclarationNode.Kind.SUBSTITUION_IDENTIFIER,
+                    null);
+            identifierList.add(decl);
+        }
+        resultExpressionNode = new LetExpressionNode(getSourceCodePosition(node),
+                identifierList,
+                coordinator.convertPredicateNode(node.getAssignment(), machineNode),
+                coordinator.convertExpressionNode(node.getExpr(), machineNode));
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {
