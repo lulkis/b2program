@@ -10,6 +10,7 @@ import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorWithExprArgsNode;
 import de.prob.parser.ast.nodes.substitution.AnySubstitutionNode;
 
+import java.lang.annotation.Documented;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -498,7 +499,7 @@ public class ExpressionVisitor extends AbstractVisitor{
                 structList.add(coordinator.convertExpressionNode(((ARecEntry) expr).getValue()));
             }
         }
-        resultExpressionNode = new StructNode(getSourceCodePosition(node),
+        resultExpressionNode = new RecordNode(getSourceCodePosition(node),
                 declarationList,
                 structList);
     }
@@ -700,6 +701,111 @@ public class ExpressionVisitor extends AbstractVisitor{
     @Override
     public void caseAExtendedExprExpression(AExtendedExprExpression node) {
         //TODO: Translation Extended Expr Expression
+    }
+
+    @Override
+    public void caseAFatherExpression(AFatherExpression node) {
+        //TODO: Translation Father Expression
+    }
+
+    @Override
+    public void caseAFirstExpression(AFirstExpression node) {
+        //TODO: Translation First Expression
+    }
+
+    @Override
+    public void caseAFirstProjectionExpression(AFirstProjectionExpression node) {
+        //TODO: Translation First Projection Expression
+    }
+
+    @Override
+    public void caseAFloatSetExpression(AFloatSetExpression node) {
+        //TODO: Translation Float Set Expression
+    }
+
+    @Override
+    public void caseAFlooredDivExpression(AFlooredDivExpression node) {
+        //TODO: Translation Floored Div Expression
+    }
+
+    @Override
+    public void caseAFrontExpression(AFrontExpression node) {
+        //TODO: Translation Front Expression
+    }
+
+    @Override
+    public void caseAGeneralConcatExpression(AGeneralConcatExpression node) {
+        //TODO: Translation General Concat Expression
+    }
+
+    @Override
+    public void caseAGeneralProductExpression(AGeneralProductExpression node) {
+        //TODO: Translation General Product Expression
+    }
+
+    @Override
+    public void caseAGeneralSumExpression(AGeneralSumExpression node) {
+        //TODO: Translation General Sum Expression
+    }
+
+    @Override
+    public void caseAHexIntegerExpression(AHexIntegerExpression node) {
+        //TODO: Translation Hex Integer Expression
+    }
+
+    @Override
+    public void caseAIdentityExpression(AIdentityExpression node) {
+        //TODO: Translation Identity Expression
+    }
+
+    @Override
+    public void caseAIfElsifExprExpression(AIfElsifExprExpression node) {
+        //TODO: Translation If Elsif Expr Expression
+    }
+
+    @Override
+    public void caseAIfThenElseExpression(AIfThenElseExpression node) {
+        //TODO: Translation If Then Else Expression
+    }
+
+    @Override
+    public void caseAInfixExpression(AInfixExpression node) {
+        //TODO: Translation Infix Expression
+    }
+
+    @Override
+    public void caseAInsertFrontExpression(AInsertFrontExpression node) {
+        //TODO: Translation Insert Front Expression
+    }
+
+    @Override
+    public void caseAInsertTailExpression(AInsertTailExpression node) {
+        //TODO: Translation Insert Tail Expression
+    }
+
+    @Override
+    public void caseAIseq1Expression(AIseq1Expression node) {
+        //TODO: Translation Iseq1 Expression
+    }
+
+    @Override
+    public void caseAIseqExpression(AIseqExpression node) {
+        //TODO: Translation Iseq Expression
+    }
+
+    @Override
+    public void caseALastExpression(ALastExpression node) {
+        //TODO: Translation Last Expression
+    }
+
+    @Override
+    public void caseALeftExpression(ALeftExpression node) {
+        //TODO: Translation Left Expression
+    }
+
+    @Override
+    public void caseALetExpressionExpression(ALetExpressionExpression node) {
+        //TODO: Translation Let Expression Expression
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {
