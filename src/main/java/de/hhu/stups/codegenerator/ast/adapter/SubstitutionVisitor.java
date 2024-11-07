@@ -7,6 +7,7 @@ import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
+import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.substitution.*;
 import org.antlr.v4.runtime.Token;
@@ -138,21 +139,43 @@ public class SubstitutionVisitor extends AbstractVisitor{
 
     @Override
     public void caseAAssertionSubstitution(AAssertionSubstitution node){
-        //TODO: Translation Assertion Substitution
+        SubstitutionNode substitution = coordinator.convertSubstitutionNode(node.getSubstitution(), machineNode);
+        PredicateNode condition = coordinator.convertPredicateNode(node.getPredicate(), machineNode);
+        resultSubstitutionNode = new ConditionSubstitutionNode(getSourceCodePosition(node),
+                ConditionSubstitutionNode.Kind.ASSERT,
+                condition,
+                substitution);
     }
 
     @Override
     public void caseABecomesElementOfSubstitution(ABecomesElementOfSubstitution node){
-        //TODO: Translation Becomes Element Of Substitution
+        List<IdentifierExprNode> exprList = new ArrayList<>();
+        for (PExpression expression : node.getIdentifiers()){
+            exprList.add(new IdentifierExprNode(getSourceCodePosition(node),
+                    expression.toString().replace(" ", ""),
+                    false));
+        }
+        resultSubstitutionNode = new BecomesElementOfSubstitutionNode(getSourceCodePosition(node),
+                exprList,
+                coordinator.convertExpressionNode(node.getSet()));
     }
 
     @Override
     public void caseABecomesSuchSubstitution(ABecomesSuchSubstitution node){
-        //TODO: Translation Becomes Such Substitution
+        List<IdentifierExprNode> exprList = new ArrayList<>();
+        for (PExpression expression : node.getIdentifiers()){
+            exprList.add(new IdentifierExprNode(getSourceCodePosition(node),
+                    expression.toString().replace(" ", ""),
+                    false));
+        }
+        resultSubstitutionNode = new BecomesSuchThatSubstitutionNode(getSourceCodePosition(node),
+                exprList,
+                coordinator.convertPredicateNode(node.getPredicate(), machineNode));
     }
 
     @Override
     public void caseABlockSubstitution(ABlockSubstitution node){
+        node.getSubstitution().apply(this);
         //TODO: Translation Block Substitution
     }
 
@@ -224,16 +247,35 @@ public class SubstitutionVisitor extends AbstractVisitor{
     @Override
     public void caseASequenceSubstitution(ASequenceSubstitution node) {
         //TODO: Translation Sequence Substitution
+        resultSubstitutionNode = new ListSubstitutionNode(getSourceCodePosition(node),
+                ListSubstitutionNode.ListOperator.Sequential,
+                coordinator.convertSubstitutionNode(node.getSubstitutions(), machineNode));
     }
 
     @Override
     public void caseAVarSubstitution(AVarSubstitution node) {
-        //TODO: Translation Var Substitution
+        List<DeclarationNode> declarationNode = new ArrayList<>();
+        for (PExpression expression : node.getIdentifiers()) {
+            String name = expression.toString().replace(" ", "");
+            DeclarationNode decl = new DeclarationNode(getSourceCodePosition(expression),
+                    name,
+                    DeclarationNode.Kind.SUBSTITUION_IDENTIFIER,
+                    null);
+            declarationNode.add(decl);
+        }
+
+        resultSubstitutionNode = new VarSubstitutionNode(getSourceCodePosition(node),
+                declarationNode,
+                coordinator.convertSubstitutionNode(node.getSubstitution(), machineNode));
     }
 
     @Override
     public void caseAWhileSubstitution(AWhileSubstitution node) {
-        //TODO: Translation While Substitution
+        resultSubstitutionNode = new WhileSubstitutionNode(getSourceCodePosition(node),
+                coordinator.convertPredicateNode(node.getCondition(), machineNode),
+                coordinator.convertSubstitutionNode(node.getDoSubst(), machineNode),
+                coordinator.convertPredicateNode(node.getInvariant(), machineNode),
+                coordinator.convertExpressionNode(node.getVariant()));
     }
 
 
