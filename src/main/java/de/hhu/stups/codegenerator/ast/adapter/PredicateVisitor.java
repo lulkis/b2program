@@ -7,10 +7,7 @@ import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
-import de.prob.parser.ast.nodes.predicate.PredicateNode;
-import de.prob.parser.ast.nodes.predicate.PredicateOperatorNode;
-import de.prob.parser.ast.nodes.predicate.PredicateOperatorWithExprArgsNode;
-import de.prob.parser.ast.nodes.predicate.QuantifiedPredicateNode;
+import de.prob.parser.ast.nodes.predicate.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -331,7 +328,18 @@ public class PredicateVisitor  extends AbstractVisitor{
 
     @Override
     public void caseALetPredicatePredicate(ALetPredicatePredicate node){
-        //TODO: Translation Let Predicate Predicate
+        List<DeclarationNode> declarationList = new ArrayList<>();
+        for(PExpression expression : node.getIdentifiers()){
+            declarationList.add(new DeclarationNode(getSourceCodePosition(node),
+                    expression.toString().replace(" ", ""),
+                    DeclarationNode.Kind.SUBSTITUION_IDENTIFIER,
+                    machineNode));
+        }
+
+        resultPredicateNode = new LetPredicateNode(getSourceCodePosition(node),
+                declarationList,
+                coordinator.convertPredicateNode(node.getAssignment(), machineNode),
+                coordinator.convertPredicateNode(node.getPred(), machineNode));
     }
 
     @Override
