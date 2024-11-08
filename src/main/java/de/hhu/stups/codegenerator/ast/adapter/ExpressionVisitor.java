@@ -981,6 +981,111 @@ public class ExpressionVisitor extends AbstractVisitor{
         //TODO: Translation Ring Expression
     }
 
+    @Override
+    public void caseASecondProjectionExpression(ASecondProjectionExpression node){
+        //TODO: Translation Second Projection Expression
+    }
+
+    @Override
+    public void caseASeqExpression(ASeqExpression node){
+        //TODO: Translation Seq Expression
+    }
+
+    @Override
+    public void caseASeq1Expression(ASeq1Expression node){
+        //TODO: Translation Seq1 Expression
+    }
+
+    @Override
+    public void caseASequenceExtensionExpression(ASequenceExtensionExpression node){
+        //TODO: Translation Rev Expression
+    }
+
+    @Override
+    public void caseASetSubtractionExpression(ASetSubtractionExpression node){
+        //TODO: Translation Set Subtraction Expression
+    }
+
+    @Override
+    public void caseASizeExpression(ASizeExpression node){
+        //TODO: Translation Size Expression
+    }
+
+    @Override
+    public void caseASizetExpression(ASizetExpression node){
+        //TODO: Translation Sizet Expression
+    }
+
+    @Override
+    public void caseASonExpression(ASonExpression node){
+        //TODO: Translation Son Expression
+    }
+
+    @Override
+    public void caseASonsExpression(ASonsExpression node){
+        //TODO: Translation Sons Expression
+    }
+
+    @Override
+    public void caseAStringExpression(AStringExpression node){
+        //TODO: Translation String Expression
+    }
+
+    @Override
+    public void caseAStringSetExpression(AStringSetExpression node){
+        //TODO: Translation String Set Expression
+    }
+
+    @Override
+    public void caseASubtreeExpression(ASubtreeExpression node){
+        //TODO: Translation Subtree Expression
+    }
+
+    @Override
+    public void caseASymbolicCompositionExpression(ASymbolicCompositionExpression node){
+        //TODO: Translation Expression
+    }
+
+    @Override
+    public void caseASymbolicComprehensionSetExpression(ASymbolicComprehensionSetExpression node){
+        //TODO: Translation Expression
+    }
+
+    @Override
+    public void caseASymbolicLambdaExpression(ASymbolicLambdaExpression node){
+        //TODO: Translation Expression
+    }
+
+    @Override
+    public void caseASymbolicQuantifiedUnionExpression(ASymbolicQuantifiedUnionExpression node){
+        //TODO: Translation Expression
+    }
+
+    @Override
+    public void caseATailExpression(ATailExpression node){
+        //TODO: Translation Tail Expression
+    }
+
+    @Override
+    public void caseATopExpression(ATopExpression node){
+        //TODO: Translation Top Expression
+    }
+
+    @Override
+    public void caseATransFunctionExpression(ATransFunctionExpression node){
+        //TODO: Translation Trans Function Expression
+    }
+
+    @Override
+    public void caseATreeExpression(ATreeExpression node){
+        //TODO: Translation Tree Expression
+    }
+
+    @Override
+    public void caseATypeofExpression(ATypeofExpression node){
+        //TODO: Translation Typeof Expression
+    }
+
     private SourceCodePosition getSourceCodePosition(Node node) {
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
         sourceCodePosition.setStartColumn(node.getStartPos().getPos());
