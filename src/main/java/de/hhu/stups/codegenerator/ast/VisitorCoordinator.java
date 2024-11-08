@@ -3,11 +3,8 @@ package de.hhu.stups.codegenerator.ast;
 import de.be4.classicalb.core.parser.IDefinitions;
 import de.be4.classicalb.core.parser.node.*;
 import de.hhu.stups.codegenerator.ast.adapter.*;
-import de.prob.parser.ast.nodes.DefinitionNode;
-import de.prob.parser.ast.nodes.EnumeratedSetDeclarationNode;
-import de.prob.parser.ast.nodes.MachineNode;
+import de.prob.parser.ast.nodes.*;
 import de.prob.parser.ast.nodes.Node;
-import de.prob.parser.ast.nodes.OperationNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.substitution.SubstitutionNode;
@@ -103,6 +100,23 @@ public class VisitorCoordinator {
         List<DefinitionNode> resultList = new ArrayList<>();
         for(PDefinition node : nodeList){
             resultList.add(convertDefinitionNode(node, machineNode));
+        }
+        return resultList;
+    }
+
+
+
+
+    public MachineReferenceNode convertReferenceNode(PMachineReference node, MachineNode machineNode){
+        ReferenceVisitor visitor = new ReferenceVisitor(machineNode);
+        node.apply(visitor);
+        return visitor.getResult();
+    }
+
+    public List<MachineReferenceNode> convertReferenceNode(List<PMachineReference> nodeList, MachineNode machineNode){
+        List<MachineReferenceNode> resultList = new ArrayList<>();
+        for(PMachineReference node : nodeList){
+            resultList.add(convertReferenceNode(node, machineNode));
         }
         return resultList;
     }

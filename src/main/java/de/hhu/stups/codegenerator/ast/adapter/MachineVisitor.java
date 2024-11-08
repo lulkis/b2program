@@ -26,7 +26,7 @@ public class MachineVisitor extends AbstractVisitor{
     private List<OperationNode> operations;
     private List<de.prob.parser.ast.nodes.Node> setEnumerations = new ArrayList<>();
     private List<DefinitionNode> definitions = new ArrayList<>();
-
+    private List<MachineReferenceNode> machineReferences = new ArrayList<>();
     private IDefinitions iDefinitions;
 
     public MachineNode getResult(){
@@ -74,6 +74,11 @@ public class MachineVisitor extends AbstractVisitor{
     }
 
     @Override
+    public void caseAIncludesMachineClause(AIncludesMachineClause node){
+        machineReferences = coordinator.convertReferenceNode(node.getMachineReferences(), resultMachineNode);
+    }
+
+    @Override
     public void caseAInitialisationMachineClause(AInitialisationMachineClause node){
         initialisation = coordinator.convertSubstitutionNode(node.getSubstitutions(), resultMachineNode);
     }
@@ -110,6 +115,12 @@ public class MachineVisitor extends AbstractVisitor{
         if(properties != null){
             resultMachineNode.setProperties(properties);
         }
+//        if(machineReferences != null){
+//
+//            for(MachineReferenceNode machineReference : machineReferences){
+//                resultMachineNode.addMachineReferenceNode(machineReference);
+//            }
+//        }
         resultMachineNode.setOperations(operations);
         for(de.prob.parser.ast.nodes.Node set : setEnumerations){
             if(set instanceof EnumeratedSetDeclarationNode){
