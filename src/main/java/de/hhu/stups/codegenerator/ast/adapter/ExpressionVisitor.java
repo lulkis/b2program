@@ -642,6 +642,22 @@ public class ExpressionVisitor extends AbstractVisitor{
     @Override
     public void caseADefinitionExpression(ADefinitionExpression node){
         //TODO: Translation Definition Expression Expression
+        if(machineNode instanceof MachineNodeWithDefinitions){
+            PDefinition definition = ((MachineNodeWithDefinitions) machineNode).getIDefinition()
+                    .getDefinition(node.toString().replace(" ",""));
+
+            List<PExpression> definitionParameterList = new ArrayList<>();
+            for(PExpression expression : ((AExpressionDefinitionDefinition) definition).getParameters()){
+                definitionParameterList.add(expression.clone());
+            }
+
+            DefinitionParameterVisitor definitionParameterVisitor = new DefinitionParameterVisitor(definitionParameterList,
+                    node.getParameters());
+            definition.apply(definitionParameterVisitor);
+
+            ((AExpressionDefinitionDefinition) definition).setParameters(node.getParameters());
+            resultExpressionNode = coordinator.convertExpressionNode(((AExpressionDefinitionDefinition) definition).getRhs(), machineNode);
+        }
     }
 
     @Override
