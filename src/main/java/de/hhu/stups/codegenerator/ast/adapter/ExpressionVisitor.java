@@ -846,6 +846,141 @@ public class ExpressionVisitor extends AbstractVisitor{
                 coordinator.convertExpressionNode(node.getExpr(), machineNode));
     }
 
+    @Override
+    public void caseAIterationExpression(AIterationExpression node) {
+        //TODO: Translation Iterative Expression
+    }
+
+    @Override
+    public void caseAMinusExpression(AMinusExpression node) {
+        //TODO: Translation Minus Expression
+    }
+
+    @Override
+    public void caseAMirrorExpression(AMirrorExpression node) {
+        //TODO: Translation Mirror Expression
+    }
+
+    @Override
+    public void caseAMultilineStringExpression(AMultilineStringExpression node) {
+        //TODO: Translation Multiline String Expression
+    }
+
+    @Override
+    public void caseAMultilineTemplateExpression(AMultilineTemplateExpression node) {
+        //TODO: Translation Multiline Template Expression
+    }
+
+    @Override
+    public void caseAMultiplicationExpression(AMultiplicationExpression node) {
+        //TODO: Translation Multiplication Expression
+    }
+
+    @Override
+    public void caseAOperationCallExpression(AOperationCallExpression node){
+        //TODO: Translation Operation Call Expression
+    }
+
+    @Override
+    public void caseAOperatorExpression(AOperatorExpression node){
+        //TODO: Translation Operator Expression
+    }
+
+    @Override
+    public void caseAParallelProductExpression(AParallelProductExpression node){
+        //TODO: Translation Parallel Product Expression
+    }
+
+    @Override
+    public void caseAPermExpression(APermExpression node){
+        //TODO: Translation Perm Expression
+    }
+
+    @Override
+    public void caseAPostfixExpression(APostfixExpression node){
+        //TODO: Translation Postfix Expression
+    }
+
+    @Override
+    public void caseAPrefixExpression(APrefixExpression node){
+        //TODO: Translation Prefix Expression
+    }
+
+    @Override
+    public void caseAPrimedIdentifierExpression(APrimedIdentifierExpression node){
+        //TODO: Translation Primed Identifier Expression
+    }
+
+    @Override
+    public void caseAQuantifiedIntersectionExpression(AQuantifiedIntersectionExpression node){
+        //TODO: Translation Quantified Intersection Expression
+    }
+
+    @Override
+    public void caseAQuantifiedUnionExpression(AQuantifiedUnionExpression node){
+        //TODO: Translation Quantified Union Expression
+    }
+
+    @Override
+    public void caseARangeRestrictionExpression(ARangeRestrictionExpression node){
+        //TODO: Translation Range Restriction Expression
+    }
+
+    @Override
+    public void caseARangeSubtractionExpression(ARangeSubtractionExpression node){
+        //TODO: Translation Range Subtraction Expression
+    }
+
+    @Override
+    public void caseARankExpression(ARankExpression node){
+        //TODO: Translation Rank Expression
+    }
+
+    @Override
+    public void caseARealExpression(ARealExpression node){
+        //TODO: Translation Real Expression
+    }
+
+    @Override
+    public void caseARealSetExpression(ARealSetExpression node){
+        //TODO: Translation Real Set Expression
+    }
+
+    @Override
+    public void caseAReflexiveClosureExpression(AReflexiveClosureExpression node){
+        //TODO: Translation Reflexive Closure Expression
+    }
+
+    @Override
+    public void caseARestrictFrontExpression(ARestrictFrontExpression node){
+        //TODO: Translation Restrict Front Expression
+    }
+
+    @Override
+    public void caseARestrictTailExpression(ARestrictTailExpression node){
+        //TODO: Translation Restrict Tail Expression
+    }
+
+    @Override
+    public void caseAReverseExpression(AReverseExpression node){
+        //TODO: Translation Reverse Expression
+    }
+
+    @Override
+    public void caseARevExpression(ARevExpression node){
+        //TODO: Translation Rev Expression
+    }
+
+    @Override
+    public void caseARightExpression(ARightExpression node){
+        //TODO: Translation Right Expression
+    }
+
+    @Override
+    public void caseARingExpression(ARingExpression node){
+        //TODO: Translation Ring Expression
+    }
+
     private SourceCodePosition getSourceCodePosition(Node node) {
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
         sourceCodePosition.setStartColumn(node.getStartPos().getPos());
