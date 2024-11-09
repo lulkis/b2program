@@ -441,6 +441,8 @@ public class ExpressionVisitor extends AbstractVisitor{
             exprNodeList.add(coordinator.convertExpressionNode(node.getIdentifier(), machineNode));
         }
 
+        exprNodeList.addAll(coordinator.convertExpressionNode(node.getParameters(), machineNode));
+
         resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
                 exprNodeList,
                 operator);
