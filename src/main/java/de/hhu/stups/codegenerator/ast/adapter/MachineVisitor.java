@@ -121,7 +121,9 @@ public class MachineVisitor extends AbstractVisitor{
 //                resultMachineNode.addMachineReferenceNode(machineReference);
 //            }
 //        }
-        resultMachineNode.setOperations(operations);
+        if(operations != null){
+            resultMachineNode.setOperations(operations);
+        }
         for(de.prob.parser.ast.nodes.Node set : setEnumerations){
             if(set instanceof EnumeratedSetDeclarationNode){
                 resultMachineNode.addSetEnumeration((EnumeratedSetDeclarationNode) set);
