@@ -48,10 +48,14 @@ public class SubstitutionVisitor extends AbstractVisitor{
 
     @Override
     public void caseASelectSubstitution(ASelectSubstitution node){
+        List<PredicateNode> predcateList = new ArrayList<>();
+        predcateList.add(coordinator.convertPredicateNode(node.getCondition(), machineNode));
+        List<SubstitutionNode> substitutionList = new ArrayList<>();
+        substitutionList.add(coordinator.convertSubstitutionNode(node.getThen(), machineNode));
         resultSubstitutionNode = new IfOrSelectSubstitutionsNode(getSourceCodePosition(node),
                 IfOrSelectSubstitutionsNode.Operator.SELECT,
-                List.of(coordinator.convertPredicateNode(node.getCondition(), machineNode)),
-                List.of(coordinator.convertSubstitutionNode(node.getThen(), machineNode)),
+                predcateList,
+                substitutionList,
                 coordinator.convertSubstitutionNode(node.getElse(), machineNode));
     }
 
@@ -231,7 +235,13 @@ public class SubstitutionVisitor extends AbstractVisitor{
 
     @Override
     public void caseAOpSubstitution(AOpSubstitution node){
-        //TODO: Translation Op Substitution
+        List<ExprNode> arguments = new ArrayList<>();
+        arguments.addAll(coordinator.convertExpressionNode(node.getParameters(), machineNode));
+        List<String> names = new ArrayList<>();
+        names.add(node.getName().toString().replace(" ", ""));
+        resultSubstitutionNode = new OperationCallSubstitutionNode(getSourceCodePosition(node),
+                names,
+                arguments);
     }
 
     @Override
