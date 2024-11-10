@@ -156,16 +156,18 @@ public class PredicateVisitor  extends AbstractVisitor{
 
     @Override
     public void caseATruthPredicate(ATruthPredicate node){
+        List<PredicateNode> predicateList = new ArrayList<>();
         resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
                 PredicateOperatorNode.PredicateOperator.TRUE,
-                null);
+                predicateList);
     }
 
     @Override
     public void caseAFalsityPredicate(AFalsityPredicate node){
+        List<PredicateNode> predicateList = new ArrayList<>();
         resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
                 PredicateOperatorNode.PredicateOperator.FALSE,
-                null);
+                predicateList);
     }
     //END: Logical Predicates
 
