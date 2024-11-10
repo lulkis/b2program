@@ -67,14 +67,6 @@ public class SubstitutionVisitor extends AbstractVisitor{
     }
 
     @Override
-    public void caseAChoiceOrSubstitution(AChoiceOrSubstitution node){
-        List<SubstitutionNode> choiceList = new ArrayList<>();
-        choiceList.add(coordinator.convertSubstitutionNode(node.getSubstitution(), machineNode));
-        resultSubstitutionNode = new ChoiceSubstitutionNode(getSourceCodePosition(node),
-                choiceList);
-    }
-
-    @Override
     public void caseASkipSubstitution(ASkipSubstitution node){
         resultSubstitutionNode = new SkipSubstitutionNode(getSourceCodePosition(node));
     }
@@ -98,8 +90,16 @@ public class SubstitutionVisitor extends AbstractVisitor{
 
     @Override
     public void caseAChoiceSubstitution(AChoiceSubstitution node){
+        List<SubstitutionNode> substitutionList = new ArrayList<>();
+        for(PSubstitution substitution : node.getSubstitutions()){
+            if(substitution instanceof AChoiceOrSubstitution){
+                substitutionList.add(coordinator.convertSubstitutionNode(((AChoiceOrSubstitution) substitution).getSubstitution(), machineNode));
+            } else {
+                substitutionList.add(coordinator.convertSubstitutionNode(substitution, machineNode));
+            }
+        }
         resultSubstitutionNode = new ChoiceSubstitutionNode(getSourceCodePosition(node),
-                coordinator.convertSubstitutionNode(node.getSubstitutions(), machineNode));
+                substitutionList);
     }
 
     @Override
