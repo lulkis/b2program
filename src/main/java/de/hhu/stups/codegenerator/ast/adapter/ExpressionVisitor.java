@@ -428,8 +428,6 @@ public class ExpressionVisitor extends AbstractVisitor{
         List<ExprNode> exprNodeList = new ArrayList<>();
         ExpressionOperatorNode.ExpressionOperator operator;
 
-        exprNodeList.addAll(coordinator.convertExpressionNode(node.getParameters(), machineNode));
-
         if(node.getIdentifier() instanceof ASuccessorExpression){
             operator = ExpressionOperatorNode.ExpressionOperator.SUCC;
         }
@@ -795,7 +793,12 @@ public class ExpressionVisitor extends AbstractVisitor{
 
     @Override
     public void caseAFirstProjectionExpression(AFirstProjectionExpression node) {
-        //TODO: Translation First Projection Expression
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getExp1(), machineNode));
+        exprList.add(coordinator.convertExpressionNode(node.getExp2(), machineNode));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                exprList,
+                ExpressionOperatorNode.ExpressionOperator.PRJ1);
     }
 
     @Override
@@ -1173,7 +1176,12 @@ public class ExpressionVisitor extends AbstractVisitor{
 
     @Override
     public void caseASecondProjectionExpression(ASecondProjectionExpression node){
-        //TODO: Translation Second Projection Expression
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getExp1(), machineNode));
+        exprList.add(coordinator.convertExpressionNode(node.getExp2(), machineNode));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                exprList,
+                ExpressionOperatorNode.ExpressionOperator.PRJ2);
     }
 
     @Override
@@ -1290,6 +1298,11 @@ public class ExpressionVisitor extends AbstractVisitor{
     @Override
     public void caseATransFunctionExpression(ATransFunctionExpression node){
         //TODO: Translation Trans Function Expression
+        List<ExprNode> exprList = new ArrayList<>();
+        exprList.add(coordinator.convertExpressionNode(node.getExpression(), machineNode));
+        resultExpressionNode = new ExpressionOperatorNode(getSourceCodePosition(node),
+                exprList,
+                ExpressionOperatorNode.ExpressionOperator.FNC);
     }
 
     @Override
