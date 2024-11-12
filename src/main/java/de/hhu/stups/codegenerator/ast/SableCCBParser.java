@@ -3,6 +3,7 @@ package de.hhu.stups.codegenerator.ast;
 import de.be4.classicalb.core.parser.BParser;
 import de.be4.classicalb.core.parser.exceptions.BCompoundException;
 import de.be4.classicalb.core.parser.node.Start;
+import de.hhu.stups.codegenerator.ast.nodes.MachineNodeWithDefinitions;
 import de.prob.parser.antlr.BProject;
 import de.prob.parser.antlr.ScopeException;
 import de.prob.parser.ast.nodes.MachineNode;
@@ -21,6 +22,8 @@ import java.util.*;
 
 public class SableCCBParser {
 
+    private static BParser parser = new BParser();
+
     public static BProject createBProjectFromMainMachineFile(File mainBFile, boolean typecheck, boolean scopecheck) throws IOException, TypeErrorException, ScopeException, BCompoundException {
         final File parentFolder = mainBFile.getParentFile();
         final List<MachineNode> machines = new ArrayList<>();
@@ -28,7 +31,7 @@ public class SableCCBParser {
 
 
         VisitorCoordinator coordinator = new VisitorCoordinator();
-        final MachineNode main = coordinator.convertMachineNode(mainMachineCST);
+        final MachineNode main = (MachineNodeWithDefinitions) coordinator.convertMachineNode(mainMachineCST, parser.getDefinitions());
 
         checkMachineName(mainBFile, main.getName());
 
@@ -45,7 +48,7 @@ public class SableCCBParser {
                 final File file = getFile(parentFolder, name);
                 //checkMachineName(file, name);
                 final Start cst = parse(file);
-                final MachineNode ast = coordinator.convertMachineNode(cst);
+                final MachineNode ast = (MachineNodeWithDefinitions) coordinator.convertMachineNode(cst, parser.getDefinitions());
                 ast.setPrefix(next.getPrefix());
                 machines.add(ast);
                 for (MachineReferenceNode machineReferenceNode : ast.getMachineReferences()) {
@@ -64,15 +67,12 @@ public class SableCCBParser {
     }
 
     public static Start parse(File bFile) throws IOException, BCompoundException {
-        BParser parser = new BParser();
-
 //        FileInputStream fileInputStream = new FileInputStream(bFile);
 //        CharStream charStream = CharStreams.fromStream(fileInputStream);
         return parser.parseFile(bFile);
     }
 
     public static Start parse(final CharStream charStream) throws BCompoundException {
-        BParser parser = new BParser();
         System.out.println(String.valueOf(charStream));
         return parser.parseFile(new File(String.valueOf(charStream)));
     }
