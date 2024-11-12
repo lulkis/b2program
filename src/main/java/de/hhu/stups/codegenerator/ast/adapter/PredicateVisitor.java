@@ -30,30 +30,15 @@ public class PredicateVisitor  extends AbstractVisitor{
     //START: Logical Predicates
     @Override
     public void caseAConjunctPredicate(AConjunctPredicate node){
-        /*
-        List<PredicateNode> list = new ArrayList<PredicateNode>();
-
-        System.out.println("Right: " + node.getRight().getClass());
-        System.out.println("Left: " + node.getLeft().getClass());
-
-        list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
-        list.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
-        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
-                PredicateOperatorNode.PredicateOperator.AND,
-                list);
-        List<PredicateNode> list = new ArrayList<PredicateNode>();
-         */
-
         List<PredicateNode> predicateList = new ArrayList<>();
-        //list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
         if(node.getLeft() instanceof AConjunctPredicate){
-            AConjunctPredicate test = node;
-            while(test.getLeft() instanceof AConjunctPredicate){
-                predicateList.add(coordinator.convertPredicateNode(test.getRight(), machineNode));
-                test = (AConjunctPredicate) test.getLeft();
+            AConjunctPredicate nextNode = node;
+            while(nextNode.getLeft() instanceof AConjunctPredicate){
+                predicateList.add(coordinator.convertPredicateNode(nextNode.getRight(), machineNode));
+                nextNode = (AConjunctPredicate) nextNode.getLeft();
             }
-            predicateList.add(coordinator.convertPredicateNode(test.getRight(), machineNode));
-            predicateList.add(coordinator.convertPredicateNode(test.getLeft(), machineNode));
+            predicateList.add(coordinator.convertPredicateNode(nextNode.getRight(), machineNode));
+            predicateList.add(coordinator.convertPredicateNode(nextNode.getLeft(), machineNode));
         }
         else {
             predicateList.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
@@ -67,23 +52,15 @@ public class PredicateVisitor  extends AbstractVisitor{
 
     @Override
     public void caseADisjunctPredicate(ADisjunctPredicate node){
-//        List<PredicateNode> predicateList = new ArrayList<>();
-//        predicateList.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
-//        predicateList.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
-//        resultPredicateNode = new PredicateOperatorNode(getSourceCodePosition(node),
-//                PredicateOperatorNode.PredicateOperator.OR,
-//                predicateList);
-
         List<PredicateNode> predicateList = new ArrayList<>();
-        //list.add(coordinator.convertPredicateNode(node.getLeft(), machineNode));
         if(node.getLeft() instanceof ADisjunctPredicate){
-            ADisjunctPredicate test = node;
-            while(test.getLeft() instanceof ADisjunctPredicate){
-                predicateList.add(coordinator.convertPredicateNode(test.getRight(), machineNode));
-                test = (ADisjunctPredicate) test.getLeft();
+            ADisjunctPredicate nextNode = node;
+            while(nextNode.getLeft() instanceof ADisjunctPredicate){
+                predicateList.add(coordinator.convertPredicateNode(nextNode.getRight(), machineNode));
+                nextNode = (ADisjunctPredicate) nextNode.getLeft();
             }
-            predicateList.add(coordinator.convertPredicateNode(test.getRight(), machineNode));
-            predicateList.add(coordinator.convertPredicateNode(test.getLeft(), machineNode));
+            predicateList.add(coordinator.convertPredicateNode(nextNode.getRight(), machineNode));
+            predicateList.add(coordinator.convertPredicateNode(nextNode.getLeft(), machineNode));
         }
         else {
             predicateList.add(coordinator.convertPredicateNode(node.getRight(), machineNode));
