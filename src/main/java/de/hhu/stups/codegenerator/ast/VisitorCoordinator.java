@@ -88,6 +88,14 @@ public class VisitorCoordinator {
         return resultList;
     }
 
+    public List<PredicateNode> convertPredicateNode(List<PPredicate> nodeList, MachineNode machineNode){
+        List<PredicateNode> resultList = new ArrayList<>();
+        for (PPredicate node : nodeList){
+            resultList.add(convertPredicateNode(node, machineNode));
+        }
+        return resultList;
+    }
+
     public List<Node> convertSetNode(List<PSet> nodeList, MachineNode machineNode){
         List<Node> resultList = new ArrayList<>();
         for(PSet node : nodeList){
