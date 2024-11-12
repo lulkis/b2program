@@ -180,7 +180,6 @@ public class SubstitutionVisitor extends AbstractVisitor{
     @Override
     public void caseABlockSubstitution(ABlockSubstitution node){
         node.getSubstitution().apply(this);
-        //TODO: Translation Block Substitution
     }
 
     @Override
@@ -225,7 +224,18 @@ public class SubstitutionVisitor extends AbstractVisitor{
 
     @Override
     public void caseAOperationCallSubstitution(AOperationCallSubstitution node){
-        //TODO: Translation Operation Call Substitution
+        List<String> names = new ArrayList<>();
+        for(TIdentifierLiteral identifierLiteral : node.getOperation()){
+            names.add(identifierLiteral.toString().replace(" ",""));
+        }
+        List<ExprNode> arguments = new ArrayList<>();
+        arguments.addAll(coordinator.convertExpressionNode(node.getParameters(), machineNode));
+        List<ExprNode> assigned = new ArrayList<>();
+        assigned.addAll(coordinator.convertExpressionNode(node.getResultIdentifiers(), machineNode));
+        resultSubstitutionNode = new OperationCallSubstitutionNode(getSourceCodePosition(node),
+                names,
+                arguments,
+                assigned);
     }
 
     @Override
@@ -256,7 +266,6 @@ public class SubstitutionVisitor extends AbstractVisitor{
 
     @Override
     public void caseASequenceSubstitution(ASequenceSubstitution node) {
-        //TODO: Translation Sequence Substitution
         resultSubstitutionNode = new ListSubstitutionNode(getSourceCodePosition(node),
                 ListSubstitutionNode.ListOperator.Sequential,
                 coordinator.convertSubstitutionNode(node.getSubstitutions(), machineNode));
