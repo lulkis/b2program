@@ -68,8 +68,10 @@ public class DefinitionVisitor extends AbstractVisitor{
 
     private SourceCodePosition getSourceCodePos(Node node){
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
-        sourceCodePosition.setStartColumn(node.getStartPos().getPos());
-        sourceCodePosition.setStartLine(node.getStartPos().getLine());
+        if(node.getStartPos() != null){
+            sourceCodePosition.setStartColumn(node.getStartPos().getPos());
+            sourceCodePosition.setStartLine(node.getStartPos().getLine());
+        }
         sourceCodePosition.setText(node.toString().replace(" ", ""));
         return sourceCodePosition;
     }

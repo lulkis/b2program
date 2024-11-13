@@ -301,8 +301,10 @@ public class SubstitutionVisitor extends AbstractVisitor{
 
     private SourceCodePosition getSourceCodePosition(Node node) {
         SourceCodePosition sourceCodePosition = new SourceCodePosition();
-        sourceCodePosition.setStartColumn(node.getStartPos().getPos());
-        sourceCodePosition.setStartLine(node.getStartPos().getLine());
+        if(node.getStartPos() != null){
+            sourceCodePosition.setStartColumn(node.getStartPos().getPos());
+            sourceCodePosition.setStartLine(node.getStartPos().getLine());
+        }
         sourceCodePosition.setText(node.toString().replace(" ", ""));
         return sourceCodePosition;
     }
