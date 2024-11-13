@@ -1,3 +1,15 @@
+# B2Program with SableCC
+
+Dies ist eine modifizierte Version von B2Program die einen von SableCC genereirten AST verwendet. Das Tool befindet
+sich unter ```src/main/java/de/hhu/stups/codegenerator/ast```. In dem Package befinden sich die Hauptklasse ```SableCCParser```, 
+die analog zum ```Antlr4BParser``` funktioniert. Unter dem Package ```ast/adapter``` sind alle Visitoren zur Übersetzung zu finden.
+B2Program sollte im Ganzen normal benutzbar sein, wie unten beschrieben.
+
+Benchmarks sind mithilfe von JMH umgesetzt. Um diese auszuführen kann man folgenden Befehl ausführen:
+```bash
+gradle jmh
+```
+
 # B2Program
 
 This is the code generator **B2Program** for generating code from B to other
