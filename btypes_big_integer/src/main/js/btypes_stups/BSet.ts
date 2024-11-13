@@ -164,37 +164,24 @@ export class BSet<T extends BObject> implements BObject{
 	}
 
 	subset(other: BSet<T>): BBoolean {
-		this_set_loop:
-		for (let elem of this.set) {
-			for (let other_elem of other.set) {
-				if (other_elem.equals(elem)) {
-					continue this_set_loop;
-				}
-			}
-			return new BBoolean(false);
-		}
-		return new BBoolean(true);
+        for(let element of this.set) {
+            if(!other.getSet().has(element)) {
+                return new BBoolean(false);
+            }
+        }
+        return new BBoolean(true);
 	}
 
 	notSubset(other: BSet<T>): BBoolean {
-		this_set_loop:
-			for (let elem of this.set) {
-				for (let other_elem of other.set) {
-					if (other_elem.equals(elem)) {
-						continue this_set_loop;
-					}
-				}
-				return new BBoolean(true);
-			}
-		return new BBoolean(false);
+        return this.subset(other).not();
 	}
 
 	strictSubset(other: BSet<T>): BBoolean {
-		return this.size().less(other.size()).and(this.subset(other));
+	    return new BBoolean(other.getSet().size != this.set.size && this.subset(other).booleanValue());
 	}
 
 	strictNotSubset(other: BSet<T>): BBoolean {
-		return this.size().equal(other.size()).and(this.notSubset(other));
+	    return this.strictSubset(other).not();
 	}
 
 	contains(other: T): boolean {
@@ -222,11 +209,11 @@ export class BSet<T extends BObject> implements BObject{
 	}
 
 	equal(other: any): BBoolean {
-	    return new BBoolean(this.equals(other));
+	    return this.subset(other).and(other.subset(this));
 	}
 
 	unequal(other: any): BBoolean {
-		return new BBoolean(!this.equals(other));
+		return this.equal(other).not();
 	}
 
 	nondeterminism(): T {
@@ -238,11 +225,19 @@ export class BSet<T extends BObject> implements BObject{
 	}
 
 	min(): T {
-		return this.set.reduce((a: T, v: T) => {if(a<v){return a} return v});
+	    if(this.size().intValue() == 0) {
+            throw new Error("Minimum does not exist");
+	    }
+        let result = this.set.reduce((a: BInteger, b: BInteger) => a.lessEqual(b).booleanValue() ? a : b);
+        return result;
 	}
 
 	max(): T {
-		return this.set.reduce((a: T, v: T) => {if(a>v){return a} return v});
+	    if(this.size().intValue() == 0) {
+            throw new Error("Maximum does not exist");
+	    }
+        let result = this.set.reduce((a: BInteger, b: BInteger) => a.greaterEqual(b).booleanValue() ? a : b);
+        return result;
 	}
 
 	pow(): BSet<BSet<T>> {
@@ -278,97 +273,136 @@ export class BSet<T extends BObject> implements BObject{
 		return this.pow1();
 	}
 
-	subsetOfInteger(): boolean {
-		for (let element of this.set) {
-			if (element ! instanceof BInteger) {
-				return false;
+	subsetOfBoolean(): BBoolean {
+		for(let e of this.getSet()) {
+			if(e instanceof BBoolean) {
+				return new BBoolean(true);
+			} else {
+				return new BBoolean(false);
 			}
 		}
-		return true;
+		return new BBoolean(true);
 	}
 
-	strictSubsetOfInteger(): boolean {
+	strictSubsetOfBoolean(): BBoolean {
+		return this.subsetOfBoolean();
+	}
+
+	notSubsetOfBoolean(): BBoolean {
+		return this.subsetOfBoolean().not();
+	}
+
+	equalBoolean(): BBoolean {
+		return new BBoolean(this.subsetOfBoolean().booleanValue() && this.size().intValue() == 2);
+	}
+
+	unequalBoolean(): BBoolean {
+		return new BBoolean(this.subsetOfBoolean().booleanValue() && this.size().intValue() < 2);
+	}
+
+	subsetOfInteger(): BBoolean {
+		for (let element of this.set) {
+			if (!(element instanceof BInteger)) {
+				return new BBoolean(false);
+			}
+		}
+		return new BBoolean(true);
+	}
+
+	strictSubsetOfInteger(): BBoolean {
 		return this.subsetOfInteger();
 	}
 
-	notSubsetOfInteger(): boolean {
-		return !this.subsetOfInteger();
+	notSubsetOfInteger(): BBoolean {
+		return this.subsetOfInteger().not();
 	}
 
-	notStrictSubsetOfInteger(): boolean {
-		return !this.strictSubsetOfInteger();
+	notStrictSubsetOfInteger(): BBoolean {
+		return this.strictSubsetOfInteger().not();
 	}
 
-	subsetOfNatural(): boolean {
+	subsetOfNatural(): BBoolean {
 		for (let element of this.set) {
 			if (!(element instanceof BInteger && element.isNatural().booleanValue())) {
-				return false;
+				return new BBoolean(false);
 			}
 		}
-		return true
+		return new BBoolean(true)
 	}
 
-	strictSubsetOfNatural(): boolean {
+	strictSubsetOfNatural(): BBoolean {
 		return this.subsetOfNatural()
 	}
 
-	notSubsetOfNatural(): boolean {
-		return !this.subsetOfNatural()
+	notSubsetOfNatural(): BBoolean {
+		return this.subsetOfNatural().not()
 	}
 
-	notStrictSubsetOfNatural(): boolean {
-		return !this.strictSubsetOfNatural()
+	notStrictSubsetOfNatural(): BBoolean {
+		return this.strictSubsetOfNatural().not()
 	}
 
-	subsetOfNatural1(): boolean {
+	subsetOfNatural1(): BBoolean {
 		for (let element of this.set) {
 			if (!(element instanceof BInteger && element.isNatural1().booleanValue())) {
-				return false;
+				return new BBoolean(false);
 			}
 		}
-		return true
+		return new BBoolean(true)
 	}
 
-	subsetOfString(): boolean {
+	strictSubsetOfNatural1(): BBoolean {
+		return this.subsetOfNatural1()
+	}
+
+	notSubsetOfNatural1(): BBoolean {
+		return this.subsetOfNatural1().not()
+	}
+
+	notStrictSubsetOfNatural1(): BBoolean {
+		return this.strictSubsetOfNatural1().not()
+	}
+
+	subsetOfString(): BBoolean {
 		for (let element of this.set) {
 			if (!(element instanceof BString)) {
-				return false
+				return new BBoolean(false)
 			}
 		}
-		return true
+		return new BBoolean(true)
 	}
 
-	strictSubsetOfString(): boolean {
+	strictSubsetOfString(): BBoolean {
 		return this.subsetOfString()
 	}
 
-	notSubsetOfString(): boolean {
-		return !this.subsetOfString()
+	notSubsetOfString(): BBoolean {
+		return this.subsetOfString().not()
 	}
 
-	notStrictSubsetOfString(): boolean {
-		return !this.strictSubsetOfString()
+	notStrictSubsetOfString(): BBoolean {
+		return this.strictSubsetOfString().not()
 	}
 
-	subsetOfStruct(): boolean {
+	subsetOfStruct(): BBoolean {
 		for (let element of this.set) {
 			if (!(element instanceof BStruct)) {
-				return false;
+				return new BBoolean(false);
 			}
 		}
-		return true;
+		return new BBoolean(true);
 	}
 
-	strictSubsetOfStruct(): boolean {
+	strictSubsetOfStruct(): BBoolean {
 		return this.subsetOfStruct()
 	}
 
-	notSubsetOfStruct(): boolean {
-		return !this.subsetOfStruct()
+	notSubsetOfStruct(): BBoolean {
+		return this.subsetOfStruct().not()
 	}
 
-	notStrictSubsetOfStruct(): boolean {
-		return !this.strictSubsetOfStruct()
+	notStrictSubsetOfStruct(): BBoolean {
+		return this.strictSubsetOfStruct().not()
 	}
 
 	equalInteger(): BBoolean {
@@ -416,11 +450,16 @@ export class BSet<T extends BObject> implements BObject{
 	}
 
 	static interval(a: BInteger, b: BInteger): BSet<BInteger> {
-		if (b.less(a).booleanValue()) {
-			return new BSet();
-		}
-		const range = [...Array(b.minus(a).intValue() +1).keys()].map(e => new BInteger(e).plus(a));
-		return new BSet(immutable.Set(range));
+        if (b.less(a).booleanValue()) {
+            return new BSet();
+        }
+
+        let persistentSet =  immutable.Set();
+        for(let i = a; i.lessEqual(b).booleanValue(); i = i.plus(new BInteger(1))) {
+            persistentSet = persistentSet.add(i);
+        }
+
+        return new BSet(persistentSet);
 	}
 
 	hashCode(): number {

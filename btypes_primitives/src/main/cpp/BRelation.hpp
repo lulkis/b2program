@@ -258,7 +258,7 @@ class BRelation : public BObject {
             return BRelation<S,T>(resultMap);
         }
 
-        BRelation<S,T> _union(const BRelation<S,T>& relation) {
+        BRelation<S,T> _union(const BRelation<S,T>& relation) const {
             immer::map<S,immer::set<T, typename BSet<T>::Hash, typename BSet<T>::HashEqual>,
                                                                typename BSet<S>::Hash,
                                                                typename BSet<S>::HashEqual> thisMap = this->map;
@@ -322,9 +322,7 @@ class BRelation : public BObject {
                 }
                 immer::set<T, typename BSet<T>::Hash, typename BSet<T>::HashEqual> range = *rangePtr;
                 for (const T& rangeElement : range) {
-                    if(resultSet.count(rangeElement) == 0) {
-                        resultSet = resultSet.insert(rangeElement);
-                    }
+                    resultSet = resultSet.insert(rangeElement);
                 }
             }
             return BSet<T>(resultSet);
@@ -386,6 +384,13 @@ class BRelation : public BObject {
             return BSet<S>(resultSet);
     	}
 
+        BRelation domainForRelations() const {
+            BRelation result = BRelation();
+            for(const S& elem : this->domain()) {
+                result = result._union(BRelation(elem));
+            }
+            return result;
+        }
 
         BBoolean isInDomain(const S& arg) const {
             immer::map<S,immer::set<T, typename BSet<T>::Hash, typename BSet<T>::HashEqual>,
@@ -399,14 +404,7 @@ class BRelation : public BObject {
         }
 
         BBoolean isNotInDomain(const S& arg) const {
-            immer::map<S,immer::set<T, typename BSet<T>::Hash, typename BSet<T>::HashEqual>,
-                                                               typename BSet<S>::Hash,
-                                                               typename BSet<S>::HashEqual> thisMap = this->map;
-            const immer::set<T, typename BSet<T>::Hash, typename BSet<T>::HashEqual>* rangePtr = thisMap.find(arg);
-            if(rangePtr == nullptr) {
-                return BBoolean(true);
-            }
-            return BBoolean(false);
+            return isInDomain(arg)._not();
         }
 
     	BSet<T> range() const {
@@ -422,28 +420,26 @@ class BRelation : public BObject {
             return BSet<T>(resultSet);
     	}
 
+        BRelation rangeForRelations() const {
+            BRelation result = BRelation();
+            for(const T& elem : this->range()) {
+                result = result._union(new BRelation((T) elem));
+            }
+            return result;
+        }
+
         BBoolean isInRange(const T& arg) const {
             for(const std::pair<S,immer::set<T, typename BSet<T>::Hash, typename BSet<T>::HashEqual>>& pair : this->map) {
                 immer::set<T, typename BSet<T>::Hash, typename BSet<T>::HashEqual> thisRangeSet = pair.second;
-                for (const T& obj : thisRangeSet) {
-                    if(thisRangeSet.count(obj) > 0) {
-                        return BBoolean(true);
-                    }
+                if(thisRangeSet.count(arg) > 0) {
+                    return BBoolean(true);
                 }
             }
             return BBoolean(false);
         }
 
         BBoolean isNotInRange(const T& arg) const {
-            for(const std::pair<S,immer::set<T, typename BSet<T>::Hash, typename BSet<T>::HashEqual>>& pair : this->map) {
-                immer::set<T, typename BSet<T>::Hash, typename BSet<T>::HashEqual> thisRangeSet = pair.second;
-                for (const T& obj : thisRangeSet) {
-                    if(thisRangeSet.count(obj) == 0) {
-                        return BBoolean(false);
-                    }
-                }
-            }
-            return BBoolean(true);
+            return isInRange(arg)._not();
         }
 
         BBoolean isInRelationalImage(const T& element, const BSet<S>& set) const {
@@ -616,6 +612,14 @@ class BRelation : public BObject {
 
         BBoolean notSubset(const BRelation<S,T>& arg) const {
             return subset(arg)._not();
+        }
+
+        BBoolean strictSubset(const BRelation<S,T>& set) const {
+            return BBoolean(set.size() != this->size() && this->subset(set).booleanValue());
+        }
+
+        BBoolean strictNotSubset(const BRelation<S, T>& set) const {
+            return BBoolean(set.size() == this->size() || !this->subset(set).booleanValue());
         }
 
     	BSet<BRelation<S,T>> pow() const {
@@ -898,7 +902,7 @@ class BRelation : public BObject {
                                                                typename BSet<T>::Hash,
                                                                typename BSet<T>::HashEqual> otherMap = arg.map;
 
-            immer::map<S,immer::set<T, typename BSet<T>::Hash, typename BSet<T>::HashEqual>,
+            immer::map<S,immer::set<R, typename BSet<R>::Hash, typename BSet<R>::HashEqual>,
                                                                typename BSet<S>::Hash,
                                                                typename BSet<S>::HashEqual> resultMap;
             for(const std::pair<S,immer::set<T, typename BSet<T>::Hash, typename BSet<T>::HashEqual>>& pair : thisMap) {
@@ -919,6 +923,37 @@ class BRelation : public BObject {
             }
             return BRelation<S,R>(resultMap);
     	}
+
+        template<typename R>
+        BBoolean isInComposition(const BTuple<S,R>& tuple, const BRelation<T,R>& arg) const {
+
+            immer::map<S,immer::set<T, typename BSet<T>::Hash, typename BSet<T>::HashEqual>,
+                                                               typename BSet<S>::Hash,
+                                                               typename BSet<S>::HashEqual> thisMap = this->map;
+
+            immer::map<T,immer::set<R, typename BSet<R>::Hash, typename BSet<R>::HashEqual>,
+                                                               typename BSet<T>::Hash,
+                                                               typename BSet<T>::HashEqual> otherMap = arg.map;
+
+            S projection1 = tuple.projection1();
+            R projection2 = tuple.projection2();
+
+            const immer::set<T, typename BSet<T>::Hash, typename BSet<T>::HashEqual>* rangePtr = thisMap.find(projection1);
+
+            if(rangePtr != nullptr) {
+                immer::set<T, typename BSet<T>::Hash, typename BSet<T>::HashEqual> range = *rangePtr;
+                for (const T& value : range) {
+                    const immer::set<R, typename BSet<R>::Hash, typename BSet<R>::HashEqual>* range2Ptr = otherMap.find(value);
+                    if (range2Ptr != nullptr) {
+                        immer::set<R, typename BSet<R>::Hash, typename BSet<R>::HashEqual> range2 = *range2Ptr;
+                        if(range2.count(projection2) > 0) {
+                            return BBoolean(true);
+                        }
+                    }
+                }
+            }
+            return BBoolean(false);
+        }
 
         static BRelation<T,T> identity(const BSet<T>& set) {
             immer::map<T,immer::set<T, typename BSet<T>::Hash, typename BSet<T>::HashEqual>,
@@ -1083,7 +1118,7 @@ class BRelation : public BObject {
 
         template<typename A1 = typename S::left_type, typename A2 = typename S::right_type>
         BBoolean isPartial(const BRelation<A1, A2>& domain) const {
-            for(S element : this->domain()) {
+            for(const S& element : this->domain()) {
                 BTuple<A1, A2> elementAsTuple = (BTuple<A1, A2>) element;
                 const immer::set<A2, typename BSet<A2>::Hash, typename BSet<A2>::HashEqual>* rangePtr = domain.map.find(elementAsTuple.projection1());
                 if(rangePtr == nullptr) {
@@ -1150,7 +1185,7 @@ class BRelation : public BObject {
 
         template<typename A1 = typename S::left_type, typename A2 = typename S::right_type>
         BBoolean checkDomain(const BRelation<A1, A2>& domain) const {
-            for(S element : this->domain()) {
+            for(const S& element : this->domain()) {
                 BTuple<A1, A2> elementAsTuple = (BTuple<A1, A2>) element;
                 const immer::set<A2, typename BSet<A2>::Hash, typename BSet<A2>::HashEqual>* rangePtr = domain.map.find(elementAsTuple.projection1());
                 if(rangePtr == nullptr) {
@@ -1217,7 +1252,7 @@ class BRelation : public BObject {
 
         template<typename A1 = typename T::left_type, typename A2 = typename T::right_type>
         BBoolean checkRange(const BRelation<A1, A2>& range) const {
-            for(S element : this->range()) {
+            for(const S& element : this->range()) {
                 BTuple<A1, A2> elementAsTuple = (BTuple<A1, A2>) element;
                 const immer::set<A2, typename BSet<A2>::Hash, typename BSet<A2>::HashEqual>* rangeRangePtr = range.map.find(elementAsTuple.projection1());
                 if(rangeRangePtr == nullptr) {

@@ -170,7 +170,7 @@ public class TestMachines extends TestJs {
 
     @Test
     public void testCanBusTLC_MC() throws Exception {
-        testJSMC("CAN_BUS_tlc");
+        testJSMC("CAN_BUS_tlc", "CAN_BUS_tlc", true, false);
     }
 
     @Test
@@ -189,10 +189,154 @@ public class TestMachines extends TestJs {
         testJs("Core");
     }
 
-    @Ignore
     @Test
     public void testSetLawsNAT() throws Exception {
-        testJs("SetLawsNAT");
+        testJSMC("SetLawsNat", "SetLawsNat", true, false);
+    }
+
+    @Test
+    public void testSetLawsPow() throws Exception {
+        testJSMC("SetLawsPow", "SetLawsPow", true, false);
+    }
+
+    @Test
+    public void testSetLawsPow2() throws Exception {
+        testJSMC("SetLawsPow2", "SetLawsPow2", true, false);
+    }
+
+    @Test
+    public void testSetRelLaws_NatBool() throws Exception {
+        testJSMC("SetRelLaws_NatBool", "SetRelLaws_NatBool", false, false);
+    }
+
+    @Test
+    public void testSetLawsPowPow() throws Exception {
+        testJSMC("SetLawsPowPow");
+    }
+
+    @Test
+    public void testSetLawsPowPowCart() throws Exception {
+        testJSMC("SetLawsPowPowCart");
+    }
+
+    @Test
+    public void testSubsetLaws() throws Exception {
+        testJSMC("SubsetLaws", "SubsetLaws", true, false);
+    }
+
+    @Test
+    public void testINTEGERSET_Laws() throws Exception {
+        testJSMC("INTEGERSET_Laws", "INTEGERSET_Laws", true, false);
+    }
+
+    @Test
+    public void testFinitenessLaws() throws Exception {
+        testJSMC("FinitenessLaws", "FinitenessLaws", true, false);
+    }
+
+    @Test
+    public void testSubstitutionLaws() throws Exception {
+        testJSMC("SubstitutionLaws", "SubstitutionLaws", true, false);
+    }
+
+    @Test
+    public void testRelLaws() throws Exception {
+        testJSMC("RelLaws", "RelLaws", false, false);
+    }
+
+    @Test
+    public void testRelLaws_Small() throws Exception {
+        testJSMC("RelLaws_Small", "RelLaws_Small", true, false);
+    }
+
+    @Test
+    public void testRelLaws_Small2() throws Exception {
+        testJSMC("RelLaws_Small2", "RelLaws_Small2", true, false);
+    }
+
+    @Test
+    public void testCompositionEmpty() throws Exception {
+        testJSMC("CompositionEmpty", "CompositionEmpty", true, false);
+    }
+
+    @Test
+    public void testFunLaws() throws Exception {
+        testJSMC("FunLaws", "FunLaws", true, false);
+    }
+
+    @Test
+    public void testBoolLawsSetCompr() throws Exception {
+        testJSMC("BoolLaws_SetCompr", "BoolLaws_SetCompr", true, false);
+    }
+
+    @Test
+    public void testSeqLaws() throws Exception {
+        testJSMC("SeqLaws", "SeqLaws", true, false);
+    }
+
+    @Test
+    public void testNatRangeLaws() throws Exception {
+        testJSMC("NatRangeLaws", "NatRangeLaws", true, true);
+    }
+
+    @Test
+    public void testLargeFunction() throws Exception {
+        testJSMC("LargeFunction", "LargeFunction", true, false);
+    }
+
+    @Test
+    public void testFin1Test() throws Exception {
+        testJSMC("Fin1Test", "Fin1Test", true, false);
+    }
+
+    @Test
+    public void testCardinalityLaws() throws Exception {
+        testJSMC("CardinalityLaws", "CardinalityLaws", true, false);
+    }
+
+    @Test
+    public void testEqualityLaws() throws Exception {
+        testJSMC("EqualityLaws", "EqualityLaws", true, false);
+    }
+
+    @Test
+    public void testBoolWithArithLaws_With_Execute() throws Exception {
+        testJSMC("BoolWithArithLaws", "BoolWithArithLaws", true, false);
+    }
+
+    @Test
+    public void testArithmeticLaws_With_Execute() throws Exception {
+        testJSMC("ArithmeticLaws", "ArithmeticLaws", true, false);
+    }
+
+    @Test
+    public void testArithmeticExpLaws_With_Execute() throws Exception {
+        testJSMC("ArithmeticExpLaws", "ArithmeticExpLaws", false, false);
+    }
+
+    @Test
+    public void testBoolLaws_With_Execute() throws Exception {
+        testJSMC("BoolLaws", "BoolLaws", true, false);
+    }
+
+    @Test
+    public void testExplicitChecks() throws Exception {
+        testJSMC("ExplicitChecks", "ExplicitChecks", true, false);
+    }
+
+    @Test
+    public void testExplicitComputations_Small() throws Exception {
+        testJSMC("ExplicitComputations_Small", "ExplicitComputations_Small", true, false);
+    }
+
+    @Test
+    public void testExplicitComputations_Small2() throws Exception {
+        testJSMC("ExplicitComputations_Small2", "ExplicitComputations_Small2", true, false);
+    }
+
+    @Test
+    public void testExplicitComputations2() throws Exception {
+        testJSMC("ExplicitComputations2", "ExplicitComputations2", true, false);
     }
 
     @Test(expected = CodeGenerationException.class)
@@ -237,7 +381,7 @@ public class TestMachines extends TestJs {
 
     @Test
     public void Train1BeebookDeterministic_MC_POR_v3() throws Exception {
-        testJSMC("Train_1_beebook_deterministic_MC_POR_v3");
+        testJSMC("Train_1_beebook_deterministic_MC_POR_v3", "Train_1_beebook_deterministic_MC_POR_v3", true, true);
     }
 
     @Ignore
@@ -248,12 +392,12 @@ public class TestMachines extends TestJs {
 
     @Test
     public void testOBSW_M001_1() throws Exception {
-        testJSMC("obsw_M001_1");
+        testJSMC("obsw_M001_1", "obsw_M001_1", true, false);
     }
 
     @Test
-    public void testOBSW_M001() throws Exception {
-        testJSMC("obsw_M001_2");
+    public void testOBSW_M001_2() throws Exception {
+        testJSMC("obsw_M001_2", "obsw_M001_2", true, false);
     }
 
     @Ignore
@@ -264,7 +408,7 @@ public class TestMachines extends TestJs {
 
     @Test
     public void testrether_mch1() throws Exception {
-        testJSMC("rether");
+        testJSMC("rether", "rether", true, true);
     }
 
     @Test
@@ -274,17 +418,17 @@ public class TestMachines extends TestJs {
 
     @Test
     public void testNota2() throws Exception {
-        testJSMC("nota_v2");
+        testJSMC("nota_v2", "nota_v2", true, false);
     }
 
     @Test
     public void testCruiseControllerDeterministic_MC() throws Exception {
-        testJSMC("Cruise_finite1_deterministic_MC");
+        testJSMC("Cruise_finite1_deterministic_MC", "Cruise_finite1_deterministic_MC", true, false);
     }
 
     @Test
     public void testLift_MC_Large() throws Exception {
-        testJSMC("Lift_MC_Large");
+        testJSMC("Lift_MC_Large", "Lift_MC_Large", true, false);
     }
 
     @Test

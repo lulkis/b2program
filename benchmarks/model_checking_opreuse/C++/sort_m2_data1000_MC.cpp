@@ -13,8 +13,6 @@
 #include <future>
 #include <boost/asio/post.hpp>
 #include <boost/asio/thread_pool.hpp>
-#include <boost/any.hpp>
-#include <boost/optional.hpp>
 #include <btypes_primitives/BUtils.hpp>
 #include <btypes_primitives/StateNotReachableError.hpp>
 #include <btypes_primitives/PreconditionOrAssertionViolation.hpp>
@@ -1156,15 +1154,15 @@ class sort_m2_data1000_MC {
             j = (BInteger(1));
         }
 
-        sort_m2_data1000_MC(const BInteger& n, const BRelation<BInteger, BInteger >& f, const BSet<BInteger >& __aux_constant_2, const BSet<BInteger >& __aux_constant_1, const BInteger& j, const BInteger& k, const BInteger& l, const BRelation<BInteger, BInteger >& g) {
-            this->n = n;
-            this->f = f;
-            this->__aux_constant_2 = __aux_constant_2;
-            this->__aux_constant_1 = __aux_constant_1;
-            this->j = j;
-            this->k = k;
-            this->l = l;
-            this->g = g;
+        sort_m2_data1000_MC(const sort_m2_data1000_MC& copy) {
+            this->n = copy.n;
+            this->f = copy.f;
+            this->__aux_constant_2 = copy.__aux_constant_2;
+            this->__aux_constant_1 = copy.__aux_constant_1;
+            this->j = copy.j;
+            this->k = copy.k;
+            this->l = copy.l;
+            this->g = copy.g;
         }
 
         void progress() {
@@ -1370,7 +1368,7 @@ class sort_m2_data1000_MC {
         }
 
         sort_m2_data1000_MC _copy() const {
-            return sort_m2_data1000_MC(n, f, __aux_constant_2, __aux_constant_1, j, k, l, g);
+            return sort_m2_data1000_MC(*this);
         }
 
         friend bool operator ==(const sort_m2_data1000_MC& o1, const sort_m2_data1000_MC& o2) {
@@ -1403,7 +1401,7 @@ class sort_m2_data1000_MC {
             return result;
         }
 
-        friend std::ostream& operator<<(std::ostream &strm, const sort_m2_data1000_MC &machine) {
+        friend std::ostream& operator<<(std::ostream &strm, const sort_m2_data1000_MC& machine) {
           strm << "_get_j: " << machine._get_j() << "\n";
           strm << "_get_k: " << machine._get_k() << "\n";
           strm << "_get_l: " << machine._get_l() << "\n";
@@ -1492,7 +1490,7 @@ class ModelChecker {
             if (threads <= 1) {
                 modelCheckSingleThreaded();
             } else {
-                boost::asio::thread_pool workers(threads); // threads indicates the number of workers (without the coordinator)
+                boost::asio::thread_pool workers(threads-1); // threads indicates the number of workers (without the coordinator)
                 modelCheckMultiThreaded(workers);
             }
         }
@@ -1507,7 +1505,7 @@ class ModelChecker {
 
                 std::unordered_set<sort_m2_data1000_MC, sort_m2_data1000_MC::Hash, sort_m2_data1000_MC::HashEqual> nextStates = generateNextStates(state);
 
-                for(auto& nextState : nextStates) {
+                for(const sort_m2_data1000_MC& nextState : nextStates) {
                     if(states.find(nextState) == states.end()) {
                         states.insert(nextState);
                         parents.insert({nextState, state});
@@ -1555,7 +1553,7 @@ class ModelChecker {
                 std::packaged_task<void()> task([&, state] {
                     std::unordered_set<sort_m2_data1000_MC, sort_m2_data1000_MC::Hash, sort_m2_data1000_MC::HashEqual> nextStates = generateNextStates(state);
 
-                    for(auto& nextState : nextStates) {
+                    for(const sort_m2_data1000_MC& nextState : nextStates) {
                         {
                             std::unique_lock<std::mutex> lock(mutex);
                             if(states.find(nextState) == states.end()) {
@@ -1620,26 +1618,31 @@ class ModelChecker {
         sort_m2_data1000_MC next() {
             {
                 std::unique_lock<std::mutex> lock(mutex);
-                sort_m2_data1000_MC state;
                 switch(type) {
                     case sort_m2_data1000_MC::BFS: {
-                        state = unvisitedStates.front();
+                        sort_m2_data1000_MC state = unvisitedStates.front();
                         unvisitedStates.pop_front();
+                        return state;
                     }
                     case sort_m2_data1000_MC::DFS: {
-                        state = unvisitedStates.back();
+                        sort_m2_data1000_MC state = unvisitedStates.back();
                         unvisitedStates.pop_back();
+                        return state;
                     }
                     case sort_m2_data1000_MC::MIXED: {
                         if(unvisitedStates.size() % 2 == 0) {
-                            state = unvisitedStates.front();
+                            sort_m2_data1000_MC state = unvisitedStates.front();
                             unvisitedStates.pop_front();
+                            return state;
                         } else {
-                            state = unvisitedStates.back();
+                            sort_m2_data1000_MC state = unvisitedStates.back();
                             unvisitedStates.pop_back();
+                            return state;
                         }
                     }
                 }
+                sort_m2_data1000_MC state = unvisitedStates.front();
+                unvisitedStates.pop_front();
                 return state;
             };
         }
@@ -1648,48 +1651,42 @@ class ModelChecker {
             std::unordered_set<sort_m2_data1000_MC, sort_m2_data1000_MC::Hash, sort_m2_data1000_MC::HashEqual> result = std::unordered_set<sort_m2_data1000_MC, sort_m2_data1000_MC::Hash, sort_m2_data1000_MC::HashEqual>();
             if(isCaching) {
                 sort_m2_data1000_MC::_ProjectionRead__tr_progress read__tr_progress_state = state._projected_state_for__tr_progress();
-                bool _trid_1;
-                auto _obj__trid_1_ptr = _OpCache_tr_progress.find(read__tr_progress_state);
-                if(_obj__trid_1_ptr == _OpCache_tr_progress.end()) {
-                    _trid_1 = state._tr_progress();
-                    {
-                        std::unique_lock<std::mutex> _ProjectionRead__tr_progress_lock(_ProjectionRead__tr_progress_mutex);
+                bool _trid_1 = false;
+                {
+                    std::unique_lock<std::mutex> _ProjectionRead__tr_progress_lock(_ProjectionRead__tr_progress_mutex);
+                    auto _obj__trid_1_ptr = _OpCache_tr_progress.find(read__tr_progress_state);
+                    if(_obj__trid_1_ptr == _OpCache_tr_progress.end()) {
+                        _trid_1 = state._tr_progress();
                         _OpCache_tr_progress.insert({read__tr_progress_state, _trid_1});
+                    } else {
+                        _trid_1 = _obj__trid_1_ptr->second;
                     }
-                } else {
-                    _trid_1 = _obj__trid_1_ptr->second;
                 }
                 if(_trid_1) {
                     sort_m2_data1000_MC copiedState = state._copy();
                     sort_m2_data1000_MC::_ProjectionRead_progress readState = state._projected_state_for_progress();
-
-                    auto _OpCache_with_parameter_progress_ptr = _OpCache_progress.find(_trid_1);
-                    if(_OpCache_with_parameter_progress_ptr == _OpCache_progress.end()) {
-                        copiedState.progress();
-                        sort_m2_data1000_MC::_ProjectionWrite_progress writeState = copiedState._update_for_progress();
-                        std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_progress, sort_m2_data1000_MC::_ProjectionWrite_progress, sort_m2_data1000_MC::_ProjectionRead_progress::Hash, sort_m2_data1000_MC::_ProjectionRead_progress::HashEqual> _OpCache_with_parameter_progress;
-                        _OpCache_with_parameter_progress.insert({readState, writeState});
-                        {
-                            std::unique_lock<std::mutex> _ProjectionRead_progress_lock(_ProjectionRead_progress_mutex);
-                            _OpCache_progress.insert({_trid_1, _OpCache_with_parameter_progress});
-                        }
-
-                    } else {
-                        std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_progress, sort_m2_data1000_MC::_ProjectionWrite_progress, sort_m2_data1000_MC::_ProjectionRead_progress::Hash, sort_m2_data1000_MC::_ProjectionRead_progress::HashEqual> _OpCache_with_parameter_progress = _OpCache_with_parameter_progress_ptr->second;
-                        auto writeState_ptr = _OpCache_with_parameter_progress.find(readState);
-                        if(writeState_ptr != _OpCache_with_parameter_progress.end()) {
-                            sort_m2_data1000_MC::_ProjectionWrite_progress writeState = writeState_ptr->second;
-                            copiedState._apply_update_for_progress(writeState);
-                        } else {
+                    {
+                        std::unique_lock<std::mutex> _ProjectionRead_progress_lock(_ProjectionRead_progress_mutex);
+                        auto _OpCache_with_parameter_progress_ptr = _OpCache_progress.find(_trid_1);
+                        if(_OpCache_with_parameter_progress_ptr == _OpCache_progress.end()) {
                             copiedState.progress();
                             sort_m2_data1000_MC::_ProjectionWrite_progress writeState = copiedState._update_for_progress();
-                            {
-                                std::unique_lock<std::mutex> _ProjectionRead_progress_lock(_ProjectionRead_progress_mutex);
+                            std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_progress, sort_m2_data1000_MC::_ProjectionWrite_progress, sort_m2_data1000_MC::_ProjectionRead_progress::Hash, sort_m2_data1000_MC::_ProjectionRead_progress::HashEqual> _OpCache_with_parameter_progress = std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_progress, sort_m2_data1000_MC::_ProjectionWrite_progress, sort_m2_data1000_MC::_ProjectionRead_progress::Hash, sort_m2_data1000_MC::_ProjectionRead_progress::HashEqual>();
+                            _OpCache_with_parameter_progress.insert({readState, writeState});
+                            _OpCache_progress.insert({_trid_1, _OpCache_with_parameter_progress});
+                        } else {
+                            std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_progress, sort_m2_data1000_MC::_ProjectionWrite_progress, sort_m2_data1000_MC::_ProjectionRead_progress::Hash, sort_m2_data1000_MC::_ProjectionRead_progress::HashEqual> _OpCache_with_parameter_progress = _OpCache_with_parameter_progress_ptr->second;
+                            auto writeState_ptr = _OpCache_with_parameter_progress.find(readState);
+                            if(writeState_ptr != _OpCache_with_parameter_progress.end()) {
+                                sort_m2_data1000_MC::_ProjectionWrite_progress writeState = writeState_ptr->second;
+                                copiedState._apply_update_for_progress(writeState);
+                            } else {
+                                copiedState.progress();
+                                sort_m2_data1000_MC::_ProjectionWrite_progress writeState = copiedState._update_for_progress();
                                 _OpCache_with_parameter_progress.insert({readState, writeState});
                             }
                         }
                     }
-
                     copiedState.stateAccessedVia = "progress";
                     result.insert(copiedState);
                     {
@@ -1698,48 +1695,42 @@ class ModelChecker {
                     }
                 }
                 sort_m2_data1000_MC::_ProjectionRead__tr_prog1 read__tr_prog1_state = state._projected_state_for__tr_prog1();
-                bool _trid_2;
-                auto _obj__trid_2_ptr = _OpCache_tr_prog1.find(read__tr_prog1_state);
-                if(_obj__trid_2_ptr == _OpCache_tr_prog1.end()) {
-                    _trid_2 = state._tr_prog1();
-                    {
-                        std::unique_lock<std::mutex> _ProjectionRead__tr_prog1_lock(_ProjectionRead__tr_prog1_mutex);
+                bool _trid_2 = false;
+                {
+                    std::unique_lock<std::mutex> _ProjectionRead__tr_prog1_lock(_ProjectionRead__tr_prog1_mutex);
+                    auto _obj__trid_2_ptr = _OpCache_tr_prog1.find(read__tr_prog1_state);
+                    if(_obj__trid_2_ptr == _OpCache_tr_prog1.end()) {
+                        _trid_2 = state._tr_prog1();
                         _OpCache_tr_prog1.insert({read__tr_prog1_state, _trid_2});
+                    } else {
+                        _trid_2 = _obj__trid_2_ptr->second;
                     }
-                } else {
-                    _trid_2 = _obj__trid_2_ptr->second;
                 }
                 if(_trid_2) {
                     sort_m2_data1000_MC copiedState = state._copy();
                     sort_m2_data1000_MC::_ProjectionRead_prog1 readState = state._projected_state_for_prog1();
-
-                    auto _OpCache_with_parameter_prog1_ptr = _OpCache_prog1.find(_trid_2);
-                    if(_OpCache_with_parameter_prog1_ptr == _OpCache_prog1.end()) {
-                        copiedState.prog1();
-                        sort_m2_data1000_MC::_ProjectionWrite_prog1 writeState = copiedState._update_for_prog1();
-                        std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_prog1, sort_m2_data1000_MC::_ProjectionWrite_prog1, sort_m2_data1000_MC::_ProjectionRead_prog1::Hash, sort_m2_data1000_MC::_ProjectionRead_prog1::HashEqual> _OpCache_with_parameter_prog1;
-                        _OpCache_with_parameter_prog1.insert({readState, writeState});
-                        {
-                            std::unique_lock<std::mutex> _ProjectionRead_prog1_lock(_ProjectionRead_prog1_mutex);
-                            _OpCache_prog1.insert({_trid_2, _OpCache_with_parameter_prog1});
-                        }
-
-                    } else {
-                        std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_prog1, sort_m2_data1000_MC::_ProjectionWrite_prog1, sort_m2_data1000_MC::_ProjectionRead_prog1::Hash, sort_m2_data1000_MC::_ProjectionRead_prog1::HashEqual> _OpCache_with_parameter_prog1 = _OpCache_with_parameter_prog1_ptr->second;
-                        auto writeState_ptr = _OpCache_with_parameter_prog1.find(readState);
-                        if(writeState_ptr != _OpCache_with_parameter_prog1.end()) {
-                            sort_m2_data1000_MC::_ProjectionWrite_prog1 writeState = writeState_ptr->second;
-                            copiedState._apply_update_for_prog1(writeState);
-                        } else {
+                    {
+                        std::unique_lock<std::mutex> _ProjectionRead_prog1_lock(_ProjectionRead_prog1_mutex);
+                        auto _OpCache_with_parameter_prog1_ptr = _OpCache_prog1.find(_trid_2);
+                        if(_OpCache_with_parameter_prog1_ptr == _OpCache_prog1.end()) {
                             copiedState.prog1();
                             sort_m2_data1000_MC::_ProjectionWrite_prog1 writeState = copiedState._update_for_prog1();
-                            {
-                                std::unique_lock<std::mutex> _ProjectionRead_prog1_lock(_ProjectionRead_prog1_mutex);
+                            std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_prog1, sort_m2_data1000_MC::_ProjectionWrite_prog1, sort_m2_data1000_MC::_ProjectionRead_prog1::Hash, sort_m2_data1000_MC::_ProjectionRead_prog1::HashEqual> _OpCache_with_parameter_prog1 = std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_prog1, sort_m2_data1000_MC::_ProjectionWrite_prog1, sort_m2_data1000_MC::_ProjectionRead_prog1::Hash, sort_m2_data1000_MC::_ProjectionRead_prog1::HashEqual>();
+                            _OpCache_with_parameter_prog1.insert({readState, writeState});
+                            _OpCache_prog1.insert({_trid_2, _OpCache_with_parameter_prog1});
+                        } else {
+                            std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_prog1, sort_m2_data1000_MC::_ProjectionWrite_prog1, sort_m2_data1000_MC::_ProjectionRead_prog1::Hash, sort_m2_data1000_MC::_ProjectionRead_prog1::HashEqual> _OpCache_with_parameter_prog1 = _OpCache_with_parameter_prog1_ptr->second;
+                            auto writeState_ptr = _OpCache_with_parameter_prog1.find(readState);
+                            if(writeState_ptr != _OpCache_with_parameter_prog1.end()) {
+                                sort_m2_data1000_MC::_ProjectionWrite_prog1 writeState = writeState_ptr->second;
+                                copiedState._apply_update_for_prog1(writeState);
+                            } else {
+                                copiedState.prog1();
+                                sort_m2_data1000_MC::_ProjectionWrite_prog1 writeState = copiedState._update_for_prog1();
                                 _OpCache_with_parameter_prog1.insert({readState, writeState});
                             }
                         }
                     }
-
                     copiedState.stateAccessedVia = "prog1";
                     result.insert(copiedState);
                     {
@@ -1748,48 +1739,42 @@ class ModelChecker {
                     }
                 }
                 sort_m2_data1000_MC::_ProjectionRead__tr_prog2 read__tr_prog2_state = state._projected_state_for__tr_prog2();
-                bool _trid_3;
-                auto _obj__trid_3_ptr = _OpCache_tr_prog2.find(read__tr_prog2_state);
-                if(_obj__trid_3_ptr == _OpCache_tr_prog2.end()) {
-                    _trid_3 = state._tr_prog2();
-                    {
-                        std::unique_lock<std::mutex> _ProjectionRead__tr_prog2_lock(_ProjectionRead__tr_prog2_mutex);
+                bool _trid_3 = false;
+                {
+                    std::unique_lock<std::mutex> _ProjectionRead__tr_prog2_lock(_ProjectionRead__tr_prog2_mutex);
+                    auto _obj__trid_3_ptr = _OpCache_tr_prog2.find(read__tr_prog2_state);
+                    if(_obj__trid_3_ptr == _OpCache_tr_prog2.end()) {
+                        _trid_3 = state._tr_prog2();
                         _OpCache_tr_prog2.insert({read__tr_prog2_state, _trid_3});
+                    } else {
+                        _trid_3 = _obj__trid_3_ptr->second;
                     }
-                } else {
-                    _trid_3 = _obj__trid_3_ptr->second;
                 }
                 if(_trid_3) {
                     sort_m2_data1000_MC copiedState = state._copy();
                     sort_m2_data1000_MC::_ProjectionRead_prog2 readState = state._projected_state_for_prog2();
-
-                    auto _OpCache_with_parameter_prog2_ptr = _OpCache_prog2.find(_trid_3);
-                    if(_OpCache_with_parameter_prog2_ptr == _OpCache_prog2.end()) {
-                        copiedState.prog2();
-                        sort_m2_data1000_MC::_ProjectionWrite_prog2 writeState = copiedState._update_for_prog2();
-                        std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_prog2, sort_m2_data1000_MC::_ProjectionWrite_prog2, sort_m2_data1000_MC::_ProjectionRead_prog2::Hash, sort_m2_data1000_MC::_ProjectionRead_prog2::HashEqual> _OpCache_with_parameter_prog2;
-                        _OpCache_with_parameter_prog2.insert({readState, writeState});
-                        {
-                            std::unique_lock<std::mutex> _ProjectionRead_prog2_lock(_ProjectionRead_prog2_mutex);
-                            _OpCache_prog2.insert({_trid_3, _OpCache_with_parameter_prog2});
-                        }
-
-                    } else {
-                        std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_prog2, sort_m2_data1000_MC::_ProjectionWrite_prog2, sort_m2_data1000_MC::_ProjectionRead_prog2::Hash, sort_m2_data1000_MC::_ProjectionRead_prog2::HashEqual> _OpCache_with_parameter_prog2 = _OpCache_with_parameter_prog2_ptr->second;
-                        auto writeState_ptr = _OpCache_with_parameter_prog2.find(readState);
-                        if(writeState_ptr != _OpCache_with_parameter_prog2.end()) {
-                            sort_m2_data1000_MC::_ProjectionWrite_prog2 writeState = writeState_ptr->second;
-                            copiedState._apply_update_for_prog2(writeState);
-                        } else {
+                    {
+                        std::unique_lock<std::mutex> _ProjectionRead_prog2_lock(_ProjectionRead_prog2_mutex);
+                        auto _OpCache_with_parameter_prog2_ptr = _OpCache_prog2.find(_trid_3);
+                        if(_OpCache_with_parameter_prog2_ptr == _OpCache_prog2.end()) {
                             copiedState.prog2();
                             sort_m2_data1000_MC::_ProjectionWrite_prog2 writeState = copiedState._update_for_prog2();
-                            {
-                                std::unique_lock<std::mutex> _ProjectionRead_prog2_lock(_ProjectionRead_prog2_mutex);
+                            std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_prog2, sort_m2_data1000_MC::_ProjectionWrite_prog2, sort_m2_data1000_MC::_ProjectionRead_prog2::Hash, sort_m2_data1000_MC::_ProjectionRead_prog2::HashEqual> _OpCache_with_parameter_prog2 = std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_prog2, sort_m2_data1000_MC::_ProjectionWrite_prog2, sort_m2_data1000_MC::_ProjectionRead_prog2::Hash, sort_m2_data1000_MC::_ProjectionRead_prog2::HashEqual>();
+                            _OpCache_with_parameter_prog2.insert({readState, writeState});
+                            _OpCache_prog2.insert({_trid_3, _OpCache_with_parameter_prog2});
+                        } else {
+                            std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_prog2, sort_m2_data1000_MC::_ProjectionWrite_prog2, sort_m2_data1000_MC::_ProjectionRead_prog2::Hash, sort_m2_data1000_MC::_ProjectionRead_prog2::HashEqual> _OpCache_with_parameter_prog2 = _OpCache_with_parameter_prog2_ptr->second;
+                            auto writeState_ptr = _OpCache_with_parameter_prog2.find(readState);
+                            if(writeState_ptr != _OpCache_with_parameter_prog2.end()) {
+                                sort_m2_data1000_MC::_ProjectionWrite_prog2 writeState = writeState_ptr->second;
+                                copiedState._apply_update_for_prog2(writeState);
+                            } else {
+                                copiedState.prog2();
+                                sort_m2_data1000_MC::_ProjectionWrite_prog2 writeState = copiedState._update_for_prog2();
                                 _OpCache_with_parameter_prog2.insert({readState, writeState});
                             }
                         }
                     }
-
                     copiedState.stateAccessedVia = "prog2";
                     result.insert(copiedState);
                     {
@@ -1798,48 +1783,42 @@ class ModelChecker {
                     }
                 }
                 sort_m2_data1000_MC::_ProjectionRead__tr_final_evt read__tr_final_evt_state = state._projected_state_for__tr_final_evt();
-                bool _trid_4;
-                auto _obj__trid_4_ptr = _OpCache_tr_final_evt.find(read__tr_final_evt_state);
-                if(_obj__trid_4_ptr == _OpCache_tr_final_evt.end()) {
-                    _trid_4 = state._tr_final_evt();
-                    {
-                        std::unique_lock<std::mutex> _ProjectionRead__tr_final_evt_lock(_ProjectionRead__tr_final_evt_mutex);
+                bool _trid_4 = false;
+                {
+                    std::unique_lock<std::mutex> _ProjectionRead__tr_final_evt_lock(_ProjectionRead__tr_final_evt_mutex);
+                    auto _obj__trid_4_ptr = _OpCache_tr_final_evt.find(read__tr_final_evt_state);
+                    if(_obj__trid_4_ptr == _OpCache_tr_final_evt.end()) {
+                        _trid_4 = state._tr_final_evt();
                         _OpCache_tr_final_evt.insert({read__tr_final_evt_state, _trid_4});
+                    } else {
+                        _trid_4 = _obj__trid_4_ptr->second;
                     }
-                } else {
-                    _trid_4 = _obj__trid_4_ptr->second;
                 }
                 if(_trid_4) {
                     sort_m2_data1000_MC copiedState = state._copy();
                     sort_m2_data1000_MC::_ProjectionRead_final_evt readState = state._projected_state_for_final_evt();
-
-                    auto _OpCache_with_parameter_final_evt_ptr = _OpCache_final_evt.find(_trid_4);
-                    if(_OpCache_with_parameter_final_evt_ptr == _OpCache_final_evt.end()) {
-                        copiedState.final_evt();
-                        sort_m2_data1000_MC::_ProjectionWrite_final_evt writeState = copiedState._update_for_final_evt();
-                        std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_final_evt, sort_m2_data1000_MC::_ProjectionWrite_final_evt, sort_m2_data1000_MC::_ProjectionRead_final_evt::Hash, sort_m2_data1000_MC::_ProjectionRead_final_evt::HashEqual> _OpCache_with_parameter_final_evt;
-                        _OpCache_with_parameter_final_evt.insert({readState, writeState});
-                        {
-                            std::unique_lock<std::mutex> _ProjectionRead_final_evt_lock(_ProjectionRead_final_evt_mutex);
-                            _OpCache_final_evt.insert({_trid_4, _OpCache_with_parameter_final_evt});
-                        }
-
-                    } else {
-                        std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_final_evt, sort_m2_data1000_MC::_ProjectionWrite_final_evt, sort_m2_data1000_MC::_ProjectionRead_final_evt::Hash, sort_m2_data1000_MC::_ProjectionRead_final_evt::HashEqual> _OpCache_with_parameter_final_evt = _OpCache_with_parameter_final_evt_ptr->second;
-                        auto writeState_ptr = _OpCache_with_parameter_final_evt.find(readState);
-                        if(writeState_ptr != _OpCache_with_parameter_final_evt.end()) {
-                            sort_m2_data1000_MC::_ProjectionWrite_final_evt writeState = writeState_ptr->second;
-                            copiedState._apply_update_for_final_evt(writeState);
-                        } else {
+                    {
+                        std::unique_lock<std::mutex> _ProjectionRead_final_evt_lock(_ProjectionRead_final_evt_mutex);
+                        auto _OpCache_with_parameter_final_evt_ptr = _OpCache_final_evt.find(_trid_4);
+                        if(_OpCache_with_parameter_final_evt_ptr == _OpCache_final_evt.end()) {
                             copiedState.final_evt();
                             sort_m2_data1000_MC::_ProjectionWrite_final_evt writeState = copiedState._update_for_final_evt();
-                            {
-                                std::unique_lock<std::mutex> _ProjectionRead_final_evt_lock(_ProjectionRead_final_evt_mutex);
+                            std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_final_evt, sort_m2_data1000_MC::_ProjectionWrite_final_evt, sort_m2_data1000_MC::_ProjectionRead_final_evt::Hash, sort_m2_data1000_MC::_ProjectionRead_final_evt::HashEqual> _OpCache_with_parameter_final_evt = std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_final_evt, sort_m2_data1000_MC::_ProjectionWrite_final_evt, sort_m2_data1000_MC::_ProjectionRead_final_evt::Hash, sort_m2_data1000_MC::_ProjectionRead_final_evt::HashEqual>();
+                            _OpCache_with_parameter_final_evt.insert({readState, writeState});
+                            _OpCache_final_evt.insert({_trid_4, _OpCache_with_parameter_final_evt});
+                        } else {
+                            std::unordered_map<sort_m2_data1000_MC::_ProjectionRead_final_evt, sort_m2_data1000_MC::_ProjectionWrite_final_evt, sort_m2_data1000_MC::_ProjectionRead_final_evt::Hash, sort_m2_data1000_MC::_ProjectionRead_final_evt::HashEqual> _OpCache_with_parameter_final_evt = _OpCache_with_parameter_final_evt_ptr->second;
+                            auto writeState_ptr = _OpCache_with_parameter_final_evt.find(readState);
+                            if(writeState_ptr != _OpCache_with_parameter_final_evt.end()) {
+                                sort_m2_data1000_MC::_ProjectionWrite_final_evt writeState = writeState_ptr->second;
+                                copiedState._apply_update_for_final_evt(writeState);
+                            } else {
+                                copiedState.final_evt();
+                                sort_m2_data1000_MC::_ProjectionWrite_final_evt writeState = copiedState._update_for_final_evt();
                                 _OpCache_with_parameter_final_evt.insert({readState, writeState});
                             }
                         }
                     }
-
                     copiedState.stateAccessedVia = "final_evt";
                     result.insert(copiedState);
                     {
@@ -1895,18 +1874,18 @@ class ModelChecker {
         }
 
         bool invariantViolated(const sort_m2_data1000_MC& state) {
-            bool _check_inv_1;
+            bool _check_inv_1 = true;
             if(isCaching) {
-                sort_m2_data1000_MC::_ProjectionRead__check_inv_1 read__check_inv_1_state = state._projected_state_for__check_inv_1();
-                auto _obj__check_inv_1_ptr = _InvCache__check_inv_1.find(read__check_inv_1_state);
-                if(_obj__check_inv_1_ptr == _InvCache__check_inv_1.end()) {
-                    _check_inv_1 = state._check_inv_1();
-                    {
-                        std::unique_lock<std::mutex> _ProjectionRead__check_inv_1_lock(_ProjectionRead__check_inv_1_mutex);
+                {
+                    std::unique_lock<std::mutex> _ProjectionRead__check_inv_1_lock(_ProjectionRead__check_inv_1_mutex);
+                    sort_m2_data1000_MC::_ProjectionRead__check_inv_1 read__check_inv_1_state = state._projected_state_for__check_inv_1();
+                    auto _obj__check_inv_1_ptr = _InvCache__check_inv_1.find(read__check_inv_1_state);
+                    if(_obj__check_inv_1_ptr == _InvCache__check_inv_1.end()) {
+                        _check_inv_1 = state._check_inv_1();
                         _InvCache__check_inv_1.insert({read__check_inv_1_state, _check_inv_1});
+                    } else {
+                        _check_inv_1 = _obj__check_inv_1_ptr->second;
                     }
-                } else {
-                    _check_inv_1 = _obj__check_inv_1_ptr->second;
                 }
             } else {
                 _check_inv_1 = state._check_inv_1();
@@ -1915,18 +1894,18 @@ class ModelChecker {
               cout << "INVARIANT CONJUNCT VIOLATED: _check_inv_1" << "\n";
               return true;
             }
-            bool _check_inv_2;
+            bool _check_inv_2 = true;
             if(isCaching) {
-                sort_m2_data1000_MC::_ProjectionRead__check_inv_2 read__check_inv_2_state = state._projected_state_for__check_inv_2();
-                auto _obj__check_inv_2_ptr = _InvCache__check_inv_2.find(read__check_inv_2_state);
-                if(_obj__check_inv_2_ptr == _InvCache__check_inv_2.end()) {
-                    _check_inv_2 = state._check_inv_2();
-                    {
-                        std::unique_lock<std::mutex> _ProjectionRead__check_inv_2_lock(_ProjectionRead__check_inv_2_mutex);
+                {
+                    std::unique_lock<std::mutex> _ProjectionRead__check_inv_2_lock(_ProjectionRead__check_inv_2_mutex);
+                    sort_m2_data1000_MC::_ProjectionRead__check_inv_2 read__check_inv_2_state = state._projected_state_for__check_inv_2();
+                    auto _obj__check_inv_2_ptr = _InvCache__check_inv_2.find(read__check_inv_2_state);
+                    if(_obj__check_inv_2_ptr == _InvCache__check_inv_2.end()) {
+                        _check_inv_2 = state._check_inv_2();
                         _InvCache__check_inv_2.insert({read__check_inv_2_state, _check_inv_2});
+                    } else {
+                        _check_inv_2 = _obj__check_inv_2_ptr->second;
                     }
-                } else {
-                    _check_inv_2 = _obj__check_inv_2_ptr->second;
                 }
             } else {
                 _check_inv_2 = state._check_inv_2();
@@ -1935,18 +1914,18 @@ class ModelChecker {
               cout << "INVARIANT CONJUNCT VIOLATED: _check_inv_2" << "\n";
               return true;
             }
-            bool _check_inv_3;
+            bool _check_inv_3 = true;
             if(isCaching) {
-                sort_m2_data1000_MC::_ProjectionRead__check_inv_3 read__check_inv_3_state = state._projected_state_for__check_inv_3();
-                auto _obj__check_inv_3_ptr = _InvCache__check_inv_3.find(read__check_inv_3_state);
-                if(_obj__check_inv_3_ptr == _InvCache__check_inv_3.end()) {
-                    _check_inv_3 = state._check_inv_3();
-                    {
-                        std::unique_lock<std::mutex> _ProjectionRead__check_inv_3_lock(_ProjectionRead__check_inv_3_mutex);
+                {
+                    std::unique_lock<std::mutex> _ProjectionRead__check_inv_3_lock(_ProjectionRead__check_inv_3_mutex);
+                    sort_m2_data1000_MC::_ProjectionRead__check_inv_3 read__check_inv_3_state = state._projected_state_for__check_inv_3();
+                    auto _obj__check_inv_3_ptr = _InvCache__check_inv_3.find(read__check_inv_3_state);
+                    if(_obj__check_inv_3_ptr == _InvCache__check_inv_3.end()) {
+                        _check_inv_3 = state._check_inv_3();
                         _InvCache__check_inv_3.insert({read__check_inv_3_state, _check_inv_3});
+                    } else {
+                        _check_inv_3 = _obj__check_inv_3_ptr->second;
                     }
-                } else {
-                    _check_inv_3 = _obj__check_inv_3_ptr->second;
                 }
             } else {
                 _check_inv_3 = state._check_inv_3();
@@ -1955,18 +1934,18 @@ class ModelChecker {
               cout << "INVARIANT CONJUNCT VIOLATED: _check_inv_3" << "\n";
               return true;
             }
-            bool _check_inv_4;
+            bool _check_inv_4 = true;
             if(isCaching) {
-                sort_m2_data1000_MC::_ProjectionRead__check_inv_4 read__check_inv_4_state = state._projected_state_for__check_inv_4();
-                auto _obj__check_inv_4_ptr = _InvCache__check_inv_4.find(read__check_inv_4_state);
-                if(_obj__check_inv_4_ptr == _InvCache__check_inv_4.end()) {
-                    _check_inv_4 = state._check_inv_4();
-                    {
-                        std::unique_lock<std::mutex> _ProjectionRead__check_inv_4_lock(_ProjectionRead__check_inv_4_mutex);
+                {
+                    std::unique_lock<std::mutex> _ProjectionRead__check_inv_4_lock(_ProjectionRead__check_inv_4_mutex);
+                    sort_m2_data1000_MC::_ProjectionRead__check_inv_4 read__check_inv_4_state = state._projected_state_for__check_inv_4();
+                    auto _obj__check_inv_4_ptr = _InvCache__check_inv_4.find(read__check_inv_4_state);
+                    if(_obj__check_inv_4_ptr == _InvCache__check_inv_4.end()) {
+                        _check_inv_4 = state._check_inv_4();
                         _InvCache__check_inv_4.insert({read__check_inv_4_state, _check_inv_4});
+                    } else {
+                        _check_inv_4 = _obj__check_inv_4_ptr->second;
                     }
-                } else {
-                    _check_inv_4 = _obj__check_inv_4_ptr->second;
                 }
             } else {
                 _check_inv_4 = state._check_inv_4();
@@ -1975,18 +1954,18 @@ class ModelChecker {
               cout << "INVARIANT CONJUNCT VIOLATED: _check_inv_4" << "\n";
               return true;
             }
-            bool _check_inv_5;
+            bool _check_inv_5 = true;
             if(isCaching) {
-                sort_m2_data1000_MC::_ProjectionRead__check_inv_5 read__check_inv_5_state = state._projected_state_for__check_inv_5();
-                auto _obj__check_inv_5_ptr = _InvCache__check_inv_5.find(read__check_inv_5_state);
-                if(_obj__check_inv_5_ptr == _InvCache__check_inv_5.end()) {
-                    _check_inv_5 = state._check_inv_5();
-                    {
-                        std::unique_lock<std::mutex> _ProjectionRead__check_inv_5_lock(_ProjectionRead__check_inv_5_mutex);
+                {
+                    std::unique_lock<std::mutex> _ProjectionRead__check_inv_5_lock(_ProjectionRead__check_inv_5_mutex);
+                    sort_m2_data1000_MC::_ProjectionRead__check_inv_5 read__check_inv_5_state = state._projected_state_for__check_inv_5();
+                    auto _obj__check_inv_5_ptr = _InvCache__check_inv_5.find(read__check_inv_5_state);
+                    if(_obj__check_inv_5_ptr == _InvCache__check_inv_5.end()) {
+                        _check_inv_5 = state._check_inv_5();
                         _InvCache__check_inv_5.insert({read__check_inv_5_state, _check_inv_5});
+                    } else {
+                        _check_inv_5 = _obj__check_inv_5_ptr->second;
                     }
-                } else {
-                    _check_inv_5 = _obj__check_inv_5_ptr->second;
                 }
             } else {
                 _check_inv_5 = state._check_inv_5();
@@ -1995,18 +1974,18 @@ class ModelChecker {
               cout << "INVARIANT CONJUNCT VIOLATED: _check_inv_5" << "\n";
               return true;
             }
-            bool _check_inv_6;
+            bool _check_inv_6 = true;
             if(isCaching) {
-                sort_m2_data1000_MC::_ProjectionRead__check_inv_6 read__check_inv_6_state = state._projected_state_for__check_inv_6();
-                auto _obj__check_inv_6_ptr = _InvCache__check_inv_6.find(read__check_inv_6_state);
-                if(_obj__check_inv_6_ptr == _InvCache__check_inv_6.end()) {
-                    _check_inv_6 = state._check_inv_6();
-                    {
-                        std::unique_lock<std::mutex> _ProjectionRead__check_inv_6_lock(_ProjectionRead__check_inv_6_mutex);
+                {
+                    std::unique_lock<std::mutex> _ProjectionRead__check_inv_6_lock(_ProjectionRead__check_inv_6_mutex);
+                    sort_m2_data1000_MC::_ProjectionRead__check_inv_6 read__check_inv_6_state = state._projected_state_for__check_inv_6();
+                    auto _obj__check_inv_6_ptr = _InvCache__check_inv_6.find(read__check_inv_6_state);
+                    if(_obj__check_inv_6_ptr == _InvCache__check_inv_6.end()) {
+                        _check_inv_6 = state._check_inv_6();
                         _InvCache__check_inv_6.insert({read__check_inv_6_state, _check_inv_6});
+                    } else {
+                        _check_inv_6 = _obj__check_inv_6_ptr->second;
                     }
-                } else {
-                    _check_inv_6 = _obj__check_inv_6_ptr->second;
                 }
             } else {
                 _check_inv_6 = state._check_inv_6();
@@ -2015,18 +1994,18 @@ class ModelChecker {
               cout << "INVARIANT CONJUNCT VIOLATED: _check_inv_6" << "\n";
               return true;
             }
-            bool _check_inv_7;
+            bool _check_inv_7 = true;
             if(isCaching) {
-                sort_m2_data1000_MC::_ProjectionRead__check_inv_7 read__check_inv_7_state = state._projected_state_for__check_inv_7();
-                auto _obj__check_inv_7_ptr = _InvCache__check_inv_7.find(read__check_inv_7_state);
-                if(_obj__check_inv_7_ptr == _InvCache__check_inv_7.end()) {
-                    _check_inv_7 = state._check_inv_7();
-                    {
-                        std::unique_lock<std::mutex> _ProjectionRead__check_inv_7_lock(_ProjectionRead__check_inv_7_mutex);
+                {
+                    std::unique_lock<std::mutex> _ProjectionRead__check_inv_7_lock(_ProjectionRead__check_inv_7_mutex);
+                    sort_m2_data1000_MC::_ProjectionRead__check_inv_7 read__check_inv_7_state = state._projected_state_for__check_inv_7();
+                    auto _obj__check_inv_7_ptr = _InvCache__check_inv_7.find(read__check_inv_7_state);
+                    if(_obj__check_inv_7_ptr == _InvCache__check_inv_7.end()) {
+                        _check_inv_7 = state._check_inv_7();
                         _InvCache__check_inv_7.insert({read__check_inv_7_state, _check_inv_7});
+                    } else {
+                        _check_inv_7 = _obj__check_inv_7_ptr->second;
                     }
-                } else {
-                    _check_inv_7 = _obj__check_inv_7_ptr->second;
                 }
             } else {
                 _check_inv_7 = state._check_inv_7();

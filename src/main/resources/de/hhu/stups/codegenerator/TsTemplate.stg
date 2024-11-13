@@ -9,6 +9,7 @@ machine(forModelChecking, forVisualisation, imports, includedMachines, projectio
 <includedMachines; separator="\n">
 import {BUtils} from "./btypes/BUtils.js";
 import {SelectError} from "./btypes/BUtils.js";
+import {PreconditionOrAssertionViolation} from "./btypes/BUtils.js";
 import {VariantViolation} from "./btypes/BUtils.js";
 import {LoopInvariantViolation} from "./btypes/BUtils.js";
 <if(forModelChecking)>
@@ -235,8 +236,8 @@ initialization(machine, properties, values, copy, body, iterationConstruct, prop
 static {
     <properties; separator="\n">
     <values>
-    <iterationConstruct; separator="\n">
     <if(propertiesCheck)>
+    <iterationConstruct; separator="\n">
     if(!(<propertiesCheck>).booleanValue()) {
         throw new Error("Contradiction in PROPERTIES detected!");
     }
@@ -283,7 +284,7 @@ private static <identifier>: BSet\<<type>\> = <set_enumeration("", type, "", enu
 >>
 
 set_enumeration(leftType, type, rightType, enums, isRelation) ::= <<
-<if(isRelation)>new BRelation\<<leftType>, <rightType>\><else>new BSet\<<type>\><endif>(<enums; separator=", ">)
+<if(isRelation)>new BRelation\<<leftType>, <rightType>\><else>new BSet<if(type)>\<<type>\><else>\<BObject\><endif><endif>(<enums; separator=", ">)
 >>
 
 seq_enumeration(type, elements) ::= <<
@@ -339,12 +340,12 @@ iteration_construct_subsetneq(otherIterationConstructs, type, identifier, set, b
 <otherIterationConstructs>
 <if(hasCondition)>
 if(<conditionalPredicate>.booleanValue()) {
-    for(let <identifier> of <set>.pow().difference(<set>)) {
+    for(let <identifier> of <set>.pow().difference(new BSet\<<type>\>(<set>))) {
         <body>
     }
 }
 <else>
-for(let <identifier> of <set>.pow().difference(<set>)) {
+for(let <identifier> of <set>.pow().difference(new BSet\<<type>\>(<set>))) {
     <body>
 }
 <endif>
@@ -416,7 +417,7 @@ let <identifier><if(!isJavaScript)>: BBoolean<endif> = new BBoolean(<if(forall)>
 quantified_predicate_evaluation(otherIterationConstructs, identifier, emptyPredicate, hasCondition, conditionalPredicate, predicate, forall) ::= <<
 <otherIterationConstructs>
 <if(emptyPredicate)>
-this.<identifier> = new BBoolean(<if(forall)>false<else>true<endif>);
+<identifier> = new BBoolean(<if(forall)>false<else>true<endif>);
 break;
 <else>
 if(<if(forall)>!<endif>(<predicate>).booleanValue()) {
@@ -666,7 +667,7 @@ BTuple\<<leftType>, <rightType>\>
 >>
 
 set_type(type) ::=<<
-BSet\<<type>\>
+BSet<if(type)>\<<type>\><else>\<BObject\><endif>
 >>
 
 relation_type(leftType, rightType) ::=<<
@@ -852,8 +853,8 @@ while((<predicate>).booleanValue()) {
     if(!(<invariant>.booleanValue())) {
         throw new LoopInvariantViolation("WHILE loop invariant is violated.");
     }
-    if(_loop_variant_<variantCounter>.greaterEqual(<variant>).booleanValue()) {
-        throw VariantViolation("WHILE loop invariant is violated.");
+    if(<variant>.greaterEqual(_loop_variant_<variantCounter>).booleanValue()) {
+        throw new VariantViolation("WHILE loop invariant is violated.");
     }
     _loop_variant_<variantCounter> = <variant>;
     <endif>
@@ -1441,3 +1442,6 @@ transition_cache_declaration(type, identifier, operationHasParams) ::= <<
 >>
 
 set_initialization(identifier, type, enums) ::= <<>>
+
+external_function(name, parameters) ::= <<
+>>
