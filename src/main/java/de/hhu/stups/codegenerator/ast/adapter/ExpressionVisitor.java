@@ -8,17 +8,15 @@ import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.expression.*;
 import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
-import de.prob.parser.ast.nodes.predicate.PredicateNode;
-import de.prob.parser.ast.nodes.predicate.PredicateOperatorNode;
-import de.prob.parser.ast.nodes.predicate.PredicateOperatorWithExprArgsNode;
-import de.prob.parser.ast.nodes.substitution.AnySubstitutionNode;
-
-import java.lang.annotation.Documented;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
+/*
+Der Visitor zum übersetzen der Expressions. Gibt einen Expression Knoten zurück.
+ */
 public class ExpressionVisitor extends AbstractVisitor{
 
     private ExprNode resultExpressionNode;

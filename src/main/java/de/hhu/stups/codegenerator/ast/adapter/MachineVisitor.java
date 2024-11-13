@@ -9,10 +9,12 @@ import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.*;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.substitution.SubstitutionNode;
-
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+Hier die Übersetzung des Maschinen Knotens (Wurzel des ASTs)
+ */
 public class MachineVisitor extends AbstractVisitor{
 
     private MachineNodeWithDefinitions resultMachineNode;

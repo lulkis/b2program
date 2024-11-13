@@ -6,10 +6,13 @@ import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.DefinitionNode;
 import de.prob.parser.ast.nodes.MachineNode;
-
 import java.util.ArrayList;
 import java.util.List;
 
+
+/*
+Der Visitor zum übersetzen der Definitions. Gibt einen Definition Knoten zurück.
+ */
 public class DefinitionVisitor extends AbstractVisitor{
 
     private DefinitionNode resultDefinitionNode;

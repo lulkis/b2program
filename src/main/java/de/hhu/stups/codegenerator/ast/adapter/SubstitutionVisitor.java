@@ -2,7 +2,6 @@ package de.hhu.stups.codegenerator.ast.adapter;
 
 import de.be4.classicalb.core.parser.node.*;
 import de.hhu.stups.codegenerator.ast.VisitorCoordinator;
-import de.prob.parser.antlr.Util;
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
@@ -10,11 +9,13 @@ import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.substitution.*;
-import org.antlr.v4.runtime.Token;
-
 import java.util.ArrayList;
 import java.util.List;
 
+
+/*
+Der Visitor zum übersetzen der Substitutions. Gibt einen Substitution Knoten zurück.
+ */
 public class SubstitutionVisitor extends AbstractVisitor{
 
     private SubstitutionNode resultSubstitutionNode;

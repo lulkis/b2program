@@ -4,6 +4,10 @@ import de.be4.classicalb.core.parser.IDefinitions;
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.MachineNode;
 
+/*
+Für Definitions eine modifizierung der einfachen MachineNode, damit die Definitions des PreParsers in der Übersetzung
+genutzt werdenb können.
+ */
 public class MachineNodeWithDefinitions extends MachineNode {
 
     private IDefinitions iDefinitions;

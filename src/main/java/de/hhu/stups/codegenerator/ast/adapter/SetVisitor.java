@@ -5,10 +5,14 @@ import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.EnumeratedSetDeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
-
 import java.util.ArrayList;
 import java.util.List;
 
+
+/*
+Der Visitor zum übersetzen der Sets. Gibt einen ANTLR Knoten zurück, da die Sets nicht einheitlich übersetzt werden.
+Haben einen eigenen Visitor bekommen aufgrund von Übersichtlichkeit.
+ */
 public class SetVisitor extends AbstractVisitor{
 
     private de.prob.parser.ast.nodes.Node resultSetDeclarationNode;

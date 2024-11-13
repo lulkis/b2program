@@ -7,6 +7,10 @@ import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.MachineReferenceNode;
 
+
+/*
+Der Visitor zum übersetzen der References. Gibt einen Reference Knoten zurück.
+ */
 public class ReferenceVisitor extends AbstractVisitor{
 
     private MachineReferenceNode resultReference;

@@ -7,6 +7,12 @@ import de.prob.parser.ast.nodes.Node;
 
 import java.util.List;
 
+/*
+    Klasse zum Austausch der Parameter einer Definition. Die Klasse braucht zwei Listen, vorherige und zu ersetzenden
+    Parameter.
+ */
+
+
 public class DefinitionParameterVisitor extends AbstractVisitor{
 
     private Node result;

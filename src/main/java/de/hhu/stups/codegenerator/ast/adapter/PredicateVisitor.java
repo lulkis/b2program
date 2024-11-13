@@ -8,11 +8,14 @@ import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.predicate.*;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
+/*
+Der Visitor zum übersetzen der Predicates. Gibt einen Predicate Knoten zurück.
+ */
 public class PredicateVisitor  extends AbstractVisitor{
 
     private PredicateNode resultPredicateNode;

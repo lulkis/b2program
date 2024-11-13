@@ -6,10 +6,12 @@ import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.OperationNode;
-
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+Der Visitor zum übersetzen der Operationen. Gibt einen Operation Knoten zurück.
+ */
 public class OperationVisitor extends AbstractVisitor{
 
     private OperationNode resultOperationNode;

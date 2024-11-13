@@ -8,10 +8,14 @@ import de.prob.parser.ast.nodes.Node;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.substitution.SubstitutionNode;
-
 import java.util.ArrayList;
 import java.util.List;
 
+
+/*
+Klasse die alle Möglichkeiten der Visitor/Übersetzer haben. Für jeden Visitor (Ausnahme den Maschinen Knoten) eine Klasse für
+einzelne Knoten oder Listen von Knoten.
+ */
 public class VisitorCoordinator {
 
     public MachineNode convertMachineNode(Start start, IDefinitions definitions){

@@ -13,13 +13,14 @@ import de.prob.parser.ast.visitors.TypeChecker;
 import de.prob.parser.ast.visitors.TypeErrorException;
 import de.prob.parser.util.Utils;
 import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
+/*
+Die Hauptklasse die für das Parsen, Checking und zurückgeben des BProjekts ist. Die Klasse ist an sich 1:1 wie die
+Hauptklasse des ANTLR Parsers, angepasst damit mit SableCC geparsed wird.
+ */
 public class SableCCBParser {
 
     private static BParser parser = new BParser();
