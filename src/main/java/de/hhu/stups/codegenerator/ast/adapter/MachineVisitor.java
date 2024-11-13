@@ -28,6 +28,7 @@ public class MachineVisitor extends AbstractVisitor{
     private List<DefinitionNode> definitions = new ArrayList<>();
     private List<MachineReferenceNode> machineReferences = new ArrayList<>();
     private IDefinitions iDefinitions;
+    private List<PredicateNode> assertions;
 
     public MachineNode getResult(){
         return resultMachineNode;
@@ -104,6 +105,23 @@ public class MachineVisitor extends AbstractVisitor{
     }
 
     @Override
+    public void caseAAssertionsMachineClause(AAssertionsMachineClause node){
+        assertions = coordinator.convertPredicateNode(node.getPredicates(), resultMachineNode);
+    }
+
+    @Override
+    public void caseAAbstractConstantsMachineClause(AAbstractConstantsMachineClause node){
+        List<DeclarationNode> constantList = new ArrayList<>();
+        for(PExpression expression : node.getIdentifiers()){
+            constantList.add(new DeclarationNode(getSourceCodePosition(node),
+                    expression.toString().replace(" ", ""),
+                    DeclarationNode.Kind.CONSTANT,
+                    resultMachineNode));
+        }
+        resultMachineNode.addConstants(constantList);
+    }
+
+    @Override
     public void caseEOF(EOF node){
         resultMachineNode.setName(name);
         if(initialisation!=null){
@@ -115,14 +133,11 @@ public class MachineVisitor extends AbstractVisitor{
         if(properties != null){
             resultMachineNode.setProperties(properties);
         }
-//        if(machineReferences != null){
-//
-//            for(MachineReferenceNode machineReference : machineReferences){
-//                resultMachineNode.addMachineReferenceNode(machineReference);
-//            }
-//        }
         if(operations != null){
             resultMachineNode.setOperations(operations);
+        }
+        if(assertions != null){
+            resultMachineNode.setAssertions(assertions);
         }
         for(de.prob.parser.ast.nodes.Node set : setEnumerations){
             if(set instanceof EnumeratedSetDeclarationNode){
