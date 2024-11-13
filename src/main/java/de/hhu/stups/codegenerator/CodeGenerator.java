@@ -3,6 +3,8 @@ package de.hhu.stups.codegenerator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
+import de.be4.classicalb.core.parser.exceptions.BCompoundException;
+import de.hhu.stups.codegenerator.ast.SableCCBParser;
 import de.hhu.stups.codegenerator.blackbox.traces.TraceGenerator;
 import de.hhu.stups.codegenerator.generators.CodeGenerationException;
 import de.hhu.stups.codegenerator.generators.MachineGenerator;
@@ -340,12 +342,15 @@ public class CodeGenerator {
 	private BProject parseProject(Path path) throws CodeGenerationException {
 		BProject project;
 		try {
-			project = Antlr4BParser.createBProjectFromMainMachineFile(path.toFile());
+			//project = Antlr4BParser.createBProjectFromMainMachineFile(path.toFile());
+			project = SableCCBParser.createBProjectFromMainMachineFile(path.toFile());
 		} catch (TypeErrorException | ScopeException | IOException e) {
 			e.printStackTrace();
 			throw new CodeGenerationException(e.getMessage());
-		}
-		return project;
+		} catch (BCompoundException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        return project;
 	}
 
 	private VisBProject parseVisBProject(Path path, VisBVisualisation visualisation) throws CodeGenerationException {
