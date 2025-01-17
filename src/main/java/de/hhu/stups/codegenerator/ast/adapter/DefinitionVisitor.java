@@ -31,14 +31,14 @@ public class DefinitionVisitor extends AbstractVisitor{
     public void caseAExpressionDefinitionDefinition(AExpressionDefinitionDefinition node) {
         List<DeclarationNode> declarationList = new ArrayList<>();
         for (PExpression terminalNode : node.getParameters()) {
-            DeclarationNode declNode = new DeclarationNode(getSourceCodePos(terminalNode),
+            DeclarationNode declNode = new DeclarationNode(getSourceCodePosition(terminalNode),
                     terminalNode.toString().replace(" ", ""),
                     DeclarationNode.Kind.OP_INPUT_PARAMETER,
                     machineNode);
             declarationList.add(declNode);
         }
 
-        resultDefinitionNode = new DefinitionNode(getSourceCodePos(node),
+        resultDefinitionNode = new DefinitionNode(getSourceCodePosition(node),
                 node.getName().toString().replace(" ", ""),
                 declarationList,
                 coordinator.convertExpressionNode(node.getRhs(), machineNode));
@@ -48,14 +48,14 @@ public class DefinitionVisitor extends AbstractVisitor{
     public void caseAPredicateDefinitionDefinition(APredicateDefinitionDefinition node){
         List<DeclarationNode> declarationList = new ArrayList<>();
         for (PExpression terminalNode : node.getParameters()) {
-            DeclarationNode declNode = new DeclarationNode(getSourceCodePos(terminalNode),
+            DeclarationNode declNode = new DeclarationNode(getSourceCodePosition(terminalNode),
                     terminalNode.toString().replace(" ", ""),
                     DeclarationNode.Kind.OP_INPUT_PARAMETER,
                     machineNode);
             declarationList.add(declNode);
         }
 
-        resultDefinitionNode = new DefinitionNode(getSourceCodePos(node),
+        resultDefinitionNode = new DefinitionNode(getSourceCodePosition(node),
                 node.getName().toString().replace(" ", ""),
                 declarationList,
                 coordinator.convertPredicateNode(node.getRhs(), machineNode));
@@ -66,13 +66,8 @@ public class DefinitionVisitor extends AbstractVisitor{
         //TODO: Translation Substitution Definition Definition
     }
 
-    private SourceCodePosition getSourceCodePos(Node node){
-        SourceCodePosition sourceCodePosition = new SourceCodePosition();
-        if(node.getStartPos() != null){
-            sourceCodePosition.setStartColumn(node.getStartPos().getPos());
-            sourceCodePosition.setStartLine(node.getStartPos().getLine());
-        }
-        sourceCodePosition.setText(node.toString().replace(" ", ""));
+    private SourceCodePosition getSourceCodePosition(Node node) {
+        SourceCodePosition sourceCodePosition = new SourceCodePosition(node.getStartPos() != null ? node.getStartPos().getLine(): 0, node.getStartPos() != null ? node.getStartPos().getPos() : 0, node.toString().replace(" ", ""));
         return sourceCodePosition;
     }
 }

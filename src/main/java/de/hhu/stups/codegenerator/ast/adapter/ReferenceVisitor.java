@@ -36,12 +36,7 @@ public class ReferenceVisitor extends AbstractVisitor{
     }
 
     private SourceCodePosition getSourceCodePosition(Node node) {
-        SourceCodePosition sourceCodePosition = new SourceCodePosition();
-        if(node.getStartPos() != null){
-            sourceCodePosition.setStartColumn(node.getStartPos().getPos());
-            sourceCodePosition.setStartLine(node.getStartPos().getLine());
-        }
-        sourceCodePosition.setText(node.toString().replace(" ", ""));
+        SourceCodePosition sourceCodePosition = new SourceCodePosition(node.getStartPos() != null ? node.getStartPos().getLine(): 0, node.getStartPos() != null ? node.getStartPos().getPos() : 0, node.toString().replace(" ", ""));
         return sourceCodePosition;
     }
 }

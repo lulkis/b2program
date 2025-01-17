@@ -4,6 +4,7 @@ import de.be4.classicalb.core.parser.BParser;
 import de.be4.classicalb.core.parser.exceptions.BCompoundException;
 import de.be4.classicalb.core.parser.node.Start;
 import de.hhu.stups.codegenerator.ast.nodes.MachineNodeWithDefinitions;
+import de.prob.parser.antlr.Antlr4BParser;
 import de.prob.parser.antlr.BProject;
 import de.prob.parser.antlr.ScopeException;
 import de.prob.parser.ast.nodes.MachineNode;
@@ -11,7 +12,6 @@ import de.prob.parser.ast.nodes.MachineReferenceNode;
 import de.prob.parser.ast.visitors.MachineScopeChecker;
 import de.prob.parser.ast.visitors.TypeChecker;
 import de.prob.parser.ast.visitors.TypeErrorException;
-import de.prob.parser.util.Utils;
 import org.antlr.v4.runtime.CharStream;
 import java.io.File;
 import java.io.IOException;
@@ -117,7 +117,7 @@ public class SableCCBParser {
         }
         Map<String, Set<String>> dependencies = new HashMap<>();
         determineMachineDependencies(machineNodeList.get(0), machineNodeMap, dependencies, new ArrayList<>());
-        List<String> machineNameList = Utils.sortByTopologicalOrder(dependencies);
+        List<String> machineNameList = Antlr4BParser.sortByTopologicalOrder(dependencies);
         machineNodeList.clear();
         for (String machineName : machineNameList) {
             machineNodeList.add(machineNodeMap.get(machineName));
