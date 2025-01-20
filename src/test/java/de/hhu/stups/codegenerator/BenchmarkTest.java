@@ -28,9 +28,10 @@ public class BenchmarkTest {
     @Benchmark
     public void sableBenchmarkNota(Blackhole blackhole) throws Exception {
         BParser parser = new BParser();
-        Path mchPath = Paths.get(ClassLoader.getSystemResource("nota.mch").toString()
+        Path mchPath = Paths.get("src/jmh/resources/Cruise_finite1.mch");
+        /*Path mchPath = Paths.get(ClassLoader.getSystemResource("nota.mch").toString()
                 .replace("jar:file:/", "")
-                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));
+                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));*/
         Start start = parser.parseFile(mchPath.toFile());
         VisitorCoordinator coordinator = new VisitorCoordinator();
         MachineNode machineNode = coordinator.convertMachineNode(start);
@@ -41,9 +42,10 @@ public class BenchmarkTest {
 
     @Benchmark
     public void antlrBenchmarkNota(Blackhole blackhole) throws Exception {
-        Path mchPath = Paths.get(ClassLoader.getSystemResource("nota.mch").toString()
+        Path mchPath = Paths.get("src/jmh/resources/nota.mch");
+        /*Path mchPath = Paths.get(ClassLoader.getSystemResource("nota.mch").toString()
                 .replace("jar:file:/", "")
-                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));
+                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));*/
         MachineNode machineNode;
         BProject antlrMachineNode  = Antlr4BParser.createBProjectFromMainMachineFile(mchPath.toFile());
         machineNode = antlrMachineNode.getMachineNode("nota");
@@ -53,9 +55,10 @@ public class BenchmarkTest {
     @Benchmark
     public void sableBenchmarkNotaBare(Blackhole blackhole) throws Exception {
         BParser parser = new BParser();
-        Path mchPath = Paths.get(ClassLoader.getSystemResource("nota.mch").toString()
+        Path mchPath = Paths.get("src/jmh/resources/nota.mch");
+        /*Path mchPath = Paths.get(ClassLoader.getSystemResource("nota.mch").toString()
                 .replace("jar:file:/", "")
-                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));
+                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));*/
         Start start = parser.parseFile(mchPath.toFile());
         blackhole.consume(start);
     }
@@ -64,9 +67,10 @@ public class BenchmarkTest {
     @Benchmark
     public void sableBenchmarkLandingGear(Blackhole blackhole) throws Exception {
         BParser parser = new BParser();
-        Path mchPath = Paths.get(ClassLoader.getSystemResource("LandingGear_R6.mch").toString()
+        Path mchPath = Paths.get("src/jmh/resources/LandingGear_R6.mch");
+        /*Path mchPath = Paths.get(ClassLoader.getSystemResource("LandingGear_R6.mch").toString()
                 .replace("jar:file:/", "")
-                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));
+                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));*/
         Start start = parser.parseFile(mchPath.toFile());
         VisitorCoordinator coordinator = new VisitorCoordinator();
         MachineNode machineNode = coordinator.convertMachineNode(start);
@@ -77,9 +81,10 @@ public class BenchmarkTest {
 
     @Benchmark
     public void antlrBenchmarkLandingGear(Blackhole blackhole) throws Exception {
-        Path mchPath = Paths.get(ClassLoader.getSystemResource("LandingGear_R6.mch").toString()
+        Path mchPath = Paths.get("src/jmh/resources/LandingGear_R6.mch");
+        /*Path mchPath = Paths.get(ClassLoader.getSystemResource("LandingGear_R6.mch").toString()
                 .replace("jar:file:/", "")
-                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));
+                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));*/
         MachineNode machineNode;
         BProject antlrMachineNode  = Antlr4BParser.createBProjectFromMainMachineFile(mchPath.toFile());
         machineNode = antlrMachineNode.getMachineNode("LandingGear_R6");
@@ -89,9 +94,10 @@ public class BenchmarkTest {
     @Benchmark
     public void sableBenchmarkLandingGearBare(Blackhole blackhole) throws Exception {
         BParser parser = new BParser();
-        Path mchPath = Paths.get(ClassLoader.getSystemResource("LandingGear_R6.mch").toString()
+        Path mchPath = Paths.get("src/jmh/resources/LandingGear_R6.mch");
+        /*Path mchPath = Paths.get(ClassLoader.getSystemResource("LandingGear_R6.mch").toString()
                 .replace("jar:file:/", "")
-                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));
+                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));*/
         Start start = parser.parseFile(mchPath.toFile());
         blackhole.consume(start);
     }
@@ -100,9 +106,10 @@ public class BenchmarkTest {
     @Benchmark
     public void sableBenchmarkCruise(Blackhole blackhole) throws Exception {
         BParser parser = new BParser();
-        Path mchPath = Paths.get(ClassLoader.getSystemResource("Cruise_finite1.mch").toString()
+        Path mchPath = Paths.get("src/jmh/resources/Cruise_finite1.mch");
+        /*Path mchPath = Paths.get(ClassLoader.getSystemResource("Cruise_finite1.mch").toString()
                 .replace("jar:file:/", "")
-                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));
+                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));*/
         Start start = parser.parseFile(mchPath.toFile());
         VisitorCoordinator coordinator = new VisitorCoordinator();
         MachineNode machineNode = coordinator.convertMachineNode(start);
@@ -113,9 +120,10 @@ public class BenchmarkTest {
 
     @Benchmark
     public void antlrBenchmarkCruise(Blackhole blackhole) throws Exception {
-        Path mchPath = Paths.get(ClassLoader.getSystemResource("Cruise_finite1.mch").toString()
+        Path mchPath = Paths.get("src/jmh/resources/Cruise_finite1.mch");
+        /*Path mchPath = Paths.get(ClassLoader.getSystemResource("Cruise_finite1.mch").toString()
                 .replace("jar:file:/", "")
-                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));
+                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));*/
         MachineNode machineNode;
         BProject antlrMachineNode  = Antlr4BParser.createBProjectFromMainMachineFile(mchPath.toFile());
         machineNode = antlrMachineNode.getMachineNode("Cruise_finite1");
@@ -125,9 +133,10 @@ public class BenchmarkTest {
     @Benchmark
     public void sableBenchmarkCruiseBare(Blackhole blackhole) throws Exception {
         BParser parser = new BParser();
-        Path mchPath = Paths.get(ClassLoader.getSystemResource("Cruise_finite1.mch").toString()
+        Path mchPath = Paths.get("src/jmh/resources/Cruise_finite1.mch");
+        /*Path mchPath = Paths.get(ClassLoader.getSystemResource("Cruise_finite1.mch").toString()
                 .replace("jar:file:/", "")
-                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));
+                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));*/
         Start start = parser.parseFile(mchPath.toFile());
         blackhole.consume(start);
     }
@@ -137,9 +146,10 @@ public class BenchmarkTest {
     @Benchmark
     public void sableBenchmarkGenerated1000(Blackhole blackhole) throws Exception {
         BParser parser = new BParser();
-        Path mchPath = Paths.get(ClassLoader.getSystemResource("generated_1000.mch").toString()
+        Path mchPath = Paths.get("src/jmh/resources/generated_1000.mch");
+        /*Path mchPath = Paths.get(ClassLoader.getSystemResource("generated_1000.mch").toString()
                 .replace("jar:file:/", "")
-                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));
+                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));*/
         Start start = parser.parseFile(mchPath.toFile());
         VisitorCoordinator coordinator = new VisitorCoordinator();
         MachineNode machineNode = coordinator.convertMachineNode(start);
@@ -150,9 +160,10 @@ public class BenchmarkTest {
 
     @Benchmark
     public void antlrBenchmarkGenerated1000(Blackhole blackhole) throws Exception {
-        Path mchPath = Paths.get(ClassLoader.getSystemResource("generated_1000.mch").toString()
+        Path mchPath = Paths.get("src/jmh/resources/generated_1000.mch");
+        /*Path mchPath = Paths.get(ClassLoader.getSystemResource("generated_1000.mch").toString()
                 .replace("jar:file:/", "")
-                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));
+                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));*/
         MachineNode machineNode;
         BProject antlrMachineNode  = Antlr4BParser.createBProjectFromMainMachineFile(mchPath.toFile());
         machineNode = antlrMachineNode.getMachineNode("generated_1000");
@@ -164,9 +175,10 @@ public class BenchmarkTest {
     @Benchmark
     public void sableBenchmarkGenerated2000(Blackhole blackhole) throws Exception {
         BParser parser = new BParser();
-        Path mchPath = Paths.get(ClassLoader.getSystemResource("generated_2000.mch").toString()
+        Path mchPath = Paths.get("src/jmh/resources/generated_2000.mch");
+        /*Path mchPath = Paths.get(ClassLoader.getSystemResource("generated_2000.mch").toString()
                 .replace("jar:file:/", "")
-                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));
+                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));*/
         Start start = parser.parseFile(mchPath.toFile());
         VisitorCoordinator coordinator = new VisitorCoordinator();
         MachineNode machineNode = coordinator.convertMachineNode(start);
@@ -177,13 +189,53 @@ public class BenchmarkTest {
 
     @Benchmark
     public void antlrBenchmarkGenerated2000(Blackhole blackhole) throws Exception {
-        Path mchPath = Paths.get(ClassLoader.getSystemResource("generated_2000.mch").toString()
+        Path mchPath = Paths.get("src/jmh/resources/generated_2000.mch");
+        /*Path mchPath = Paths.get(ClassLoader.getSystemResource("generated_2000.mch").toString()
                 .replace("jar:file:/", "")
-                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));
+                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));*/
         MachineNode machineNode;
         BProject antlrMachineNode  = Antlr4BParser.createBProjectFromMainMachineFile(mchPath.toFile());
         machineNode = antlrMachineNode.getMachineNode("generated_2000");
         blackhole.consume(machineNode);
 
+    }
+
+    @Benchmark
+    public void antlrBenchmarkExplicitComputations(Blackhole blackhole) throws Exception {
+        Path mchPath = Paths.get("src/jmh/resources/ExplicitComputations.mch");
+        /*Path mchPath = Paths.get(ClassLoader.getSystemResource("generated_2000.mch").toString()
+                .replace("jar:file:/", "")
+                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));*/
+        MachineNode machineNode;
+        BProject antlrMachineNode  = Antlr4BParser.createBProjectFromMainMachineFile(mchPath.toFile());
+        machineNode = antlrMachineNode.getMachineNode("ExplicitComputations");
+        blackhole.consume(machineNode);
+
+    }
+
+    @Benchmark
+    public void sableBenchmarkExplicitComputations(Blackhole blackhole) throws Exception {
+        BParser parser = new BParser();
+        Path mchPath = Paths.get("src/jmh/resources/ExplicitComputations.mch");
+        /*Path mchPath = Paths.get(ClassLoader.getSystemResource("generated_2000.mch").toString()
+                .replace("jar:file:/", "")
+                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));*/
+        Start start = parser.parseFile(mchPath.toFile());
+        VisitorCoordinator coordinator = new VisitorCoordinator();
+        MachineNode machineNode = coordinator.convertMachineNode(start);
+        new MachineScopeChecker(machineNode);
+        new TypeChecker(machineNode);
+        blackhole.consume(machineNode);
+    }
+
+    @Benchmark
+    public void sableBenchmarkExplicitComputationsBare(Blackhole blackhole) throws Exception {
+        BParser parser = new BParser();
+        Path mchPath = Paths.get("src/jmh/resources/ExplicitComputations.mch");
+        /*Path mchPath = Paths.get(ClassLoader.getSystemResource("nota.mch").toString()
+                .replace("jar:file:/", "")
+                .replace("build/libs/B2Program-0.1.0-SNAPSHOT-jmh.jar!", "src/jmh/resources"));*/
+        Start start = parser.parseFile(mchPath.toFile());
+        blackhole.consume(start);
     }
 }
